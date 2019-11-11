@@ -5,11 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess.Entities
 {
-    [Table("Users", Schema = "Public")]
+    [Table("Users", Schema = "dbo")]
     public class Users : IdentityUser
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-
     }
 }

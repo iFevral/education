@@ -12,10 +12,8 @@ namespace Store.DataAccess.AppContext
         public DbSet<Orders> Orders { get; set; }
         public DbSet<Payments> Payments { get; set; }
         public DbSet<PrintingEditions> PrintingEditions { get; set; }
-        public DbSet<Roles> Roles { get; set; }
-        public DbSet<UserInRoles> UserInRoles { get; set; }
 
-        public ApplicationContext() : base("ExamDB")
+        public ApplicationContext() : base("DB4Exam")
         {
             Database.SetInitializer(new DropCreateDatabaseIfModelChanges<ApplicationContext>());
         }
@@ -24,9 +22,9 @@ namespace Store.DataAccess.AppContext
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<IdentityUser>().ToTable("Users");
+            builder.Entity<Users>().ToTable("Users");
             builder.Entity<IdentityRole>().ToTable("Roles");
-            builder.Entity<IdentityUserRole>().ToTable("UserInRole");
+            builder.Entity<IdentityUserRole>().ToTable("UserInRoles");
         }
     }
 }
