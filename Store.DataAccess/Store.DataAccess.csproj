@@ -1,31 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.3.0" />
     <PackageReference Include="Microsoft.AspNet.Identity.EntityFramework" Version="2.2.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Migrations\201911111226056_InitialCreate.resx">
-      <DependentUpon>201911111226056_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Migrations\201911111234452_reset.resx">
-      <DependentUpon>201911111234452_reset.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Migrations\201911111245448_reset3.resx">
-      <DependentUpon>201911111245448_reset3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Migrations\201911111329390_reset5.resx">
-      <DependentUpon>201911111329390_reset5.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Migrations\201911111341075_rename-default-tables.resx">
-      <DependentUpon>201911111341075_rename-default-tables.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
