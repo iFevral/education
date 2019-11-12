@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Store.BusinessLogic.Interfaces
+namespace Store.BusinessLogic.Helpers
 {
-    interface IAuthor
+    class EmailHelper
     {
-
     }
 }
