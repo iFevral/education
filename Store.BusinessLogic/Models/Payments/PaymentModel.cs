@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Store.BusinessLogic.Models.Payments
 {
-    class PaymentModel
+    public class PaymentModel
     {
     }
 }

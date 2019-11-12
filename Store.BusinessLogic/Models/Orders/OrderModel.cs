@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Store.BusinessLogic.Models.Orders
 {
-    class OrderModel
+    public class OrderModel
     {
     }
 }

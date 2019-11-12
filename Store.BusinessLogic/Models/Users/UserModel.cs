@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Store.BusinessLogic.Models.Users
 {
-    class UserModel
+    public class UserModel
     {
     }
 }

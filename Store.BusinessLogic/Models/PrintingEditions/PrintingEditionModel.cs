@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Store.BusinessLogic.Models.PrintingEditions
 {
-    class PrintingEditionModel
+    public class PrintingEditionModel
     {
     }
 }
