@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.Repositories.Base;
+using Store.DataAccess.Entities;
+using Store.DataAccess.Repositories.Interfaces;
+using Store.DataAccess.AppContext;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
@@ -19,9 +22,9 @@ namespace Store.DataAccess.Repositories.EFRepository
             return _db.Orders.AsEnumerable();
         }
 
-        public IEnumerable<Orders> GetOrdersByUserId(int id)
+        public IEnumerable<Orders> GetOrdersByUserId(string id)
         {
-            return _db.Orders.Where(o => o.UserId == id).AsEnumerable();
+            return _db.Orders.Where(o => o.UserId.Equals(id)).AsEnumerable();
         }
 
         public Orders GetOrderById(int id)
@@ -48,6 +51,11 @@ namespace Store.DataAccess.Repositories.EFRepository
                 _db.Orders.Remove(order);
                 _db.SaveChanges();
             }
+        }
+
+        public IEnumerable<Orders> GetOrdersByUserId(int id)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

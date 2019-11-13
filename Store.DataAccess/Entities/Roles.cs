@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Store.DataAccess
+namespace Store.DataAccess.Entities
 {
     public partial class Roles : IdentityRole<string>
     {
@@ -14,11 +14,11 @@ namespace Store.DataAccess
         }
 
         [Key]
-        public string Id { get; set; }
-        [StringLength(256)]
+        public override string Id { get; set; }
+        [StringLength(50)]
         public override string NormalizedName { get; set; }
         public override string ConcurrencyStamp { get; set; }
-        [StringLength(256)]
+        [StringLength(50)]
         public override string Name { get; set; }
 
         [InverseProperty("Role")]

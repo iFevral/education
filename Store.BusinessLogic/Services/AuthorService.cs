@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Store.BusinessLogic.Interfaces;
 
 namespace Store.BusinessLogic
 {
-    public class AuthorService
+    public class AuthorService : IAuthorService
     {
 
     }

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Store.DataAccess.AppContext;
 
 namespace Store.DataAccess.Repositories.Base
 {

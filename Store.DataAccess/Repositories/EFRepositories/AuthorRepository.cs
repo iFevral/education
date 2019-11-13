@@ -1,6 +1,9 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Store.DataAccess.Repositories.Interfaces;
+using Store.DataAccess.AppContext;
+using Store.DataAccess.Entities;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {

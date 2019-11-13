@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Store.DataAccess
+namespace Store.DataAccess.Entities
 {
     public partial class Authors
     {
@@ -13,6 +13,7 @@ namespace Store.DataAccess
 
         [Key]
         public int Id { get; set; }
+        [StringLength(100)]
         public string Name { get; set; }
 
         [InverseProperty("Author")]

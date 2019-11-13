@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Store.DataAccess.Entities;
+using System.Collections.Generic;
 
-namespace Store.DataAccess.Repositories
+namespace Store.DataAccess.Repositories.Interfaces
 {
-    public interface IAuthorRepository : IRepository<Authors>
+    public interface IAuthorRepository
     {
         IEnumerable<Authors> GetAllAuthors();
         Authors GetAuthorById(int id);

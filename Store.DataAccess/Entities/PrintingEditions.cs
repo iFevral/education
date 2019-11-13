@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Store.DataAccess
+namespace Store.DataAccess.Entities
 {
     public partial class PrintingEditions
     {
@@ -14,13 +14,17 @@ namespace Store.DataAccess
 
         [Key]
         public int Id { get; set; }
+        [StringLength(256)]
         public string Title { get; set; }
         public string Description { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal Price { get; set; }
-        public bool IsRemoved { get; set; }
+        public decimal Price { get; set; } = 0;
+        public bool IsRemoved { get; set; } = false;
+        [StringLength(20)]
         public string Status { get; set; }
+        [StringLength(10)]
         public string Currency { get; set; }
+        [StringLength(20)]
         public string Type { get; set; }
 
         [InverseProperty("PrintingEdition")]

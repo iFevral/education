@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Store.DataAccess
+namespace Store.DataAccess.Entities
 {
-    public partial class AspNetUserLogins : IdentityUserLogin<int>
+    public partial class AspNetUserLogins : IdentityUserLogin<string>
     {
         [Key]
         public string LoginProvider { get; set; }

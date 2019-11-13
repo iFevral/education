@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Store.DataAccess
+namespace Store.DataAccess.Entities
 {
     public partial class UserInRoles : IdentityUserRole<string>
     {

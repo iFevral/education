@@ -1,9 +1,7 @@
-﻿using Store.DataAccess.Repositories.Base;
-using System;
+﻿using Store.DataAccess.Entities;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Store.DataAccess.Repositories
+namespace Store.DataAccess.Repositories.Interfaces
 {
     public interface IOrderRepository 
     {

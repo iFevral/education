@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Store.DataAccess.Entities;
 
-namespace Store.DataAccess
+namespace Store.DataAccess.AppContext
 {
-    public partial class ApplicationContext : IdentityDbContext<Users, Roles, int, AspNetUserClaims, UserInRoles, AspNetUserLogins, AspNetRoleClaims, AspNetUserTokens>
+    public partial class ApplicationContext : IdentityDbContext<Users, Roles, string, AspNetUserClaims, UserInRoles, AspNetUserLogins, AspNetRoleClaims, AspNetUserTokens>
     {
         public ApplicationContext()
         {

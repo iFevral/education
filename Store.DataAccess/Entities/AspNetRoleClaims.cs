@@ -2,12 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Store.DataAccess
+namespace Store.DataAccess.Entities
 {
-    public partial class AspNetRoleClaims : IdentityRoleClaim<int> 
+    public partial class AspNetRoleClaims : IdentityRoleClaim<string> 
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string RoleId { get; set; }
         public string ClaimType { get; set; }
         public string ClaimValue { get; set; }

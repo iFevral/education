@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Store.BusinessLogic.Services.Interfaces;
 
 namespace Store.BusinessLogic.Services
 {
-    public class PrintingEditionService
+    public class PrintingEditionService : IPrintingEditionService
     {
     }
 }

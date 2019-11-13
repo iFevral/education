@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Store.DataAccess.Entities;
+using Store.DataAccess.Repositories.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace Store.DataAccess.Repositories.EFRepository
