@@ -8,8 +8,8 @@ namespace Store.DataAccess.Repositories.Base
     public class EFBaseRepository<T> : IGenericRepository<T>
         where T : class
     {
-        ApplicationContext _db;
-        DbSet<T> _dbSet;
+        protected ApplicationContext _db;
+        private DbSet<T> _dbSet;
 
         public EFBaseRepository(ApplicationContext db)
         {

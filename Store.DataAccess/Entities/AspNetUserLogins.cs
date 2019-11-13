@@ -11,7 +11,7 @@ namespace Store.DataAccess
         [Key]
         public string ProviderKey { get; set; }
         public string ProviderDisplayName { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         [ForeignKey(nameof(UserId))]
         [InverseProperty(nameof(Users.AspNetUserLogins))]

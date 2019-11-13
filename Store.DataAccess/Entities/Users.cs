@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess
 {
-    public partial class Users : IdentityUser<int>
+    public partial class Users : IdentityUser<string>
     {
         public Users()
         {
@@ -18,25 +18,25 @@ namespace Store.DataAccess
         }
 
         [Key]
-        public int Id { get; set; }
+        public override string Id { get; set; }
         [StringLength(256)]
-        public string UserName { get; set; }
+        public override string UserName { get; set; }
         [StringLength(256)]
-        public string NormalizedUserName { get; set; }
+        public override string NormalizedUserName { get; set; }
         [StringLength(256)]
-        public string Email { get; set; }
+        public override string Email { get; set; }
         [StringLength(256)]
-        public string NormalizedEmail { get; set; }
-        public bool EmailConfirmed { get; set; }
-        public string PasswordHash { get; set; }
-        public string SecurityStamp { get; set; }
-        public string ConcurrencyStamp { get; set; }
-        public string PhoneNumber { get; set; }
-        public bool PhoneNumberConfirmed { get; set; }
-        public bool TwoFactorEnabled { get; set; }
-        public DateTimeOffset? LockoutEnd { get; set; }
-        public bool LockoutEnabled { get; set; }
-        public int AccessFailedCount { get; set; }
+        public override string NormalizedEmail { get; set; }
+        public override bool EmailConfirmed { get; set; }
+        public override string PasswordHash { get; set; }
+        public override string SecurityStamp { get; set; }
+        public override string ConcurrencyStamp { get; set; }
+        public override string PhoneNumber { get; set; }
+        public override bool PhoneNumberConfirmed { get; set; }
+        public override bool TwoFactorEnabled { get; set; }
+        public override DateTimeOffset? LockoutEnd { get; set; }
+        public override bool LockoutEnabled { get; set; }
+        public override int AccessFailedCount { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
 

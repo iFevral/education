@@ -1,14 +1,15 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Store.DataAccess.Repositories.Base;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository : EFBaseRepository<Orders>, IOrderRepository
     {
         private ApplicationContext _db;
         
-        public OrderRepository(ApplicationContext db)
+        public OrderRepository(ApplicationContext db) : base(db)
         {
             _db = db;
         }

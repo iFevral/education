@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess
 {
-    public partial class UserInRoles : IdentityUserRole<int>
+    public partial class UserInRoles : IdentityUserRole<string>
     {
         [Key]
-        public int UserId { get; set; }
+        public override string UserId { get; set; }
         [Key]
-        public int RoleId { get; set; }
+        public override string RoleId { get; set; }
 
         [ForeignKey(nameof(RoleId))]
         [InverseProperty(nameof(Roles.UserInRoles))]

@@ -7,7 +7,7 @@ namespace Store.DataAccess
     public partial class AspNetUserTokens : IdentityUserToken<int>
     {
         [Key]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         [Key]
         public string LoginProvider { get; set; }
         [Key]
