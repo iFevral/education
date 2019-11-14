@@ -11,6 +11,7 @@ using Store.BusinessLogic.Services;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.DataAccess.AppContext;
 using Store.DataAccess.Entities;
+using Store.Presentation.Common;
 using Store.Presentation.Helpers;
 
 namespace Store.Presentation.Controllers
@@ -34,6 +35,7 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/api/[controller]")]
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<UserModelItem>> GetUsers()
         {
@@ -41,22 +43,29 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/api/[controller]/SignIn")]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<object> SignIn([FromBody] SignInModelItem loginData)
         {
+            TokenModel token = new TokenModel();
             if (ModelState.IsValid)
             {
-                return JwtHelper.GenerateJwtToken(await _userService.SignIn(loginData),
-                                                  _configuration);
+                UserModelItem user = await _userService.SignIn(loginData);
+                if (user != null)
+                    token = JwtHelper.GenerateJwtToken(user, _configuration);
             }
-            else throw new ApplicationException("UNKNOWN_ERROR");
+            return token;
         }
 
         [Route("~/api/[controller]/SignUp")]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IEnumerable<string>> SignUp([FromBody] SignUpModelItem userData)
         {
             await _userService.SignUp(userData);
+
+            //TODO: Добавить валидацию данных, изменить сложность пароля, добавить сообщения и ошибки.
+
             return new List<string> { "Success" };
         }
     }

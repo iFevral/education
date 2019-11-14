@@ -45,14 +45,15 @@ namespace Store.BusinessLogic.Services
 
         public async Task<UserModelItem> SignIn(SignInModelItem loginData)
         {
-            UserModelItem userItem = new UserModelItem();
-            if (await _userRepository.IsCreated(loginData.Username,
-                                         loginData.Password))
+            UserModelItem userItem = null;
+            if (await _userRepository.IsCreated(loginData.Username, loginData.Password))
             {
-                var userData = _userRepository.FindByName(loginData.Username);
-                if(userData != null)
+                var userData = await _userRepository.FindByName(loginData.Username);
+                if (userData != null)
+                {
                     userItem = _mapper.Map<UserModelItem>(userData);
-
+                    userItem.Roles = await _userRepository.GetUserRoles(userItem.Id);
+                }
             }
             return userItem;
         }

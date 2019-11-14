@@ -1,33 +1,33 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.Entities;
 
 namespace Store.DataAccess.AppContext
 {
-    public partial class ApplicationContext : IdentityDbContext<Users, Roles, string, AspNetUserClaims, UserInRoles, AspNetUserLogins, AspNetRoleClaims, AspNetUserTokens>
+    public partial class ApplicationContext : IdentityDbContext<Users, 
+                                                                Roles, 
+                                                                string,
+                                                                IdentityUserClaim<string>,
+                                                                UserInRoles,
+                                                                IdentityUserLogin<string>,
+                                                                IdentityRoleClaim<string>,
+                                                                IdentityUserToken<string>>
     {
-        public ApplicationContext()
-        {
-        }
-
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
         }
 
-        public virtual DbSet<AspNetRoleClaims> AspNetRoleClaims { get; set; }
-        public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
-        public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
-        public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
         public virtual DbSet<AuthorInBooks> AuthorInBooks { get; set; }
         public virtual DbSet<Authors> Authors { get; set; }
         public virtual DbSet<OrderItems> OrderItems { get; set; }
         public virtual DbSet<Orders> Orders { get; set; }
         public virtual DbSet<Payments> Payments { get; set; }
         public virtual DbSet<PrintingEditions> PrintingEditions { get; set; }
-        public virtual DbSet<Roles> Roles { get; set; }
+        public override DbSet<Roles> Roles { get; set; }
         public virtual DbSet<UserInRoles> UserInRoles { get; set; }
-        public virtual DbSet<Users> Users { get; set; }
+        public override DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -37,31 +37,9 @@ namespace Store.DataAccess.AppContext
             }
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder) : base.OnModelCreating(modelBuilder)
         {
-            modelBuilder.Entity<AspNetRoleClaims>(entity =>
-            {
-                entity.HasIndex(e => e.RoleId);
-            });
-
-            modelBuilder.Entity<AspNetUserClaims>(entity =>
-            {
-                entity.HasIndex(e => e.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserLogins>(entity =>
-            {
-                entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
-
-                entity.HasIndex(e => e.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserTokens>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
-            });
-
-            modelBuilder.Entity<AuthorInBooks>(entity =>
+           /* modelBuilder.Entity<AuthorInBooks>(entity =>
             {
                 entity.HasIndex(e => e.AuthorId);
 
@@ -106,7 +84,7 @@ namespace Store.DataAccess.AppContext
                     .HasFilter("([NormalizedUserName] IS NOT NULL)");
             });
 
-            OnModelCreatingPartial(modelBuilder);
+            OnModelCreatingPartial(modelBuilder);*/
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

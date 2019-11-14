@@ -6,12 +6,6 @@ namespace Store.DataAccess.Entities
 {
     public partial class PrintingEditions
     {
-        public PrintingEditions()
-        {
-            AuthorInBooks = new HashSet<AuthorInBooks>();
-            OrderItems = new HashSet<OrderItems>();
-        }
-
         [Key]
         public int Id { get; set; }
         [StringLength(256)]

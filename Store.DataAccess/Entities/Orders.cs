@@ -7,11 +7,6 @@ namespace Store.DataAccess.Entities
 {
     public partial class Orders
     {
-        public Orders()
-        {
-            OrderItems = new HashSet<OrderItems>();
-        }
-
         [Key]
         public int Id { get; set; }
         public string Description { get; set; }

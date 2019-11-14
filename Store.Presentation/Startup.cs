@@ -72,9 +72,6 @@ namespace Store.Presentation
                               IWebHostEnvironment env, 
                               ILoggerFactory loggerFactory, 
                               ApplicationContext context)
-                              //UserManager<Users> userManager, 
-                              //RoleManager<Roles> roleManager, 
-                              //SignInManager<Users> signInManager)
         {
             if (env.IsDevelopment())
             {

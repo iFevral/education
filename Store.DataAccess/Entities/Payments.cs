@@ -6,11 +6,6 @@ namespace Store.DataAccess.Entities
 {
     public partial class Payments
     {
-        public Payments()
-        {
-            Orders = new HashSet<Orders>();
-        }
-
         [Key]
         public int Id { get; set; }
         [StringLength(256)]

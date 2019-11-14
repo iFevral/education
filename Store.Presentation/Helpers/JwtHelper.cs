@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Store.BusinessLogic.Models.Users;
+using Store.Presentation.Common;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,28 +22,55 @@ namespace Store.Presentation.Helpers
     }
     public static class JwtHelper
     {
-        public static object GenerateJwtToken(UserModelItem user, IConfiguration _configuration)
+        public static TokenModel GenerateJwtToken(UserModelItem user, IConfiguration _configuration)
         {
-            var claims = new List<Claim>
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+
+            //Access token options
+            var accessClaims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Roles.First()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["JwtExpireDays"]));
+            var accessKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
+            var accessCreds = new SigningCredentials(accessKey, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
+            var accessToken = new JwtSecurityToken(
                 _configuration["JwtIssuer"],
                 _configuration["JwtIssuer"],
-                claims,
-                expires: expires,
-                signingCredentials: creds
+                accessClaims,
+                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["JwtExpireMinutes"])),
+                signingCredentials: accessCreds
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+
+            //Refresh token options
+            var refreshClaims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+            };
+
+            var refreshKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
+            var refreshCreds = new SigningCredentials(refreshKey, SecurityAlgorithms.HmacSha256);
+
+            var refreshToken = new JwtSecurityToken(
+                _configuration["JwtIssuer"],
+                _configuration["JwtIssuer"],
+                refreshClaims,
+                expires: DateTime.UtcNow.AddDays(Convert.ToDouble(_configuration["JwtExpireDays"])),
+                signingCredentials: refreshCreds
+            );
+
+
+            return new TokenModel
+            {
+                AccessToken = handler.WriteToken(accessToken),
+                RefreshToken = handler.WriteToken(refreshToken)
+            };
         }
     }
 }

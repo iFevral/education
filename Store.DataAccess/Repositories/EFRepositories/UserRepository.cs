@@ -52,12 +52,12 @@ namespace Store.DataAccess.Repositories.EFRepository
 
         public async Task<Users> FindByEmail(string email)
         {
-            return await _userManager.FindByIdAsync(email);
+            return await _userManager.FindByEmailAsync(email);
         }
 
         public async Task<Users> FindByName(string name)
         {
-            return await _userManager.FindByIdAsync(name);
+            return await _userManager.FindByNameAsync(name);
         }
 
         public async Task<IEnumerable<string>> GetUserRoles(string id)
@@ -96,7 +96,6 @@ namespace Store.DataAccess.Repositories.EFRepository
         public async Task<bool> IsCreated(string username, string password)
         {
             var a = await _signInManager.PasswordSignInAsync(username, password, false, false);
-
             return a.Succeeded;
         }
     }
