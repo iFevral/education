@@ -8,9 +8,9 @@ namespace Store.DataAccess.Entities
     {
         [Key]
         public string Id { get; set; }
-        public string RoleId { get; set; }
-        public string ClaimType { get; set; }
-        public string ClaimValue { get; set; }
+        public override string RoleId { get; set; }
+        public override string ClaimType { get; set; }
+        public override string ClaimValue { get; set; }
 
         [ForeignKey(nameof(RoleId))]
         [InverseProperty(nameof(Roles.AspNetRoleClaims))]

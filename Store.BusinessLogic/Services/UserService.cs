@@ -5,20 +5,30 @@ using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
 using Store.DataAccess.Repositories.EFRepository;
 using Store.BusinessLogic.Services.Interfaces;
+using AutoMapper;
+using System.Threading.Tasks;
 
 namespace Store.BusinessLogic.Services
 {
     public class UserService : IUserService
     {
         private UserModel _users;
+        private IMapper _mapper;
         private IUserRepository _userRepository;
         public UserService(ApplicationContext db,
                               UserManager<Users> userManager,
                               RoleManager<Roles> roleManager,
-                              SignInManager<Users> signInManager)
+                              SignInManager<Users> signInManager,
+                              IMapper mapper)
         {
             _users = new UserModel();
             _userRepository = new UserRepository(db, userManager, roleManager, signInManager);
+            _mapper = mapper;
+        }
+
+        public async Task SignUp(SignUpModelItem signUpData)
+        {
+            await _userRepository.Create(_mapper.Map<Users>(signUpData), signUpData.Password);
         }
 
         public UserModel GetAllUsers()
@@ -27,19 +37,24 @@ namespace Store.BusinessLogic.Services
 
             foreach (var user in users)
             {
-                _users.Items.Add(new UserModelItem
-                {
-                    Id = user.Id,
-                    Email = user.Email,
-                    EmailConfirmed = user.EmailConfirmed,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    PhoneNumber = user.PhoneNumber,
-                    UserName = user.UserName
-                });
+                _users.Items.Add(_mapper.Map<UserModelItem>(user));
             }
 
             return _users;
+        }
+
+        public async Task<UserModelItem> SignIn(SignInModelItem loginData)
+        {
+            UserModelItem userItem = new UserModelItem();
+            if (await _userRepository.IsCreated(loginData.Username,
+                                         loginData.Password))
+            {
+                var userData = _userRepository.FindByName(loginData.Username);
+                if(userData != null)
+                    userItem = _mapper.Map<UserModelItem>(userData);
+
+            }
+            return userItem;
         }
     }
 }

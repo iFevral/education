@@ -28,18 +28,18 @@ namespace Store.DataAccess.Repositories.EFRepository
             return _userManager.Users.ToList();
         }
 
-        public async void Create(Users user)
+        public async Task Create(Users user,string password)
         {
-            await _userManager.CreateAsync(user);
+            await _userManager.CreateAsync(user, password);
             await _db.SaveChangesAsync();
         }
-        public async void Update(Users user)
+        public async Task Update(Users user)
         {
             await _userManager.UpdateAsync(user);
             await _db.SaveChangesAsync();
         }
 
-        public async void Remove(Users user)
+        public async Task Remove(Users user)
         {
             await _userManager.DeleteAsync(user);
             await _db.SaveChangesAsync();
@@ -65,14 +65,13 @@ namespace Store.DataAccess.Repositories.EFRepository
             return await _userManager.GetRolesAsync(await FindById(id));
         }
 
-        public async void CreateRole(string name)
+        public async Task CreateRole(string name)
         {
-            //await _roleManager.CreateAsync(IdentityRole(name));
-
+            await _roleManager.CreateAsync(new Roles { Name = name});
             await _db.SaveChangesAsync();
         }
 
-        public async void DeleteRole(string name)
+        public async Task DeleteRole(string name)
         {
             await _roleManager.DeleteAsync(await _roleManager.FindByNameAsync(name));
             await _db.SaveChangesAsync();
@@ -83,20 +82,22 @@ namespace Store.DataAccess.Repositories.EFRepository
             return await _userManager.IsInRoleAsync(await FindById(id), role);
         }
 
-        public async void AddToRole(string id, string role)
+        public async Task AddToRole(string id, string role)
         {
             await _userManager.AddToRoleAsync(await FindById(id), role);
             await _db.SaveChangesAsync();
         }
-        public async void RemoveFromRole(string id, string role)
+        public async Task RemoveFromRole(string id, string role)
         {
             await _userManager.RemoveFromRoleAsync(await FindById(id), role);
             await _db.SaveChangesAsync();
         }
 
-        public async void SignIn(Users user, bool isPersistent)
+        public async Task<bool> IsCreated(string username, string password)
         {
-            await _signInManager.SignInAsync(user, isPersistent);
+            var a = await _signInManager.PasswordSignInAsync(username, password, false, false);
+
+            return a.Succeeded;
         }
     }
 }

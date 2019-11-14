@@ -7,12 +7,12 @@ namespace Store.DataAccess.Entities
     public partial class AspNetUserTokens : IdentityUserToken<string>
     {
         [Key]
-        public string UserId { get; set; }
+        public override string UserId { get; set; }
         [Key]
-        public string LoginProvider { get; set; }
+        public override string LoginProvider { get; set; }
         [Key]
-        public string Name { get; set; }
-        public string Value { get; set; }
+        public override string Name { get; set; }
+        public override string Value { get; set; }
 
         [ForeignKey(nameof(UserId))]
         [InverseProperty(nameof(Users.AspNetUserTokens))]

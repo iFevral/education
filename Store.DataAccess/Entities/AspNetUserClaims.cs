@@ -8,9 +8,9 @@ namespace Store.DataAccess.Entities
     {
         [Key]
         public string Id { get; set; }
-        public string UserId { get; set; }
-        public string ClaimType { get; set; }
-        public string ClaimValue { get; set; }
+        public override string UserId { get; set; }
+        public override string ClaimType { get; set; }
+        public override string ClaimValue { get; set; }
 
         [ForeignKey(nameof(UserId))]
         [InverseProperty(nameof(Users.AspNetUserClaims))]
