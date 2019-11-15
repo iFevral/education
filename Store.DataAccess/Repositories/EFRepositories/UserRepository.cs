@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
-using Store.DataAccess.AppContext;
+using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.Entities;
+using Store.DataAccess.AppContext;
 using Store.DataAccess.Repositories.Interfaces;
 
 namespace Store.DataAccess.Repositories.EFRepository
@@ -23,16 +23,17 @@ namespace Store.DataAccess.Repositories.EFRepository
             _signInManager = signInManager;
         }
 
-        public IEnumerable<Users> GetAll()
+        public async Task<IEnumerable<Users>> GetAll()
         {
-            return _userManager.Users.ToList();
+            return await _userManager.Users.ToListAsync();
         }
 
-        public async Task Create(Users user,string password)
+        public async Task Create(Users user, string password)
         {
             await _userManager.CreateAsync(user, password);
             await _db.SaveChangesAsync();
         }
+        
         public async Task Update(Users user)
         {
             await _userManager.UpdateAsync(user);
@@ -43,6 +44,28 @@ namespace Store.DataAccess.Repositories.EFRepository
         {
             await _userManager.DeleteAsync(user);
             await _db.SaveChangesAsync();
+        }
+
+        public async Task<string> GenerateRegistrationToken(string username)
+        {
+            return await _userManager.GenerateEmailConfirmationTokenAsync(await FindByName(username));
+        }
+
+        public async Task<bool> ConfirmEmail(string username, string token)
+        {
+            var result = await _userManager.ConfirmEmailAsync(await FindByName(username), token);
+            return result.Succeeded;
+        }
+
+        public async Task<string> GeneratePasswordResetToken(string username)
+        {
+            return await _userManager.GeneratePasswordResetTokenAsync(await FindByName(username));
+        }
+
+        public async Task<bool> ConfirmNewPassword(string username, string token,string newPassword)
+        {
+            var result = await _userManager.ResetPasswordAsync(await FindByName(username), token, newPassword);
+            return result.Succeeded;
         }
 
         public async Task<Users> FindById(string id)
@@ -70,7 +93,7 @@ namespace Store.DataAccess.Repositories.EFRepository
             await _roleManager.CreateAsync(new Roles { Name = name});
             await _db.SaveChangesAsync();
         }
-
+ 
         public async Task DeleteRole(string name)
         {
             await _roleManager.DeleteAsync(await _roleManager.FindByNameAsync(name));
@@ -87,6 +110,7 @@ namespace Store.DataAccess.Repositories.EFRepository
             await _userManager.AddToRoleAsync(await FindById(id), role);
             await _db.SaveChangesAsync();
         }
+
         public async Task RemoveFromRole(string id, string role)
         {
             await _userManager.RemoveFromRoleAsync(await FindById(id), role);

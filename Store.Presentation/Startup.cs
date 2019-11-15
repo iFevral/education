@@ -12,8 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Store.DataAccess.AppContext;
 using Store.DataAccess.Entities;
-using System.IdentityModel.Tokens.Jwt;
-using Store.Presentation.Common;
+using Microsoft.AspNetCore.Identity;
 
 namespace Store.Presentation
 {
@@ -41,8 +40,14 @@ namespace Store.Presentation
                     assembly => assembly.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName));
             });
 
-            services.AddIdentity<Users, Roles>()
-                .AddEntityFrameworkStores<ApplicationContext>();
+            services.AddIdentity<Users, Roles>(options => {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 3;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Tokens.ProviderMap.Add("Default", new TokenProviderDescriptor(typeof(IUserTwoFactorTokenProvider<Users>)));
+            }).AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -50,7 +55,8 @@ namespace Store.Presentation
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JwtKey"])),
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                ValidateLifetime = true
+                ValidateLifetime = true,
+                //ClockSkew = TimeSpan.Zero
             };
 
             services.AddSingleton(tokenValidationParameters);

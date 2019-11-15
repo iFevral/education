@@ -11,6 +11,8 @@ using Store.BusinessLogic.Services.Interfaces;
 using Store.DataAccess.Entities;
 using Store.DataAccess.AppContext;
 using Store.Presentation.Helpers;
+using Store.BusinessLogic.Helpers;
+using Microsoft.AspNetCore.Http;
 
 namespace Store.Presentation.Controllers
 {
@@ -37,15 +39,8 @@ namespace Store.Presentation.Controllers
         [HttpGet]
         public async Task<IEnumerable<UserModelItem>> GetUsers()
         {
-            return _userService.GetAllUsers().Items;
-        }
-
-        [Route("~/api/[controller]/GetUsers4Admin")]
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public async Task<IEnumerable<UserModelItem>> GetUsers4Admin()
-        {
-            return _userService.GetAllUsers().Items;
+            var users = await _userService.GetAllUsers();
+            return users.Items;
         }
 
         [Route("~/api/[controller]/SignIn")]
@@ -57,7 +52,11 @@ namespace Store.Presentation.Controllers
             {
                 UserModelItem user = await _userService.SignIn(loginData);
                 if (user != null)
+                {
                     user.AccessToken = JwtHelper.GenerateJwtToken(user, _configuration["JwtKey"], _configuration["AccessTokenExpireMinutes"]);
+                    user.RefreshToken = JwtHelper.GenerateRefreshToken();
+                }
+
                 return user;
             }
             return "Error";
@@ -68,12 +67,61 @@ namespace Store.Presentation.Controllers
         [HttpPost]
         public async Task<object> SignUp([FromBody] SignUpModelItem userData)
         {
-            UserModelItem user = await _userService.SignUp(userData);
-            if (user != null)
-                user.AccessToken = JwtHelper.GenerateJwtToken(user, _configuration["JwtKey"], _configuration["AccessTokenExpireMinutes"]);
+            string registrationToken = await _userService.SignUp(userData);
 
-            return user;
+            string subject = "Account confirmation";
+            string body = "Confirmation link: https://localhost:44312/api/Account/ConfirmEmail?" +
+                          "username=" + userData.UserName + "&token=" + registrationToken;
+            EmailHelper.Send(userData.Email,subject,body,_configuration);
+            return "Confirm your email";
         }
-        //TODO: Добавить валидацию данных, изменить сложность пароля, добавить сообщения и ошибки.
+
+        [Route("~/api/[controller]/ConfirmEmail")]
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<object> ConfirmEmail(string username, string token)
+        {
+            if (await _userService.ConfirmEmail(username, token))
+                return "Email has successfully confirmed";
+            else
+                return "Verification error";
+        }
+
+        [Route("~/api/[controller]/ForgotPassword")]
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<object> ForgotPassword([FromBody] EmailModelItem user)
+        {
+            string passwordResetToken = await _userService.ResetPassword(user.Email);
+
+            string subject = "Reseting password confirmation";
+            string body = "Confirmation link: https://localhost:44312/api/Account/ConfirmResetPassword?" +
+                          "email=" + user.Email + "&token=" + passwordResetToken;
+            EmailHelper.Send(user.Email, subject, body, _configuration);
+            return "Check your email";
+        }
+
+        [Route("~/api/[controller]/ConfirmResetPassword")]
+        [AllowAnonymous]
+        [HttpGet]
+        public ForgotPasswordModelItem ConfirmResetPassword(string email, string token)
+        {
+            return new ForgotPasswordModelItem
+            {
+                Email = email,
+                Token = token
+            };
+        }
+
+        [Route("~/api/[controller]/ConfirmNewPassword")]
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<object> ConfirmNewPassword([FromBody] ForgotPasswordModelItem user)
+        {
+            if (await _userService.ConfirmNewPassword(user.Email, user.Token, user.Password))
+                return "Password has successfully changed";
+            else
+                return "Verification error";
+        }
     }
 }

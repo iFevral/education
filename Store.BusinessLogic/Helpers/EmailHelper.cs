@@ -1,23 +1,31 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Net.Mail;
 
 namespace Store.BusinessLogic.Helpers
 {
-    public class EmailHelper
+    public static class EmailHelper
     {
-        public void Send()
+        public static void Send(string recipients,
+                                string subject,
+                                string body,
+                                IConfiguration configuration)
         {
-            SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+            SmtpClient client = new SmtpClient(configuration["SmtpServer"],
+                                               Convert.ToInt32(configuration["SmtpPort"]));
             client.UseDefaultCredentials = false;
-            client.Credentials = new NetworkCredential("test849302@gmail.com", "Qweasd!23");
-            client.EnableSsl = true;
+            client.Credentials = new NetworkCredential(configuration["SmtpEmail"],
+                                                       configuration["SmtpPassword"]);
+            client.EnableSsl = Convert.ToBoolean(configuration["SmtpSsl"]);
 
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress("test849302@gmail.com");
-            mailMessage.To.Add("daxit21295@iwebtm.com");
-            mailMessage.Body = "body";
-            mailMessage.Subject = "subject";
-            client.Send(mailMessage);
+            MailMessage message = new MailMessage();
+            message.From = new MailAddress(configuration["SmtpEmail"]);
+            message.To.Add(recipients);
+            message.Body = body;
+            message.Subject = subject;
+            client.Send(message);
         }
     }
 }
