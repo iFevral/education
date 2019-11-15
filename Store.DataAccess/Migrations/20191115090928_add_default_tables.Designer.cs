@@ -5,14 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Store.DataAccess;
 using Store.DataAccess.AppContext;
 
 namespace Store.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20191113094941_recreating")]
-    partial class recreating
+    [Migration("20191115090928_add_default_tables")]
+    partial class add_default_tables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,7 +21,7 @@ namespace Store.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Store.DataAccess.AspNetRoleClaims", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.AspNetRoleClaims", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -40,10 +39,10 @@ namespace Store.DataAccess.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims");
+                    b.ToTable("RoleClaims");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.AspNetUserClaims", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.AspNetUserClaims", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -61,10 +60,10 @@ namespace Store.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims");
+                    b.ToTable("UserClaims");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.AspNetUserLogins", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.AspNetUserLogins", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -82,10 +81,10 @@ namespace Store.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins");
+                    b.ToTable("UserLogins");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.AspNetUserTokens", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.AspNetUserTokens", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -103,10 +102,10 @@ namespace Store.DataAccess.Migrations
 
                     b.HasAlternateKey("LoginProvider", "Name", "UserId");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("UserTokens");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.AuthorInBooks", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.AuthorInBooks", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -131,7 +130,7 @@ namespace Store.DataAccess.Migrations
                     b.ToTable("AuthorInBooks");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Authors", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.Authors", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -139,14 +138,15 @@ namespace Store.DataAccess.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.HasKey("Id");
 
                     b.ToTable("Authors");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.OrderItems", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.OrderItems", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -158,9 +158,6 @@ namespace Store.DataAccess.Migrations
 
                     b.Property<int>("Count")
                         .HasColumnType("int");
-
-                    b.Property<string>("Currency")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -177,7 +174,7 @@ namespace Store.DataAccess.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Orders", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.Orders", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -205,7 +202,7 @@ namespace Store.DataAccess.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Payments", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.Payments", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -213,14 +210,15 @@ namespace Store.DataAccess.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("TransactionId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
                     b.ToTable("Payments");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.PrintingEditions", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.PrintingEditions", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -228,7 +226,8 @@ namespace Store.DataAccess.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Currency")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -240,34 +239,37 @@ namespace Store.DataAccess.Migrations
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
 
                     b.HasKey("Id");
 
                     b.ToTable("PrintingEditions");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Roles", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.Roles", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -279,7 +281,7 @@ namespace Store.DataAccess.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.UserInRoles", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.UserInRoles", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -296,9 +298,10 @@ namespace Store.DataAccess.Migrations
                     b.ToTable("UserInRoles");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Users", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.Users", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
@@ -308,17 +311,19 @@ namespace Store.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -327,12 +332,10 @@ namespace Store.DataAccess.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -350,8 +353,8 @@ namespace Store.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
@@ -366,88 +369,88 @@ namespace Store.DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.AspNetRoleClaims", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.AspNetRoleClaims", b =>
                 {
-                    b.HasOne("Store.DataAccess.Roles", "Role")
+                    b.HasOne("Store.DataAccess.Entities.Roles", "Role")
                         .WithMany("AspNetRoleClaims")
                         .HasForeignKey("RoleId");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.AspNetUserClaims", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.AspNetUserClaims", b =>
                 {
-                    b.HasOne("Store.DataAccess.Users", "User")
+                    b.HasOne("Store.DataAccess.Entities.Users", "User")
                         .WithMany("AspNetUserClaims")
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.AspNetUserLogins", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.AspNetUserLogins", b =>
                 {
-                    b.HasOne("Store.DataAccess.Users", "User")
+                    b.HasOne("Store.DataAccess.Entities.Users", "User")
                         .WithMany("AspNetUserLogins")
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.AspNetUserTokens", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.AspNetUserTokens", b =>
                 {
-                    b.HasOne("Store.DataAccess.Users", "User")
+                    b.HasOne("Store.DataAccess.Entities.Users", "User")
                         .WithMany("AspNetUserTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Store.DataAccess.AuthorInBooks", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.AuthorInBooks", b =>
                 {
-                    b.HasOne("Store.DataAccess.Authors", "Author")
+                    b.HasOne("Store.DataAccess.Entities.Authors", "Author")
                         .WithMany("AuthorInBooks")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Store.DataAccess.PrintingEditions", "PrintingEdition")
+                    b.HasOne("Store.DataAccess.Entities.PrintingEditions", "PrintingEdition")
                         .WithMany("AuthorInBooks")
                         .HasForeignKey("PrintingEditionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Store.DataAccess.OrderItems", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.OrderItems", b =>
                 {
-                    b.HasOne("Store.DataAccess.Orders", "Order")
+                    b.HasOne("Store.DataAccess.Entities.Orders", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Store.DataAccess.PrintingEditions", "PrintingEdition")
+                    b.HasOne("Store.DataAccess.Entities.PrintingEditions", "PrintingEdition")
                         .WithMany("OrderItems")
                         .HasForeignKey("PrintingEditionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Orders", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.Orders", b =>
                 {
-                    b.HasOne("Store.DataAccess.Payments", "Payment")
+                    b.HasOne("Store.DataAccess.Entities.Payments", "Payment")
                         .WithMany("Orders")
                         .HasForeignKey("PaymentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Store.DataAccess.Users", "User")
+                    b.HasOne("Store.DataAccess.Entities.Users", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.UserInRoles", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.UserInRoles", b =>
                 {
-                    b.HasOne("Store.DataAccess.Roles", "Role")
+                    b.HasOne("Store.DataAccess.Entities.Roles", "Role")
                         .WithMany("UserInRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Store.DataAccess.Users", "User")
+                    b.HasOne("Store.DataAccess.Entities.Users", "User")
                         .WithMany("UserInRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

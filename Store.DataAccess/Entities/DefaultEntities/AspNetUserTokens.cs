@@ -4,19 +4,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess.Entities
 {
-    public partial class UserInRoles : IdentityUserRole<string>
+    public partial class AspNetUserTokens : IdentityUserToken<string>
     {
         [Key]
         public override string UserId { get; set; }
         [Key]
-        public override string RoleId { get; set; }
-
-        [ForeignKey(nameof(RoleId))]
-        [InverseProperty(nameof(Roles.UserInRoles))]
-        public virtual Roles Role { get; set; }
+        public override string LoginProvider { get; set; }
+        [Key]
+        public override string Name { get; set; }
+        public override string Value { get; set; }
 
         [ForeignKey(nameof(UserId))]
-        [InverseProperty(nameof(Users.UserInRoles))]
+        [InverseProperty(nameof(Users.AspNetUserTokens))]
         public virtual Users User { get; set; }
     }
 }

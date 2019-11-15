@@ -15,6 +15,8 @@ namespace Store.DataAccess.Entities
         public override string Name { get; set; }
 
         [InverseProperty("Role")]
+        public virtual ICollection<AspNetRoleClaims> AspNetRoleClaims { get; set; }
+        [InverseProperty("Role")]
         public virtual ICollection<UserInRoles> UserInRoles { get; set; }
     }
 }

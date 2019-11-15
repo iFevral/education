@@ -7,6 +7,6 @@ namespace Store.BusinessLogic.Services.Interfaces
     {
         public UserModel GetAllUsers();
         public Task<UserModelItem> SignIn(SignInModelItem loginData);
-        public Task SignUp(SignUpModelItem userData);
+        public Task<UserModelItem> SignUp(SignUpModelItem userData);
     }
 }

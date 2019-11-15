@@ -1,22 +1,21 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
-using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services;
+using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.DataAccess.AppContext;
 using Store.DataAccess.Entities;
-using Store.Presentation.Common;
+using Store.DataAccess.AppContext;
 using Store.Presentation.Helpers;
 
 namespace Store.Presentation.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -35,9 +34,16 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/api/[controller]")]
-        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<UserModelItem>> GetUsers()
+        {
+            return _userService.GetAllUsers().Items;
+        }
+
+        [Route("~/api/[controller]/GetUsers4Admin")]
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IEnumerable<UserModelItem>> GetUsers4Admin()
         {
             return _userService.GetAllUsers().Items;
         }
@@ -47,26 +53,27 @@ namespace Store.Presentation.Controllers
         [HttpPost]
         public async Task<object> SignIn([FromBody] SignInModelItem loginData)
         {
-            TokenModel token = new TokenModel();
             if (ModelState.IsValid)
             {
                 UserModelItem user = await _userService.SignIn(loginData);
                 if (user != null)
-                    token = JwtHelper.GenerateJwtToken(user, _configuration);
+                    user.AccessToken = JwtHelper.GenerateJwtToken(user, _configuration["JwtKey"], _configuration["AccessTokenExpireMinutes"]);
+                return user;
             }
-            return token;
+            return "Error";
         }
 
         [Route("~/api/[controller]/SignUp")]
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IEnumerable<string>> SignUp([FromBody] SignUpModelItem userData)
+        public async Task<object> SignUp([FromBody] SignUpModelItem userData)
         {
-            await _userService.SignUp(userData);
+            UserModelItem user = await _userService.SignUp(userData);
+            if (user != null)
+                user.AccessToken = JwtHelper.GenerateJwtToken(user, _configuration["JwtKey"], _configuration["AccessTokenExpireMinutes"]);
 
-            //TODO: Добавить валидацию данных, изменить сложность пароля, добавить сообщения и ошибки.
-
-            return new List<string> { "Success" };
+            return user;
         }
+        //TODO: Добавить валидацию данных, изменить сложность пароля, добавить сообщения и ошибки.
     }
 }

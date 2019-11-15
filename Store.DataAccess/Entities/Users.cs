@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -23,6 +22,12 @@ namespace Store.DataAccess.Entities
         public override string PasswordHash { get; set; }
 
 
+        [InverseProperty("User")]
+        public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
+        [InverseProperty("User")]
+        public virtual ICollection<AspNetUserLogins> AspNetUserLogins { get; set; }
+        [InverseProperty("User")]
+        public virtual ICollection<AspNetUserTokens> AspNetUserTokens { get; set; }
         [InverseProperty("User")]
         public virtual ICollection<Orders> Orders { get; set; }
         [InverseProperty("User")]

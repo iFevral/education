@@ -4,19 +4,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess.Entities
 {
-    public partial class UserInRoles : IdentityUserRole<string>
+    public partial class AspNetRoleClaims : IdentityRoleClaim<string>
     {
         [Key]
-        public override string UserId { get; set; }
-        [Key]
+        public string Id { get; set; }
         public override string RoleId { get; set; }
+        public override string ClaimType { get; set; }
+        public override string ClaimValue { get; set; }
 
         [ForeignKey(nameof(RoleId))]
-        [InverseProperty(nameof(Roles.UserInRoles))]
+        [InverseProperty(nameof(Roles.AspNetRoleClaims))]
         public virtual Roles Role { get; set; }
-
-        [ForeignKey(nameof(UserId))]
-        [InverseProperty(nameof(Users.UserInRoles))]
-        public virtual Users User { get; set; }
     }
 }

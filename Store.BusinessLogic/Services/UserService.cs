@@ -26,9 +26,10 @@ namespace Store.BusinessLogic.Services
             _mapper = mapper;
         }
 
-        public async Task SignUp(SignUpModelItem signUpData)
+        public async Task<UserModelItem> SignUp(SignUpModelItem signUpData)
         {
             await _userRepository.Create(_mapper.Map<Users>(signUpData), signUpData.Password);
+            return _mapper.Map<UserModelItem>(await _userRepository.FindByName(signUpData.UserName));
         }
 
         public UserModel GetAllUsers()

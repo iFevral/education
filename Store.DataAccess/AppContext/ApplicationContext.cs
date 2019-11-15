@@ -5,14 +5,14 @@ using Store.DataAccess.Entities;
 
 namespace Store.DataAccess.AppContext
 {
-    public partial class ApplicationContext : IdentityDbContext<Users, 
-                                                                Roles, 
+    public partial class ApplicationContext : IdentityDbContext<Users,
+                                                                Roles,
                                                                 string,
-                                                                IdentityUserClaim<string>,
+                                                                AspNetUserClaims,
                                                                 UserInRoles,
-                                                                IdentityUserLogin<string>,
-                                                                IdentityRoleClaim<string>,
-                                                                IdentityUserToken<string>>
+                                                                AspNetUserLogins,
+                                                                AspNetRoleClaims,
+                                                                AspNetUserTokens>
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
@@ -33,13 +33,35 @@ namespace Store.DataAccess.AppContext
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("ExamDB");
+                optionsBuilder.UseSqlServer("DbConnection");
             }
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) : base.OnModelCreating(modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           /* modelBuilder.Entity<AuthorInBooks>(entity =>
+            modelBuilder.Entity<AspNetRoleClaims>(entity =>
+            {
+                entity.HasIndex(e => e.RoleId);
+            });
+
+            modelBuilder.Entity<AspNetUserClaims>(entity =>
+            {
+                entity.HasIndex(e => e.UserId);
+            });
+
+            modelBuilder.Entity<AspNetUserLogins>(entity =>
+            {
+                entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
+
+                entity.HasIndex(e => e.UserId);
+            });
+
+            modelBuilder.Entity<AspNetUserTokens>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
+            });
+
+            modelBuilder.Entity<AuthorInBooks>(entity =>
             {
                 entity.HasIndex(e => e.AuthorId);
 
@@ -83,8 +105,6 @@ namespace Store.DataAccess.AppContext
                     .IsUnique()
                     .HasFilter("([NormalizedUserName] IS NOT NULL)");
             });
-
-            OnModelCreatingPartial(modelBuilder);*/
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
