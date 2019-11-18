@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Store.BusinessLogic.Models.Users;
+using Store.BusinessLogic.Services.Interfaces;
 using Store.DataAccess.AppContext;
 using Store.DataAccess.Entities;
-using Store.DataAccess.Repositories.Interfaces;
 using Store.DataAccess.Repositories.EFRepository;
-using Store.BusinessLogic.Services.Interfaces;
-using AutoMapper;
+using Store.DataAccess.Repositories.Interfaces;
 using System.Threading.Tasks;
 
 namespace Store.BusinessLogic.Services
@@ -26,7 +26,32 @@ namespace Store.BusinessLogic.Services
             _mapper = mapper;
         }
 
-        public async Task <UserModel> GetAllUsers()
+        public Task AddUserToRole(string username, string role)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task CreateRole(string rolename)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task CreateUser(UserModelItem user)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task DeleteUser(UserModelItem user)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task EditUser(UserModelItem user)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public async Task<UserModel> GetAllUsers()
         {
             var users = await _userRepository.GetAll();
 
@@ -39,69 +64,19 @@ namespace Store.BusinessLogic.Services
             return _users;
         }
 
-        public async Task<UserModelItem> GetUser(string username)
-        {
-            var user = _mapper.Map<UserModelItem>(await _userRepository.FindByName(username));
-            if (user != null)
-            {
-                user.Roles = await _userRepository.GetUserRoles(user.UserName);
-                return user;
-            }
-            
-            throw new System.Exception("User not found");
-        }
-
-        public async Task<UserModelItem> SignIn(SignInModelItem loginData)
-        {
-            UserModelItem user;
-
-            //If user created it will get user info or will return empty UserModelItem
-            if (await _userRepository.IsPasswordCorrect(loginData.Username, loginData.Password))
-            {
-               return await GetUser(loginData.Username);
-            }
-            throw new System.Exception("User not found");
-        }
-        public async Task<string> SignUp(SignUpModelItem signUpData)
-        {
-            //Create user from repository
-            await _userRepository.Create(_mapper.Map<Users>(signUpData), signUpData.Password);
-            
-            var user = await _userRepository.FindByName(signUpData.UserName);
-            await _userRepository.AddToRole(user.Id, "Client");
-            //Generate token for registration from repository
-            return await _userRepository.GenerateRegistrationToken(signUpData.UserName);
-        }
-
-        public async Task<UserModelItem> SignOut()
+        public Task<UserModelItem> GetUser(string username)
         {
             throw new System.NotImplementedException();
         }
 
-        public async Task<bool> ConfirmEmail(string username, string token)
+        public Task RemoveRole(string rolename)
         {
-            //Check received token for email confirmation
-            return await _userRepository.ConfirmEmail(username, token);
+            throw new System.NotImplementedException();
         }
 
-        public async Task<bool> IsEmailConfirmed(string username)
+        public Task RemoveUserFromRole(string username, string role)
         {
-            //Check received token for email confirmation
-            return await _userRepository.IsEmailConfirmed(username);
-        }
-
-        public async Task<string> ResetPassword(string email)
-        {
-            var user = _mapper.Map<UserModelItem>(await _userRepository.FindByEmail(email));
-            //Generate token for password reset from repository
-            return await _userRepository.GeneratePasswordResetToken(user.UserName);
-        }
-
-        public async Task ConfirmNewPassword(string email, string token, string newPassword)
-        {
-            var user = _mapper.Map<UserModelItem>(await _userRepository.FindByEmail(email));
-            //Check received token for new password confirmation
-            await _userRepository.ConfirmNewPassword(user.UserName, token, newPassword);
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
@@ -20,9 +19,9 @@ namespace Store.Presentation.Controllers
     public class AccountController : ControllerBase
     {
         private IConfiguration _configuration;
-        private IUserService _userService;
+        private IAccountService _accountService;
 
-        public AccountController(IConfiguration configuration, 
+        public AccountController(IConfiguration configuration,
                                  ApplicationContext db,
                                  UserManager<Users> um,
                                  RoleManager<Roles> rm,
@@ -30,16 +29,7 @@ namespace Store.Presentation.Controllers
                                  IMapper mapper)
         {
             _configuration = configuration;
-            _userService = new UserService(db, um, rm, sim, mapper);
-        }
-
-        [Route("~/[controller]")]
-        [Authorize]
-        [HttpGet]
-        public async Task<IEnumerable<UserModelItem>> GetUsers()
-        {
-            var users = await _userService.GetAllUsers();
-            return users.Items;
+            _accountService = new AccountService(db, um, rm, sim, mapper);
         }
 
         [Route("~/[controller]/SignIn")]
@@ -48,7 +38,7 @@ namespace Store.Presentation.Controllers
         {
             if (ModelState.IsValid)
             {
-                UserModelItem user = await _userService.SignIn(loginData);
+                UserModelItem user = await _accountService.SignIn(loginData);
                 if (user != null)
                 {
                     user.AccessToken = JwtHelper.GenerateJwtAccessToken(user, _configuration);
@@ -64,12 +54,12 @@ namespace Store.Presentation.Controllers
         [HttpPost]
         public async Task<object> SignUp([FromBody] SignUpModelItem userData)
         {
-            string registrationToken = await _userService.SignUp(userData);
+            string registrationToken = await _accountService.SignUp(userData);
 
             string subject = "Account confirmation";
             string body = "Confirmation link: <a href='https://localhost:44312/Account/ConfirmEmail?" +
                           "username=" + userData.UserName + "&token=" + registrationToken + "'>Verify email</a>";
-            EmailHelper.Send(userData.Email,subject,body,_configuration);
+            EmailHelper.Send(userData.Email, subject, body, _configuration);
             return "Check your email to confirm your information";
         }
 
@@ -78,7 +68,7 @@ namespace Store.Presentation.Controllers
         public async Task<object> ConfirmEmail(string username, string token)
         {
             token = token.Replace(" ", "+");
-            if (await _userService.ConfirmEmail(username, token))
+            if (await _accountService.ConfirmEmail(username, token))
                 return "Email has successfully confirmed";
             else
                 return "Verification error";
@@ -88,7 +78,7 @@ namespace Store.Presentation.Controllers
         [HttpPost]
         public async Task<object> ForgotPassword([FromBody] EmailModelItem user)
         {
-            string passwordResetToken = await _userService.ResetPassword(user.Email);
+            string passwordResetToken = await _accountService.ResetPassword(user.Email);
 
             string subject = "Reseting password confirmation";
             string body = "Confirmation link: <a href='https://localhost:44312/Account/ConfirmResetPassword?" +
@@ -97,7 +87,7 @@ namespace Store.Presentation.Controllers
             return "Check your email";
         }
 
-        [Route("~/[controller]/ConfirmResetPassword")]
+        [Route("~/[controller]/ConfirmReseting")]
         [HttpGet]
         public ForgotPasswordModelItem ConfirmResetPassword(string email, string token)
         {
@@ -114,7 +104,7 @@ namespace Store.Presentation.Controllers
         public async Task<object> ConfirmNewPassword([FromBody] ForgotPasswordModelItem user)
         {
             user.Token = user.Token.Replace(" ", "+");
-            await _userService.ConfirmNewPassword(user.Email, user.Token, user.Password);
+            await _accountService.ConfirmNewPassword(user.Email, user.Token, user.Password);
             return "Password has successfully changed";
         }
 
@@ -123,8 +113,9 @@ namespace Store.Presentation.Controllers
         [HttpPost]
         public async Task<TokenModelItem> RefreshTokens([FromHeader]string username)
         {
-            var user = await _userService.GetUser(username);
-            return new TokenModelItem {
+            var user = await _accountService.GetUser(username);
+            return new TokenModelItem
+            {
                 AccessToken = JwtHelper.GenerateJwtAccessToken(user, _configuration),
                 RefreshToken = JwtHelper.GenerateJwtRefreshToken(user, _configuration)
             };
