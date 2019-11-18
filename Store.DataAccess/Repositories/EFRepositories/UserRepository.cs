@@ -53,8 +53,14 @@ namespace Store.DataAccess.Repositories.EFRepository
 
         public async Task<bool> ConfirmEmail(string username, string token)
         {
+            var b = token;
             var result = await _userManager.ConfirmEmailAsync(await FindByName(username), token);
             return result.Succeeded;
+        }
+
+        public async Task<bool> IsEmailConfirmed(string username)
+        {
+            return await _userManager.IsEmailConfirmedAsync(await FindByName(username));
         }
 
         public async Task<string> GeneratePasswordResetToken(string username)
@@ -62,10 +68,9 @@ namespace Store.DataAccess.Repositories.EFRepository
             return await _userManager.GeneratePasswordResetTokenAsync(await FindByName(username));
         }
 
-        public async Task<bool> ConfirmNewPassword(string username, string token,string newPassword)
+        public async Task ConfirmNewPassword(string username, string token,string newPassword)
         {
-            var result = await _userManager.ResetPasswordAsync(await FindByName(username), token, newPassword);
-            return result.Succeeded;
+            await _userManager.ResetPasswordAsync(await FindByName(username), token, newPassword);
         }
 
         public async Task<Users> FindById(string id)
@@ -83,9 +88,9 @@ namespace Store.DataAccess.Repositories.EFRepository
             return await _userManager.FindByNameAsync(name);
         }
 
-        public async Task<IEnumerable<string>> GetUserRoles(string id)
+        public async Task<IEnumerable<string>> GetUserRoles(string username)
         {
-            return await _userManager.GetRolesAsync(await FindById(id));
+            return await _userManager.GetRolesAsync(await FindByName(username));
         }
 
         public async Task CreateRole(string name)
@@ -117,10 +122,23 @@ namespace Store.DataAccess.Repositories.EFRepository
             await _db.SaveChangesAsync();
         }
 
-        public async Task<bool> IsCreated(string username, string password)
+        public async Task<bool> IsPasswordCorrect(string username, string password)
         {
             var a = await _signInManager.PasswordSignInAsync(username, password, false, false);
             return a.Succeeded;
+        }
+
+        public async Task<bool> CheckRefreshToken(string username,string token)
+        {
+            return await _userManager.VerifyUserTokenAsync(await FindByName(username), "StoreProvider", "RefreshToken", token);
+        }
+
+        public async Task<string> UpdateAndGetRefreshToken(string username)
+        {
+            await _userManager.RemoveAuthenticationTokenAsync(await FindByName(username), "StoreProvider", "RefreshToken");
+            string newRefreshToken = await _userManager.GenerateUserTokenAsync(await  FindByName(username), "StoreProvider", "RefreshToken");
+            await _userManager.SetAuthenticationTokenAsync(await FindByName(username), "StoreProvider", "RefreshToken", newRefreshToken);
+            return newRefreshToken;
         }
     }
 }

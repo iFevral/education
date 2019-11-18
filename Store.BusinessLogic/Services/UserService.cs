@@ -38,24 +38,29 @@ namespace Store.BusinessLogic.Services
 
             return _users;
         }
-       
+
+        public async Task<UserModelItem> GetUser(string username)
+        {
+            var user = _mapper.Map<UserModelItem>(await _userRepository.FindByName(username));
+            if (user != null)
+            {
+                user.Roles = await _userRepository.GetUserRoles(user.UserName);
+                return user;
+            }
+            
+            throw new System.Exception("User not found");
+        }
+
         public async Task<UserModelItem> SignIn(SignInModelItem loginData)
         {
-            UserModelItem userItem = null;
+            UserModelItem user;
 
             //If user created it will get user info or will return empty UserModelItem
-            if (await _userRepository.IsCreated(loginData.Username, loginData.Password))
+            if (await _userRepository.IsPasswordCorrect(loginData.Username, loginData.Password))
             {
-                //
-                var userData = await _userRepository.FindByName(loginData.Username);
-                if (userData != null)
-                {
-                    //Map from Users to UserModelItem
-                    userItem = _mapper.Map<UserModelItem>(userData);
-                    userItem.Roles = await _userRepository.GetUserRoles(userItem.Id);
-                }
+               return await GetUser(loginData.Username);
             }
-            return userItem;
+            throw new System.Exception("User not found");
         }
         public async Task<string> SignUp(SignUpModelItem signUpData)
         {
@@ -68,10 +73,21 @@ namespace Store.BusinessLogic.Services
             return await _userRepository.GenerateRegistrationToken(signUpData.UserName);
         }
 
+        public async Task<UserModelItem> SignOut()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public async Task<bool> ConfirmEmail(string username, string token)
         {
             //Check received token for email confirmation
             return await _userRepository.ConfirmEmail(username, token);
+        }
+
+        public async Task<bool> IsEmailConfirmed(string username)
+        {
+            //Check received token for email confirmation
+            return await _userRepository.IsEmailConfirmed(username);
         }
 
         public async Task<string> ResetPassword(string email)
@@ -81,21 +97,11 @@ namespace Store.BusinessLogic.Services
             return await _userRepository.GeneratePasswordResetToken(user.UserName);
         }
 
-        public async Task<bool> ConfirmNewPassword(string email, string token, string newPassword)
+        public async Task ConfirmNewPassword(string email, string token, string newPassword)
         {
             var user = _mapper.Map<UserModelItem>(await _userRepository.FindByEmail(email));
             //Check received token for new password confirmation
-            return await _userRepository.ConfirmNewPassword(user.UserName, token, newPassword);
-        }
-
-        public async Task<UserModelItem> SignOut()
-        {
-            throw new System.NotImplementedException();
+            await _userRepository.ConfirmNewPassword(user.UserName, token, newPassword);
         }
     }
 }
-/*TODO: SignIn, 
-        SignUp, 
-        SignOut, 
-        ForgotPassword
-*/

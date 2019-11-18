@@ -12,6 +12,12 @@ namespace Store.BusinessLogic.Services.Interfaces
         public Task<UserModel> GetAllUsers();
 
         /// <summary>
+        /// Return user by username
+        /// </summary>
+        /// <returns>User model item</returns>
+        public Task<UserModelItem> GetUser(string username);
+
+        /// <summary>
         /// Check user login and password and get user data
         /// </summary>
         /// <returns>User model item</returns>
@@ -30,10 +36,16 @@ namespace Store.BusinessLogic.Services.Interfaces
         public Task<string> SignUp(SignUpModelItem userData);
 
         /// <summary>
-        /// Check received token for email confirmation
+        /// Confirm email
         /// </summary>
-        /// <returns>True if token for email confirmation is valid</returns>
         public Task<bool> ConfirmEmail(string username, string token);
+
+        /// <summary>
+        /// Check email confirmation
+        /// </summary>
+        /// <returns>True if email confirmed</returns>
+        public Task<bool> IsEmailConfirmed(string username);
+
         /// <summary>
         /// Check user from repository and create token for password reset
         /// </summary>
@@ -41,9 +53,8 @@ namespace Store.BusinessLogic.Services.Interfaces
         public Task<string> ResetPassword(string username);
 
         /// <summary>
-        /// Check received token for new password confirmation
+        /// Set new password 
         /// </summary>
-        /// <returns>True if token for new password confirmation is valid</returns>
-        public Task<bool> ConfirmNewPassword(string username, string token, string newPassword);
+        public Task ConfirmNewPassword(string username, string token, string newPassword);
     }
 }

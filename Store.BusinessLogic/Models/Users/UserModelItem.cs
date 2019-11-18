@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Store.BusinessLogic.Models.Users
 {
-    public class UserModelItem : BaseModel
+    public class UserModelItem : TokenModelItem
     {
         public string Id { get; set; }
         public string FirstName { get; set; }
@@ -15,7 +15,5 @@ namespace Store.BusinessLogic.Models.Users
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
         public IEnumerable<string> Roles { get; set; }
-        public string AccessToken { get; set; }
-        public string RefreshToken { get; set; }
     }
 }

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Store.DataAccess.AppContext;
 using Store.DataAccess.Entities;
 using Microsoft.AspNetCore.Identity;
+using Store.Presentation.Helpers;
 
 namespace Store.Presentation
 {
@@ -46,8 +47,12 @@ namespace Store.Presentation
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
-                options.Tokens.ProviderMap.Add("Default", new TokenProviderDescriptor(typeof(IUserTwoFactorTokenProvider<Users>)));
-            }).AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
+            }).AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders().AddTokenProvider("StoreProvider", typeof(DataProtectorTokenProvider<Users>));
+
+            services.Configure<AuthTokenProviderOptions>(x => {
+                x.JwtIssuer = Configuration["JwtIssuer"];
+                x.JwtKey = Configuration["JwtKey"];
+            });
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -56,7 +61,7 @@ namespace Store.Presentation
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 ValidateLifetime = true,
-                //ClockSkew = TimeSpan.Zero
+                ClockSkew = TimeSpan.FromMinutes(Convert.ToDouble(Configuration["AccessTokenExpireMinutes"]))
             };
 
             services.AddSingleton(tokenValidationParameters);

@@ -80,7 +80,7 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// Check that user is created
         /// </summary>
         /// <returns>True if user is found</returns>
-        public Task<bool> IsCreated(string username, string password);
+        public Task<bool> IsPasswordCorrect(string username, string password);
 
         /// <summary>
         /// Generate token for email confirmation
@@ -89,10 +89,15 @@ namespace Store.DataAccess.Repositories.Interfaces
         public Task<string> GenerateRegistrationToken(string username);
 
         /// <summary>
+        /// Confirm email
+        /// </summary>
+        public Task<bool> ConfirmEmail(string username, string token);
+        
+        /// <summary>
         /// Check email confirmation token
         /// </summary>
-        /// <returns>True if registration token is valid</returns>
-        public Task<bool> ConfirmEmail(string username, string token);
+        /// <returns>True if registration token is correct</returns>
+        public Task<bool> IsEmailConfirmed(string username);
 
         /// <summary>
         /// Generate token for password reseting
@@ -103,7 +108,19 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// <summary>
         /// Check password token and set new password
         /// </summary>
-        /// <returns>True if token for password resetis valid</returns>
-        public Task<bool> ConfirmNewPassword(string username, string token, string newPassword);
+        /// <returns>True if token for password reset is correct</returns>
+        public Task ConfirmNewPassword(string username, string token, string newPassword);
+
+        /// <summary>
+        /// Check refresh token
+        /// </summary>
+        /// <returns>True if token is valid</returns>
+        public Task<bool> CheckRefreshToken(string username, string token);
+
+        /// <summary>
+        /// Remove and generate new refresh token
+        /// </summary>
+        /// <returns>Refresh token</returns>
+        public Task<string> UpdateAndGetRefreshToken(string username);
     }
 }

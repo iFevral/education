@@ -12,12 +12,10 @@ using Store.DataAccess.Entities;
 using Store.DataAccess.AppContext;
 using Store.Presentation.Helpers;
 using Store.BusinessLogic.Helpers;
-using Microsoft.AspNetCore.Http;
 
 namespace Store.Presentation.Controllers
 {
-    [Route("api/[controller]")]
-    [Authorize]
+    [Route("[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -35,7 +33,8 @@ namespace Store.Presentation.Controllers
             _userService = new UserService(db, um, rm, sim, mapper);
         }
 
-        [Route("~/api/[controller]")]
+        [Route("~/[controller]")]
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<UserModelItem>> GetUsers()
         {
@@ -43,8 +42,7 @@ namespace Store.Presentation.Controllers
             return users.Items;
         }
 
-        [Route("~/api/[controller]/SignIn")]
-        [AllowAnonymous]
+        [Route("~/[controller]/SignIn")]
         [HttpPost]
         public async Task<object> SignIn([FromBody] SignInModelItem loginData)
         {
@@ -53,8 +51,8 @@ namespace Store.Presentation.Controllers
                 UserModelItem user = await _userService.SignIn(loginData);
                 if (user != null)
                 {
-                    user.AccessToken = JwtHelper.GenerateJwtToken(user, _configuration["JwtKey"], _configuration["AccessTokenExpireMinutes"]);
-                    user.RefreshToken = JwtHelper.GenerateRefreshToken();
+                    user.AccessToken = JwtHelper.GenerateJwtAccessToken(user, _configuration);
+                    user.RefreshToken = JwtHelper.GenerateJwtRefreshToken(user, _configuration);
                 }
 
                 return user;
@@ -62,66 +60,74 @@ namespace Store.Presentation.Controllers
             return "Error";
         }
 
-        [Route("~/api/[controller]/SignUp")]
-        [AllowAnonymous]
+        [Route("~/[controller]/SignUp")]
         [HttpPost]
         public async Task<object> SignUp([FromBody] SignUpModelItem userData)
         {
             string registrationToken = await _userService.SignUp(userData);
 
             string subject = "Account confirmation";
-            string body = "Confirmation link: https://localhost:44312/api/Account/ConfirmEmail?" +
-                          "username=" + userData.UserName + "&token=" + registrationToken;
+            string body = "Confirmation link: <a href='https://localhost:44312/Account/ConfirmEmail?" +
+                          "username=" + userData.UserName + "&token=" + registrationToken + "'>Verify email</a>";
             EmailHelper.Send(userData.Email,subject,body,_configuration);
-            return "Confirm your email";
+            return "Check your email to confirm your information";
         }
 
-        [Route("~/api/[controller]/ConfirmEmail")]
-        [AllowAnonymous]
+        [Route("~/[controller]/ConfirmEmail")]
         [HttpGet]
         public async Task<object> ConfirmEmail(string username, string token)
         {
+            token = token.Replace(" ", "+");
             if (await _userService.ConfirmEmail(username, token))
                 return "Email has successfully confirmed";
             else
                 return "Verification error";
         }
 
-        [Route("~/api/[controller]/ForgotPassword")]
-        [AllowAnonymous]
+        [Route("~/[controller]/ForgotPassword")]
         [HttpPost]
         public async Task<object> ForgotPassword([FromBody] EmailModelItem user)
         {
             string passwordResetToken = await _userService.ResetPassword(user.Email);
 
             string subject = "Reseting password confirmation";
-            string body = "Confirmation link: https://localhost:44312/api/Account/ConfirmResetPassword?" +
-                          "email=" + user.Email + "&token=" + passwordResetToken;
+            string body = "Confirmation link: <a href='https://localhost:44312/Account/ConfirmResetPassword?" +
+                          "email=" + user.Email + "&token=" + passwordResetToken + "'>Reset password</a>";
             EmailHelper.Send(user.Email, subject, body, _configuration);
             return "Check your email";
         }
 
-        [Route("~/api/[controller]/ConfirmResetPassword")]
-        [AllowAnonymous]
+        [Route("~/[controller]/ConfirmResetPassword")]
         [HttpGet]
         public ForgotPasswordModelItem ConfirmResetPassword(string email, string token)
         {
+            token = token.Replace(" ", "+");
             return new ForgotPasswordModelItem
             {
                 Email = email,
-                Token = token
+                Token = token.Replace(" ", "+")
             };
         }
 
-        [Route("~/api/[controller]/ConfirmNewPassword")]
-        [AllowAnonymous]
+        [Route("~/[controller]/ConfirmNewPassword")]
         [HttpPost]
         public async Task<object> ConfirmNewPassword([FromBody] ForgotPasswordModelItem user)
         {
-            if (await _userService.ConfirmNewPassword(user.Email, user.Token, user.Password))
-                return "Password has successfully changed";
-            else
-                return "Verification error";
+            user.Token = user.Token.Replace(" ", "+");
+            await _userService.ConfirmNewPassword(user.Email, user.Token, user.Password);
+            return "Password has successfully changed";
+        }
+
+        [Route("~/RefreshToken")]
+        [Authorize]
+        [HttpPost]
+        public async Task<TokenModelItem> RefreshTokens([FromHeader]string username)
+        {
+            var user = await _userService.GetUser(username);
+            return new TokenModelItem {
+                AccessToken = JwtHelper.GenerateJwtAccessToken(user, _configuration),
+                RefreshToken = JwtHelper.GenerateJwtRefreshToken(user, _configuration)
+            };
         }
     }
 }

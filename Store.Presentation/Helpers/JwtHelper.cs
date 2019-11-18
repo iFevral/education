@@ -6,47 +6,65 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using Store.BusinessLogic.Models.Users;
 using System.Security.Cryptography;
+using Microsoft.Extensions.Configuration;
 
 namespace Store.Presentation.Helpers
 {
     public class JwtHelper
     {
-        private static Claim[] CreateClaims(UserModelItem user)
+        public static Claim[] GetAccessClaims(UserModelItem user)
         {
             return new Claim[]
                     {
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(ClaimTypes.NameIdentifier, user.Id),
                         new Claim(ClaimTypes.Name, user.UserName),
                         new Claim(ClaimTypes.Role, user.Roles.First())
                     };
         }
 
-        public static string GenerateJwtToken(UserModelItem user, string key, string expireTime)
+        public static Claim[] GetRefreshClaims(UserModelItem user)
         {
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+            return new Claim[]
+                    {
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id)
+                    };
+        }
 
-            //Access token options
-            // authentication successful so generate jwt token
+        public static string GenerateJwtAccessToken(UserModelItem user, IConfiguration configuration)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(CreateClaims(user)),
-                Expires = DateTime.UtcNow.AddSeconds(Convert.ToDouble(expireTime)),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+                Subject = new ClaimsIdentity(GetAccessClaims(user)),
+                Expires = DateTime.UtcNow.AddSeconds(Convert.ToDouble(configuration["AccessTokenExpireMinutes"])),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JwtKey"])),
                                                             SecurityAlgorithms.HmacSha256)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
 
-        public static string GenerateRefreshToken()
+        public static string GenerateJwtRefreshToken(UserModelItem user, IConfiguration configuration)
         {
-            var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
+            var tokenHandler = new JwtSecurityTokenHandler();
+            
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
+                Subject = new ClaimsIdentity(GetRefreshClaims(user)),
+                Expires = DateTime.UtcNow.AddSeconds(Convert.ToDouble(configuration["RefreshTokenExpireMinutes"])),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JwtKey"])),
+                                                            SecurityAlgorithms.HmacSha256)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        public static void CheckJwtToken(string token)
+        {
+            JwtSecurityToken refreshToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var a = refreshToken;
         }
     }
 }
