@@ -24,12 +24,6 @@ namespace Store.BusinessLogic.Services.Interfaces
         public Task<UserModelItem> SignIn(SignInModelItem loginData);
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public Task<UserModelItem> SignOut();
-
-        /// <summary>
         /// Create new user and generate token for registration
         /// </summary>
         /// <returns>Email token for registration</returns>

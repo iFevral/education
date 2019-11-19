@@ -37,6 +37,7 @@ namespace Store.BusinessLogic.Services
             throw new System.Exception("User not found");
         }
 
+
         public async Task<UserModelItem> GetUserByName(string username)
         {
             var user = _mapper.Map<UserModelItem>(await _userRepository.FindByName(username));
@@ -48,6 +49,7 @@ namespace Store.BusinessLogic.Services
 
             throw new System.Exception("User not found");
         }
+
 
         public async Task<UserModelItem> SignIn(SignInModelItem loginData)
         {
@@ -72,13 +74,6 @@ namespace Store.BusinessLogic.Services
             
             //Generate token for registration from repository
             return await _userRepository.GenerateEmailConfirmationToken(signUpData.UserName);
-        }
-
-
-        //TODO: Sign Out
-        public async Task<UserModelItem> SignOut()
-        {
-            throw new System.NotImplementedException();
         }
 
 

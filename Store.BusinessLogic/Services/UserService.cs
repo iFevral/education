@@ -42,24 +42,18 @@ namespace Store.BusinessLogic.Services
         {
             var user = _mapper.Map<UserModelItem>(await _userRepository.FindById(id));
             if (user != null)
-            {
                 user.Roles = await _userRepository.GetUserRoles(user.UserName);
-                return user;
-            }
-
-            throw new System.Exception("User not found");
+            
+            return user;
         }
 
         public async Task<UserModelItem> GetUserByName(string username)
         {
             var user = _mapper.Map<UserModelItem>(await _userRepository.FindByName(username));
             if (user != null)
-            {
                 user.Roles = await _userRepository.GetUserRoles(user.UserName);
-                return user;
-            }
 
-            throw new System.Exception("User not found");
+            return user;
         }
 
         public async Task AddUserToRole(string username, string role)

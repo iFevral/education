@@ -3,17 +3,18 @@ using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Store.DataAccess.AppContext;
 using Store.DataAccess.Entities;
-using Microsoft.AspNetCore.Identity;
+using Store.DataAccess.AppContext;
 using Store.Presentation.Helpers;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 
 namespace Store.Presentation
 {
@@ -81,14 +82,23 @@ namespace Store.Presentation
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app,
-                              IWebHostEnvironment env)
+                              IWebHostEnvironment env,
+                              ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            
-            
+
+            loggerFactory.AddFile("Logs/EducationApp-{Date}.txt");
+
+            app.UseStatusCodePagesWithReExecute("/error", "?code={0}");
+
+            app.Map("/error", ap => ap.Run(async context =>
+            {
+                await context.Response.WriteAsync($"Err: {context.Request.Query["code"]}");
+            }));
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

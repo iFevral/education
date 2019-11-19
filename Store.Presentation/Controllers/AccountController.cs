@@ -39,6 +39,21 @@ namespace Store.Presentation.Controllers
             return Ok("Home Page");
         }
 
+        [Route("~/[controller]/Profile")]
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> GetUserProfile(string Autorization)
+        {
+            //Remove 'Bearer ' from token
+            string token = Autorization.Substring(7);
+
+            var user = await _accountService.GetUserById(JwtHelper.GetUserIdFromToken(token));
+            if (user != null)
+                return Ok(user);
+
+            return NotFound();
+        }
+
         [Route("~/[controller]/SignIn")]
         [HttpPost]
         public async Task<IActionResult> SignIn([FromBody] SignInModelItem loginData)

@@ -1,16 +1,18 @@
 ﻿using AutoMapper;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Store.BusinessLogic.Services;
-using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.DataAccess.Entities;
 using Store.DataAccess.AppContext;
 using Microsoft.Extensions.Configuration;
-using Store.Presentation.Helpers;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Net;
+using System.Net.Http;
+using Store.BusinessLogic.Models.Users;
 
 namespace Store.Presentation.Controllers
 {
@@ -21,42 +23,55 @@ namespace Store.Presentation.Controllers
     {
         private IConfiguration _configuration;
         private IUserService _userService;
+        private ILogger _logger;
 
         public UserController(IConfiguration configuration,
                                  ApplicationContext db,
                                  UserManager<Users> um,
                                  RoleManager<Roles> rm,
                                  SignInManager<Users> sim,
-                                 IMapper mapper)
+                                 IMapper mapper,
+                                 ILogger<UserController> logger)
         {
             _configuration = configuration;
+            _logger = logger;
             _userService = new UserService(db, um, rm, sim, mapper);
         }
 
         [Route("~/[controller]")]
         [HttpGet]
-        public async Task<IEnumerable<UserModelItem>> GetUsers()
+        public async Task<IActionResult> GetUsers()
         {
             var users = await _userService.GetAllUsers();
-            return users.Items;
+            if (users.Items.Count != 0)
+                return Ok(users.Items);
+
+            return NotFound();
         }
 
         [Route("~/[controller]/Profile")]
         [Authorize]
         [HttpPost]
-        public async Task<UserModelItem> GetUserProfile(string Autorization)
+        public async Task<IActionResult> GetUserProfile(string username)
         {
-            string token = Autorization.Substring(7); //Remove 'Bearer ' from token
-            var user = await _userService.GetUserById(JwtHelper.GetUserIdFromToken(token));
-            return user;
+            UserModel user = new UserModel();
+            user.Items.Add(await _userService.GetUserByName(username));
+
+            if (user != null)
+                return Ok(user);
+
+            user.Errors.Add("User not found");
+            
+            _logger.LogError(HttpStatusCode.NotFound.ToString());
+            return NotFound(user);
+
         }
 
         [Route("~/[controller]/Blocking")]
         [HttpGet]
-        public async Task<UserModelItem> BlockUser(string username)
+        public async Task<IActionResult> BlockUser(string username)
         {
-            var user = await _userService.GetUserById(username);
-            return user;
+            return NotFound();
         }
     }
 }
