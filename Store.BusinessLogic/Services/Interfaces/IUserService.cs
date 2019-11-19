@@ -11,12 +11,13 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// </summary>
         /// <returns>User model</returns>
         public Task<UserModel> GetAllUsers();
-        public Task<UserModelItem> GetUser(string username);
+        public Task<UserModelItem> GetUserById(string id);
+        public Task<UserModelItem> GetUserByName(string username);
         public Task CreateUser(UserModelItem user);
         public Task EditUser(UserModelItem user);
         public Task DeleteUser(UserModelItem user);
-        public Task AddUserToRole(string username, string role);
-        public Task RemoveUserFromRole(string username, string role);
+        public Task AddUserToRole(string username, string rolename);
+        public Task RemoveUserFromRole(string username, string rolename);
         public Task CreateRole(string rolename);
         public Task RemoveRole(string rolename);
 

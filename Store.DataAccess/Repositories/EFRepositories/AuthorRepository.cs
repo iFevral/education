@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿/*using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.Repositories.Interfaces;
@@ -52,3 +52,4 @@ namespace Store.DataAccess.Repositories.EFRepository
         }
     }
 }
+*/

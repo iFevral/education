@@ -8,11 +8,11 @@ namespace Store.DataAccess.AppContext
     public partial class ApplicationContext : IdentityDbContext<Users,
                                                                 Roles,
                                                                 string,
-                                                                AspNetUserClaims,
+                                                                IdentityUserClaim<string>,
                                                                 UserInRoles,
-                                                                AspNetUserLogins,
-                                                                AspNetRoleClaims,
-                                                                AspNetUserTokens>
+                                                                IdentityUserLogin<string>,
+                                                                IdentityRoleClaim<string>,
+                                                                IdentityUserToken<string>>
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
@@ -39,28 +39,6 @@ namespace Store.DataAccess.AppContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AspNetRoleClaims>(entity =>
-            {
-                entity.HasIndex(e => e.RoleId);
-            });
-
-            modelBuilder.Entity<AspNetUserClaims>(entity =>
-            {
-                entity.HasIndex(e => e.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserLogins>(entity =>
-            {
-                entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
-
-                entity.HasIndex(e => e.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserTokens>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
-            });
-
             modelBuilder.Entity<AuthorInBooks>(entity =>
             {
                 entity.HasIndex(e => e.AuthorId);
@@ -105,6 +83,11 @@ namespace Store.DataAccess.AppContext
                     .IsUnique()
                     .HasFilter("([NormalizedUserName] IS NOT NULL)");
             });
+
+            modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();
+            modelBuilder.Entity<IdentityUserClaim<string>>().HasNoKey();
+            modelBuilder.Entity<IdentityRoleClaim<string>>().HasNoKey();
+            modelBuilder.Entity<IdentityUserToken<string>>().HasNoKey();
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

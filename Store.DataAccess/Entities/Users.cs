@@ -23,12 +23,6 @@ namespace Store.DataAccess.Entities
 
 
         [InverseProperty("User")]
-        public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
-        [InverseProperty("User")]
-        public virtual ICollection<AspNetUserLogins> AspNetUserLogins { get; set; }
-        [InverseProperty("User")]
-        public virtual ICollection<AspNetUserTokens> AspNetUserTokens { get; set; }
-        [InverseProperty("User")]
         public virtual ICollection<Orders> Orders { get; set; }
         [InverseProperty("User")]
         public virtual ICollection<UserInRoles> UserInRoles { get; set; }

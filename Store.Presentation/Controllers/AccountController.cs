@@ -1,16 +1,16 @@
-﻿using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
+using Store.DataAccess.Entities;
+using Store.Presentation.Helpers;
+using Store.BusinessLogic.Helpers;
+using Store.DataAccess.AppContext;
 using Store.BusinessLogic.Services;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.DataAccess.Entities;
-using Store.DataAccess.AppContext;
-using Store.Presentation.Helpers;
-using Store.BusinessLogic.Helpers;
 
 namespace Store.Presentation.Controllers
 {
@@ -32,51 +32,65 @@ namespace Store.Presentation.Controllers
             _accountService = new AccountService(db, um, rm, sim, mapper);
         }
 
+        [Route("~/[controller]/Home")]
+        [HttpGet]
+        public IActionResult Home()
+        {
+            return Ok("Home Page");
+        }
+
         [Route("~/[controller]/SignIn")]
         [HttpPost]
-        public async Task<object> SignIn([FromBody] SignInModelItem loginData)
+        public async Task<IActionResult> SignIn([FromBody] SignInModelItem loginData)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                UserModelItem user = await _accountService.SignIn(loginData);
-                if (user != null)
-                {
-                    user.AccessToken = JwtHelper.GenerateJwtAccessToken(user, _configuration);
-                    user.RefreshToken = JwtHelper.GenerateJwtRefreshToken(user, _configuration);
-                }
-
-                return user;
+                return BadRequest(ModelState);
             }
-            return "Error";
+
+            UserModelItem user = await _accountService.SignIn(loginData);
+            if (user != null)
+            {
+                user.AccessToken = JwtHelper.GenerateJwtAccessToken(user, _configuration);
+                user.RefreshToken = JwtHelper.GenerateJwtRefreshToken(user, _configuration);
+                return Ok(user);
+            }
+
+            return BadRequest("Invalid username of password");
         }
 
         [Route("~/[controller]/SignUp")]
         [HttpPost]
-        public async Task<object> SignUp([FromBody] SignUpModelItem userData)
+        public async Task<IActionResult> SignUp([FromBody] SignUpModelItem userData)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             string registrationToken = await _accountService.SignUp(userData);
 
             string subject = "Account confirmation";
             string body = "Confirmation link: <a href='https://localhost:44312/Account/ConfirmEmail?" +
-                          "username=" + userData.UserName + "&token=" + registrationToken + "'>Verify email</a>";
+                            "username=" + userData.UserName + "&token=" + registrationToken + "'>Verify email</a>";
             EmailHelper.Send(userData.Email, subject, body, _configuration);
-            return "Check your email to confirm your information";
+            return Ok("Check your email to confirm your information");
         }
 
         [Route("~/[controller]/ConfirmEmail")]
         [HttpGet]
-        public async Task<object> ConfirmEmail(string username, string token)
+        public async Task<IActionResult> ConfirmEmail(string username, string token)
         {
-            token = token.Replace(" ", "+");
             if (await _accountService.ConfirmEmail(username, token))
-                return "Email has successfully confirmed";
-            else
-                return "Verification error";
+                 Ok("Email has successfully confirmed");
+           
+            
+            return BadRequest("Verification error");
         }
 
         [Route("~/[controller]/ForgotPassword")]
         [HttpPost]
-        public async Task<object> ForgotPassword([FromBody] EmailModelItem user)
+        public async Task<IActionResult> ForgotPassword([FromBody] EmailModelItem user)
         {
             string passwordResetToken = await _accountService.ResetPassword(user.Email);
 
@@ -84,41 +98,41 @@ namespace Store.Presentation.Controllers
             string body = "Confirmation link: <a href='https://localhost:44312/Account/ConfirmResetPassword?" +
                           "email=" + user.Email + "&token=" + passwordResetToken + "'>Reset password</a>";
             EmailHelper.Send(user.Email, subject, body, _configuration);
-            return "Check your email";
+            return Ok("Check your email");
         }
 
         [Route("~/[controller]/ConfirmReseting")]
         [HttpGet]
-        public ForgotPasswordModelItem ConfirmResetPassword(string email, string token)
+        public async Task<IActionResult> ConfirmResetPassword(string email, string token)
         {
-            token = token.Replace(" ", "+");
-            return new ForgotPasswordModelItem
+            return Ok(new ForgotPasswordModelItem
             {
                 Email = email,
-                Token = token.Replace(" ", "+")
-            };
+                Token = token
+            });
         }
 
         [Route("~/[controller]/ConfirmNewPassword")]
         [HttpPost]
-        public async Task<object> ConfirmNewPassword([FromBody] ForgotPasswordModelItem user)
+        public async Task<IActionResult> ConfirmNewPassword([FromBody] ForgotPasswordModelItem user)
         {
-            user.Token = user.Token.Replace(" ", "+");
             await _accountService.ConfirmNewPassword(user.Email, user.Token, user.Password);
-            return "Password has successfully changed";
+            return Ok("Password has successfully changed");
         }
 
         [Route("~/RefreshToken")]
         [Authorize]
         [HttpPost]
-        public async Task<TokenModelItem> RefreshTokens([FromHeader]string username)
+        public async Task<IActionResult> RefreshTokens([FromHeader]string Authorization)
         {
-            var user = await _accountService.GetUser(username);
-            return new TokenModelItem
+            string token = Authorization.Substring(7); //Remove 'Bearer ' from token
+
+            var user = await _accountService.GetUserById(JwtHelper.GetUserIdFromToken(token));
+            return Ok(new TokenModelItem
             {
                 AccessToken = JwtHelper.GenerateJwtAccessToken(user, _configuration),
                 RefreshToken = JwtHelper.GenerateJwtRefreshToken(user, _configuration)
-            };
+            });
         }
     }
 }

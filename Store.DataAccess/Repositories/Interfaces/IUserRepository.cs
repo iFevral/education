@@ -9,12 +9,12 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// <summary>
         /// Create new role
         /// </summary>
-        public Task CreateRole(string name);
+        public Task CreateRole(string rolename);
         
         /// <summary>
         /// Delete role
         /// </summary>
-        public Task DeleteRole(string name);
+        public Task DeleteRole(string rolename);
         
         /// <summary>
         /// Get all roles of user
@@ -24,17 +24,17 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// <summary>
         /// Check that user has role
         /// </summary>
-        public Task<bool> IsInRole(string id, string role);
+        public Task<bool> IsInRole(string id, string rolename);
         
         /// <summary>
         /// Add user from role
         /// </summary>
-        public Task AddToRole(string id, string role);
+        public Task AddToRole(string id, string rolename);
         
         /// <summary>
         /// Remove user from role
         /// </summary>
-        public Task RemoveFromRole(string id, string role);
+        public Task RemoveFromRole(string id, string rolename);
         
         /// <summary>
         /// Find user by id
@@ -86,7 +86,7 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// Generate token for email confirmation
         /// </summary>
         /// <returns>Token for registration</returns>
-        public Task<string> GenerateRegistrationToken(string username);
+        public Task<string> GenerateEmailConfirmationToken(string username);
 
         /// <summary>
         /// Confirm email
@@ -110,17 +110,5 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// </summary>
         /// <returns>True if token for password reset is correct</returns>
         public Task ConfirmNewPassword(string username, string token, string newPassword);
-
-        /// <summary>
-        /// Check refresh token
-        /// </summary>
-        /// <returns>True if token is valid</returns>
-        public Task<bool> CheckRefreshToken(string username, string token);
-
-        /// <summary>
-        /// Remove and generate new refresh token
-        /// </summary>
-        /// <returns>Refresh token</returns>
-        public Task<string> UpdateAndGetRefreshToken(string username);
     }
 }

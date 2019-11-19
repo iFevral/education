@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.Configuration;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
@@ -10,13 +9,15 @@ using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.DataAccess.Entities;
 using Store.DataAccess.AppContext;
+using Microsoft.Extensions.Configuration;
+using Store.Presentation.Helpers;
 
 namespace Store.Presentation.Controllers
 {
     [Route("[controller]")]
     [Authorize(Roles = "Admin")]
     [ApiController]
-    public class UserController : Controller
+    public class UserController : ControllerBase
     {
         private IConfiguration _configuration;
         private IUserService _userService;
@@ -33,7 +34,6 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]")]
-        
         [HttpGet]
         public async Task<IEnumerable<UserModelItem>> GetUsers()
         {
@@ -43,10 +43,11 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]/Profile")]
         [Authorize]
-        [HttpGet]
-        public async Task<UserModelItem> GetUserProfile(string username)
+        [HttpPost]
+        public async Task<UserModelItem> GetUserProfile(string Autorization)
         {
-            var user = await _userService.GetUser(username);
+            string token = Autorization.Substring(7); //Remove 'Bearer ' from token
+            var user = await _userService.GetUserById(JwtHelper.GetUserIdFromToken(token));
             return user;
         }
 
@@ -54,7 +55,7 @@ namespace Store.Presentation.Controllers
         [HttpGet]
         public async Task<UserModelItem> BlockUser(string username)
         {
-            var user = await _userService.GetUser(username);
+            var user = await _userService.GetUserById(username);
             return user;
         }
     }

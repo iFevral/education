@@ -46,7 +46,7 @@ namespace Store.DataAccess.Repositories.EFRepository
             await _db.SaveChangesAsync();
         }
 
-        public async Task<string> GenerateRegistrationToken(string username)
+        public async Task<string> GenerateEmailConfirmationToken(string username)
         {
             return await _userManager.GenerateEmailConfirmationTokenAsync(await FindByName(username));
         }
@@ -61,6 +61,12 @@ namespace Store.DataAccess.Repositories.EFRepository
         public async Task<bool> IsEmailConfirmed(string username)
         {
             return await _userManager.IsEmailConfirmedAsync(await FindByName(username));
+        }
+
+        public async Task<bool> IsPasswordCorrect(string username, string password)
+        {
+            var a = await _signInManager.PasswordSignInAsync(username, password, false, false);
+            return a.Succeeded;
         }
 
         public async Task<string> GeneratePasswordResetToken(string username)
@@ -93,52 +99,33 @@ namespace Store.DataAccess.Repositories.EFRepository
             return await _userManager.GetRolesAsync(await FindByName(username));
         }
 
-        public async Task CreateRole(string name)
+        public async Task CreateRole(string rolename)
         {
-            await _roleManager.CreateAsync(new Roles { Name = name});
+            await _roleManager.CreateAsync(new Roles { Name = rolename });
             await _db.SaveChangesAsync();
         }
  
-        public async Task DeleteRole(string name)
+        public async Task DeleteRole(string rolename)
         {
-            await _roleManager.DeleteAsync(await _roleManager.FindByNameAsync(name));
+            await _roleManager.DeleteAsync(await _roleManager.FindByNameAsync(rolename));
             await _db.SaveChangesAsync();
         }
 
-        public async Task<bool> IsInRole(string id, string role)
+        public async Task<bool> IsInRole(string id, string rolename)
         {
-            return await _userManager.IsInRoleAsync(await FindById(id), role);
+            return await _userManager.IsInRoleAsync(await FindById(id), rolename);
         }
 
-        public async Task AddToRole(string id, string role)
+        public async Task AddToRole(string id, string rolename)
         {
-            await _userManager.AddToRoleAsync(await FindById(id), role);
+            await _userManager.AddToRoleAsync(await FindById(id), rolename);
             await _db.SaveChangesAsync();
         }
 
-        public async Task RemoveFromRole(string id, string role)
+        public async Task RemoveFromRole(string id, string rolename)
         {
-            await _userManager.RemoveFromRoleAsync(await FindById(id), role);
+            await _userManager.RemoveFromRoleAsync(await FindById(id), rolename);
             await _db.SaveChangesAsync();
-        }
-
-        public async Task<bool> IsPasswordCorrect(string username, string password)
-        {
-            var a = await _signInManager.PasswordSignInAsync(username, password, false, false);
-            return a.Succeeded;
-        }
-
-        public async Task<bool> CheckRefreshToken(string username,string token)
-        {
-            return await _userManager.VerifyUserTokenAsync(await FindByName(username), "StoreProvider", "RefreshToken", token);
-        }
-
-        public async Task<string> UpdateAndGetRefreshToken(string username)
-        {
-            await _userManager.RemoveAuthenticationTokenAsync(await FindByName(username), "StoreProvider", "RefreshToken");
-            string newRefreshToken = await _userManager.GenerateUserTokenAsync(await  FindByName(username), "StoreProvider", "RefreshToken");
-            await _userManager.SetAuthenticationTokenAsync(await FindByName(username), "StoreProvider", "RefreshToken", newRefreshToken);
-            return newRefreshToken;
         }
     }
 }

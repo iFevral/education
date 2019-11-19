@@ -5,12 +5,17 @@ namespace Store.BusinessLogic.Services.Interfaces
 {
     public interface IAccountService
     {
-
         /// <summary>
-        /// Return user by username
+        /// Get user by id
         /// </summary>
         /// <returns>User model item</returns>
-        public Task<UserModelItem> GetUser(string username);
+        public Task<UserModelItem> GetUserById(string id);
+
+        /// <summary>
+        /// Get user by username
+        /// </summary>
+        /// <returns>User model item</returns>
+        public Task<UserModelItem> GetUserByName(string username);
 
         /// <summary>
         /// Check user login and password and get user data

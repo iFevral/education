@@ -61,10 +61,10 @@ namespace Store.Presentation.Helpers
             return tokenHandler.WriteToken(token);
         }
 
-        public static void CheckJwtToken(string token)
+        public static string GetUserIdFromToken(string token)
         {
             JwtSecurityToken refreshToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
-            var a = refreshToken;
+            return refreshToken.Payload.Where(x => x.Key == "nameid").FirstOrDefault().Value.ToString();
         }
     }
 }

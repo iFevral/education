@@ -9,12 +9,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Enums\" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="MailKit" Version="2.4.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="MailKit" Version="2.4.1" />
+    <Folder Include="Models\Enums\" />
   </ItemGroup>
 
 </Project>
