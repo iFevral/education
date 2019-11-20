@@ -106,6 +106,22 @@ namespace Store.Presentation.Controllers
             return Ok("Check your email to confirm your information");
         }
 
+        [Route("~/[controller]/SignOut")]
+        [HttpPost]
+        public async Task<IActionResult> SignOut([FromHeader] string ipfingerprint, [FromHeader]string Authorization)
+        {
+            string token = Authorization.Substring(7); //Remove 'Bearer ' from token
+            var userModel = await _accountService.GetUserById(JwtHelper.GetUserIdFromToken(token));
+            if (userModel.Errors.Count > 0)
+                return NotFound(userModel.Errors);
+
+            var user = userModel.Users[0];
+            await _accountService.SignOut(user.Username, ipfingerprint);
+
+            return Ok("Sign out success");
+        }
+
+
         [Route("~/[controller]/ConfirmEmail")]
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string username, string token)

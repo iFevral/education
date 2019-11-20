@@ -57,6 +57,16 @@ namespace Store.DataAccess.AppContext
             modelBuilder.Entity<Orders>(entity =>
             {
                 entity.HasIndex(e => e.PaymentId);
+                entity.HasOne(x => x.User)
+                      .WithMany(x => x.Orders)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Sessions>(entity =>
+            {
+                entity.HasOne(x => x.User)
+                      .WithMany(x => x.Sessions)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Roles>(entity =>
@@ -72,6 +82,9 @@ namespace Store.DataAccess.AppContext
                 entity.HasKey(e => new { e.UserId, e.RoleId });
 
                 entity.HasIndex(e => e.RoleId);
+                entity.HasOne(x => x.User)
+                      .WithMany(x => x.UserInRoles)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Users>(entity =>
@@ -83,6 +96,7 @@ namespace Store.DataAccess.AppContext
                     .HasName("UserNameIndex")
                     .IsUnique()
                     .HasFilter("([NormalizedUserName] IS NOT NULL)");
+                
             });
 
             modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();

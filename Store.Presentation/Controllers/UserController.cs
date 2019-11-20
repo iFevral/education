@@ -42,34 +42,55 @@ namespace Store.Presentation.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _userService.GetAllUsers();
-            if (users.Users.Count != 0)
-                return Ok(users.Users);
 
-            return NotFound();
+            var userModel = await _userService.GetAllUsers();
+            if (userModel.Errors.Count > 0)
+                return NotFound(userModel.Errors);
+
+            return Ok(userModel.Users);
         }
 
         [Route("~/[controller]/Profile")]
-        [Authorize]
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> GetUserProfile(string username)
         {
-            UserModel user = new UserModel();
-            user.Users.Add(await _userService.GetUserByName(username));
+            var userModel = await _userService.GetUserByName(username);
+            if (userModel.Errors.Count > 0)
+                return NotFound(userModel.Errors);
 
-            if (user != null)
-                return Ok(user);
-
-            user.Errors.Add("User not found");
-            
-            return NotFound(user);
+            return Ok(userModel.Users);
         }
 
-        [Route("~/[controller]/Blocking")]
-        [HttpGet]
-        public async Task<IActionResult> BlockUser(string username)
+        [Route("~/[controller]/Block")]
+        [HttpPost]
+        public async Task<IActionResult> BlockUser(string username, bool enabled)
         {
-            return NotFound();
+            await _userService.BlockUser(username,enabled);
+            return Ok();
+        }
+
+        [Route("~/[controller]/Create")]
+        [HttpPut]
+        public async Task<IActionResult> Create([FromBody]SignUpData signUpData)
+        {
+            await _userService.CreateUser(signUpData);
+            return Ok();
+        }
+
+        [Route("~/[controller]/Edit")]
+        [HttpPut]
+        public async Task<IActionResult> Edit([FromBody]SignUpData signUpData)
+        {
+            await _userService.EditUser(signUpData);
+            return Ok();
+        }
+
+        [Route("~/[controller]/Delete")]
+        [HttpDelete]
+        public async Task<IActionResult> Delete(string username)
+        {
+            await _userService.DeleteUser(username);
+            return Ok();
         }
     }
 }

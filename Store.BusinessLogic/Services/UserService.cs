@@ -26,70 +26,119 @@ namespace Store.BusinessLogic.Services
 
         public async Task<UserModel> GetAllUsers()
         {
-            UserModel users = new UserModel();
+            UserModel userModel = new UserModel();
             var usersFromRepo = await _userRepository.GetAll();
+            
+            if(usersFromRepo == null)
+            {
+                userModel.Errors.Add("No users found");
+                return userModel;
+            }
+
 
             foreach (var user in usersFromRepo)
             {
                 //Map from Users to UserModelItem
-                users.Users.Add(_mapper.Map<UserModelItem>(user));
+                userModel.Users.Add(_mapper.Map<UserModelItem>(user));
             }
 
-            return users;
+            return userModel;
         }
 
-        public async Task<UserModelItem> GetUserById(string id)
+        public async Task<UserModel> GetUserById(string id)
         {
+            var userModel = new UserModel();
             var user = _mapper.Map<UserModelItem>(await _userRepository.FindById(id));
-            if (user != null)
-                user.Roles = await _userRepository.GetUserRoles(user.Username);
-            
-            return user;
+            if (user == null)
+            {
+                userModel.Errors.Add("User not found");
+                return userModel;
+            }
+
+            user.Roles = await _userRepository.GetUserRoles(user.Username);
+
+            userModel.Users.Add(user);
+            return userModel;
         }
 
-        public async Task<UserModelItem> GetUserByName(string username)
+        public async Task<UserModel> GetUserByName(string username)
         {
+            var userModel = new UserModel();
             var user = _mapper.Map<UserModelItem>(await _userRepository.FindByName(username));
-            if (user != null)
-                user.Roles = await _userRepository.GetUserRoles(user.Username);
+            
+            if (user == null)
+            {
+                userModel.Errors.Add("User not found");
+                return userModel;
+            }
 
-            return user;
+            user.Roles = await _userRepository.GetUserRoles(user.Username);
+
+            userModel.Users.Add(user);
+            return userModel;
         }
 
-        public async Task AddUserToRole(string username, string role)
+        public async Task CreateUser(SignUpData signUpData)
+        {
+            if (await _userRepository.FindByName(signUpData.Username) != null)
+            {
+                throw new System.Exception();
+            }
+
+            //Create user 
+            await _userRepository.Create(_mapper.Map<Users>(signUpData), signUpData.Password);
+
+            //Find user
+            var user = await _userRepository.FindByName(signUpData.Username);
+
+            //Add user to role
+            await _userRepository.AddToRole(user.Id, "Client");
+
+            //Unblock
+            await _userRepository.LockOut(user.UserName, false);
+        }
+
+        public async Task EditUser(SignUpData signUpData)
+        {
+            var user = await _userRepository.FindByEmail(signUpData.Email);
+            user.FirstName = signUpData.Firstname;
+            user.LastName = signUpData.Lastname;
+
+            await _userRepository.Update(user);
+        }
+
+        public async Task DeleteUser(string username)
         {
             var user = await _userRepository.FindByName(username);
-            await _userRepository.AddToRole(user.Id,role);
+            await _userRepository.Remove(user);
+        }
+
+        public async Task BlockUser(string username, bool enabled)
+        {
+            await _userRepository.LockOut(username, enabled);
         }
 
         public async Task CreateRole(string rolename)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public async Task CreateUser(UserModelItem user)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public async Task DeleteUser(UserModelItem user)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public async Task EditUser(UserModelItem user)
-        {
-            throw new System.NotImplementedException();
+            await _userRepository.CreateRole(rolename);
         }
 
         public async Task RemoveRole(string rolename)
         {
-            throw new System.NotImplementedException();
+            await _userRepository.DeleteRole(rolename);
+
         }
 
-        public async Task RemoveUserFromRole(string username, string role)
+        public async Task AddUserToRole(string username, string rolename)
         {
-            throw new System.NotImplementedException();
+            var user = await _userRepository.FindByName(username);
+            await _userRepository.AddToRole(user.Id, rolename);
+        }
+
+        public async Task RemoveUserFromRole(string username, string rolename)
+        {
+            var user = await _userRepository.FindByName(username);
+            await _userRepository.RemoveFromRole(user.Id, rolename);
         }
     }
 }

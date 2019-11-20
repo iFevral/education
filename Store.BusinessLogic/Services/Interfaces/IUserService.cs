@@ -7,19 +7,62 @@ namespace Store.BusinessLogic.Services.Interfaces
     public interface IUserService
     {
         /// <summary>
-        /// Return all users
+        /// Get all users
         /// </summary>
         /// <returns>User model</returns>
         public Task<UserModel> GetAllUsers();
-        public Task<UserModelItem> GetUserById(string id);
-        public Task<UserModelItem> GetUserByName(string username);
-        public Task CreateUser(UserModelItem user);
-        public Task EditUser(UserModelItem user);
-        public Task DeleteUser(UserModelItem user);
-        public Task AddUserToRole(string username, string rolename);
-        public Task RemoveUserFromRole(string username, string rolename);
-        public Task CreateRole(string rolename);
-        public Task RemoveRole(string rolename);
 
+        /// <summary>
+        /// Get user by id
+        /// </summary>
+        /// <returns>User model</returns>
+        public Task<UserModel> GetUserById(string id);
+
+        /// <summary>
+        /// Get user by name
+        /// </summary>
+        /// <returns>User model</returns>
+        public Task<UserModel> GetUserByName(string username);
+
+        /// <summary>
+        /// Create user
+        /// </summary>
+        public Task CreateUser(SignUpData signUpData);
+
+        /// <summary>
+        /// Edit user
+        /// </summary>
+        public Task EditUser(SignUpData signUpData);
+
+        /// <summary>
+        /// Delete user
+        /// </summary>
+        public Task DeleteUser(string username);
+
+        /// <summary>
+        /// Block user
+        /// </summary>
+        public Task BlockUser(string username, bool enabled);
+
+        /// <summary>
+        /// Add user to role
+        /// </summary>
+        public Task AddUserToRole(string username, string rolename);
+
+        /// <summary>
+        /// Remove user from role
+        /// </summary>
+        /// <returns>User model</returns>
+        public Task RemoveUserFromRole(string username, string rolename);
+
+        /// <summary>
+        /// Create role
+        /// </summary>
+        public Task CreateRole(string rolename);
+
+        /// <summary>
+        /// Remove role
+        /// </summary>
+        public Task RemoveRole(string rolename);
     }
 }

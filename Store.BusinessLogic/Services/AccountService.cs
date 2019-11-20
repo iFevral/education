@@ -86,7 +86,6 @@ namespace Store.BusinessLogic.Services
             return await GetUserByName(loginData.Username);
         }
 
-
         public async Task<UserModel> SignUp(SignUpData signUpData)
         {
             //Check if user exists
@@ -114,6 +113,11 @@ namespace Store.BusinessLogic.Services
             userModel.EmailData.Email = signUpData.Email;
 
             return userModel;
+        }
+
+        public async Task SignOut(string username, string ipfingerprint)
+        {
+            await _userRepository.RemoveRefreshToken(username, ipfingerprint);
         }
 
         public async Task<bool> ConfirmEmail(string username, string token)

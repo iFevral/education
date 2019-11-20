@@ -30,6 +30,10 @@ namespace Store.BusinessLogic.Services.Interfaces
         public Task<UserModel> SignUp(SignUpData userData);
 
         /// <summary>
+        /// Delete refresh token
+        /// </summary>
+        public Task SignOut(string username, string ipfingerprint);
+        /// <summary>
         /// Confirm email
         /// </summary>
         public Task<bool> ConfirmEmail(string username, string token);
