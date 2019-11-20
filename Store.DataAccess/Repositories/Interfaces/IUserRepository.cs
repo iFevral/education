@@ -7,6 +7,45 @@ namespace Store.DataAccess.Repositories.Interfaces
     public interface IUserRepository
     {
         /// <summary>
+        /// Return all users
+        /// </summary>
+        /// <returns>User entity</returns>
+        public Task<IEnumerable<Users>> GetAll();
+
+        /// <summary>
+        /// Create new user
+        /// </summary>
+        /// <returns>Enumerable of users</returns>
+        public Task Create(Users user, string password);
+
+        /// <summary>
+        /// Edit user
+        /// </summary>
+        public Task Update(Users user);
+
+        /// <summary>
+        /// Delete user
+        /// </summary>
+        public Task Remove(Users user);
+
+        /// <summary>
+        /// Lock user
+        /// </summary>
+        public Task LockOut(string username, bool enabled);
+
+        /// <summary>
+        /// Check if user locked
+        /// </summary>
+        /// <returns>True if user locked</returns>
+        public Task<bool> IsLockedOut(string username);
+
+        /// <summary>
+        /// Check if role created
+        /// </summary>
+        /// <returns>True if role created</returns>
+        public Task<bool> IsRoleCreated(string rolename);
+
+        /// <summary>
         /// Create new role
         /// </summary>
         public Task CreateRole(string rolename);
@@ -55,32 +94,10 @@ namespace Store.DataAccess.Repositories.Interfaces
         public Task<Users> FindByName(string username);
 
         /// <summary>
-        /// Return all users
-        /// </summary>
-        /// <returns>User entity</returns>
-        public Task<IEnumerable<Users>> GetAll();
-        
-        /// <summary>
-        /// Create new user
-        /// </summary>
-        /// <returns>Enumerable of users</returns>
-        public Task Create(Users user, string password);
-        
-        /// <summary>
-        /// Edit user
-        /// </summary>
-        public Task Update(Users user);
-        
-        /// <summary>
-        /// Delete user
-        /// </summary>
-        public Task Remove(Users user);
-
-        /// <summary>
         /// Check that user is created
         /// </summary>
         /// <returns>True if user is found</returns>
-        public Task<bool> IsPasswordCorrect(string username, string password);
+        public Task<bool> IsLoginDataCorrect(string username, string password);
 
         /// <summary>
         /// Generate token for email confirmation
@@ -110,5 +127,21 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// </summary>
         /// <returns>True if token for password reset is correct</returns>
         public Task ConfirmNewPassword(string username, string token, string newPassword);
+
+        /// <summary>
+        /// Get refresh token
+        /// </summary>
+        /// <returns>Refresh token</returns>
+        public Task<string> GetRefreshToken(string userId, string fingerprint);
+
+        /// <summary>
+        /// Save refresh token
+        /// </summary>
+        public Task SaveRefreshToken(string username, string fingerprint, string newToken);
+
+        /// <summary>
+        /// Remove refresh token
+        /// </summary>
+        public Task RemoveRefreshToken(string username, string ipfingerprint);
     }
 }

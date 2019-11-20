@@ -2,9 +2,10 @@
 
 namespace Store.BusinessLogic.Models.Users
 {
-    public class SignUpModelItem : UserModelItem
+    public class SignUpData : UserModelItem
     {
-        [Required]
+        [Required(ErrorMessage = "Password is required")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
     }
 }

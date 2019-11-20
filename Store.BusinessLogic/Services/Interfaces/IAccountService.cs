@@ -9,25 +9,25 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Get user by id
         /// </summary>
         /// <returns>User model item</returns>
-        public Task<UserModelItem> GetUserById(string id);
+        public Task<UserModel> GetUserById(string id);
 
         /// <summary>
         /// Get user by username
         /// </summary>
         /// <returns>User model item</returns>
-        public Task<UserModelItem> GetUserByName(string username);
+        public Task<UserModel> GetUserByName(string username);
 
         /// <summary>
         /// Check user login and password and get user data
         /// </summary>
         /// <returns>User model item</returns>
-        public Task<UserModelItem> SignIn(SignInModelItem loginData);
+        public Task<UserModel> SignIn(SignInData loginData);
 
         /// <summary>
         /// Create new user and generate token for registration
         /// </summary>
         /// <returns>Email token for registration</returns>
-        public Task<string> SignUp(SignUpModelItem userData);
+        public Task<UserModel> SignUp(SignUpData userData);
 
         /// <summary>
         /// Confirm email
@@ -35,20 +35,31 @@ namespace Store.BusinessLogic.Services.Interfaces
         public Task<bool> ConfirmEmail(string username, string token);
 
         /// <summary>
-        /// Check email confirmation
+        /// Check if user is blocked
         /// </summary>
-        /// <returns>True if email confirmed</returns>
-        public Task<bool> IsEmailConfirmed(string username);
+        /// <returns>True if user is blocked</returns>
+        public Task<bool> IsAccountLocked(string username);
 
         /// <summary>
         /// Check user from repository and create token for password reset
         /// </summary>
         /// <returns>Token for password reset</returns>
-        public Task<string> ResetPassword(string username);
+        public Task<UserModel> ResetPassword(string username);
 
         /// <summary>
         /// Set new password 
         /// </summary>
-        public Task ConfirmNewPassword(string username, string token, string newPassword);
+        public Task ConfirmNewPassword(string email, string token, string newPassword);
+
+        /// <summary>
+        /// Check if token correct and remove from database
+        /// </summary>
+        /// <returns>True if token correct</returns>
+        public Task<bool> CheckAndRemoveRefreshToken(string username, string ipfingerprint, string token);
+
+        /// <summary>
+        /// Save refresh token in database
+        /// </summary>
+        public Task SaveRefreshToken(string username, string ipfingerprint, string newToken);
     }
 }

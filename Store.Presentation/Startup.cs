@@ -44,16 +44,11 @@ namespace Store.Presentation
 
             services.AddIdentity<Users, Roles>(options => {
                 options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 3;
+                options.Password.RequiredLength = 6;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders().AddTokenProvider("StoreProvider", typeof(DataProtectorTokenProvider<Users>));
-
-            services.Configure<AuthTokenProviderOptions>(x => {
-                x.JwtIssuer = Configuration["JwtIssuer"];
-                x.JwtKey = Configuration["JwtKey"];
-            });
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -91,13 +86,6 @@ namespace Store.Presentation
             }
 
             loggerFactory.AddFile("Logs/EducationApp-{Date}.txt");
-
-            app.UseStatusCodePagesWithReExecute("/error", "?code={0}");
-
-            app.Map("/error", ap => ap.Run(async context =>
-            {
-                await context.Response.WriteAsync($"Err: {context.Request.Query["code"]}");
-            }));
 
             app.UseHttpsRedirection();
 

@@ -25,6 +25,8 @@ namespace Store.DataAccess.Entities
         [InverseProperty("User")]
         public virtual ICollection<Orders> Orders { get; set; }
         [InverseProperty("User")]
+        public virtual ICollection<Sessions> Sessions { get; set; }
+        [InverseProperty("User")]
         public virtual ICollection<UserInRoles> UserInRoles { get; set; }
     }
 }

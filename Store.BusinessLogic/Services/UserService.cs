@@ -32,7 +32,7 @@ namespace Store.BusinessLogic.Services
             foreach (var user in usersFromRepo)
             {
                 //Map from Users to UserModelItem
-                users.Items.Add(_mapper.Map<UserModelItem>(user));
+                users.Users.Add(_mapper.Map<UserModelItem>(user));
             }
 
             return users;
@@ -42,7 +42,7 @@ namespace Store.BusinessLogic.Services
         {
             var user = _mapper.Map<UserModelItem>(await _userRepository.FindById(id));
             if (user != null)
-                user.Roles = await _userRepository.GetUserRoles(user.UserName);
+                user.Roles = await _userRepository.GetUserRoles(user.Username);
             
             return user;
         }
@@ -51,7 +51,7 @@ namespace Store.BusinessLogic.Services
         {
             var user = _mapper.Map<UserModelItem>(await _userRepository.FindByName(username));
             if (user != null)
-                user.Roles = await _userRepository.GetUserRoles(user.UserName);
+                user.Roles = await _userRepository.GetUserRoles(user.Username);
 
             return user;
         }

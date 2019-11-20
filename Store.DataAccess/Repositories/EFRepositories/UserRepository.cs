@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.Entities;
 using Store.DataAccess.AppContext;
 using Store.DataAccess.Repositories.Interfaces;
+using System.Linq;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
@@ -46,6 +47,16 @@ namespace Store.DataAccess.Repositories.EFRepository
             await _db.SaveChangesAsync();
         }
 
+        public async Task LockOut(string username,bool enabled)
+        {
+            await _userManager.SetLockoutEnabledAsync(await FindByName(username), enabled);
+        }
+
+        public async Task<bool> IsLockedOut(string username)
+        {
+            return await _userManager.GetLockoutEnabledAsync(await FindByName(username));
+        }
+
         public async Task<string> GenerateEmailConfirmationToken(string username)
         {
             return await _userManager.GenerateEmailConfirmationTokenAsync(await FindByName(username));
@@ -63,7 +74,7 @@ namespace Store.DataAccess.Repositories.EFRepository
             return await _userManager.IsEmailConfirmedAsync(await FindByName(username));
         }
 
-        public async Task<bool> IsPasswordCorrect(string username, string password)
+        public async Task<bool> IsLoginDataCorrect(string username, string password)
         {
             var a = await _signInManager.PasswordSignInAsync(username, password, false, false);
             return a.Succeeded;
@@ -99,6 +110,11 @@ namespace Store.DataAccess.Repositories.EFRepository
             return await _userManager.GetRolesAsync(await FindByName(username));
         }
 
+        public async Task<bool> IsRoleCreated(string rolename)
+        {
+            return await _roleManager.RoleExistsAsync(rolename);
+        }
+
         public async Task CreateRole(string rolename)
         {
             await _roleManager.CreateAsync(new Roles { Name = rolename });
@@ -125,6 +141,38 @@ namespace Store.DataAccess.Repositories.EFRepository
         public async Task RemoveFromRole(string id, string rolename)
         {
             await _userManager.RemoveFromRoleAsync(await FindById(id), rolename);
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task<string> GetRefreshToken(string username, string ipfingerprint)
+        {
+            var user = await FindByName(username);
+            var session = _db.Sessions.Where(s => s.UserId.Equals(user.Id) && 
+                                            s.IPFingerprint.Equals(ipfingerprint));
+                
+            return session.Any() 
+                ? session.FirstOrDefault().RefreshToken 
+                : null;
+        }
+
+        public async Task SaveRefreshToken(string username, string ipfingerprint, string newToken)
+        {
+            var user = await FindByName(username);
+            _db.Sessions.Add(new Sessions 
+            { 
+                UserId = user.Id,
+                IPFingerprint = ipfingerprint,
+                RefreshToken = newToken
+            });
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task RemoveRefreshToken(string username, string ipfingerprint)
+        {
+            var user = await FindByName(username);
+            var session = _db.Sessions.Where(s => s.UserId.Equals(user.Id) &&
+                                                  s.IPFingerprint.Equals(ipfingerprint)).FirstOrDefault();
+            _db.Sessions.Remove(session);
             await _db.SaveChangesAsync();
         }
     }

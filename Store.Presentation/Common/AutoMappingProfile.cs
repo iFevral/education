@@ -10,7 +10,7 @@ namespace Store.Presentation.Common
         {
             CreateMap<Users, UserModelItem>();
             CreateMap<UserModelItem, Users>();
-            CreateMap<SignUpModelItem, Users>();
+            CreateMap<SignUpData, Users>();
         }
     }
 }

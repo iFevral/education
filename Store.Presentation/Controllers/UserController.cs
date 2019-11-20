@@ -38,13 +38,13 @@ namespace Store.Presentation.Controllers
             _userService = new UserService(db, um, rm, sim, mapper);
         }
 
-        [Route("~/[controller]")]
+        [Route("~/[controller]/GetAll")]
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllUsers();
-            if (users.Items.Count != 0)
-                return Ok(users.Items);
+            if (users.Users.Count != 0)
+                return Ok(users.Users);
 
             return NotFound();
         }
@@ -55,16 +55,14 @@ namespace Store.Presentation.Controllers
         public async Task<IActionResult> GetUserProfile(string username)
         {
             UserModel user = new UserModel();
-            user.Items.Add(await _userService.GetUserByName(username));
+            user.Users.Add(await _userService.GetUserByName(username));
 
             if (user != null)
                 return Ok(user);
 
             user.Errors.Add("User not found");
             
-            _logger.LogError(HttpStatusCode.NotFound.ToString());
             return NotFound(user);
-
         }
 
         [Route("~/[controller]/Blocking")]

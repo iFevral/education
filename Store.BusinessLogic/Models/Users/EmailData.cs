@@ -5,9 +5,12 @@ using System.Text;
 
 namespace Store.BusinessLogic.Models.Users
 {
-    public class EmailModelItem
+    public class EmailData
     {
-        [Required]
+        [Required(ErrorMessage = "The email address is required")]
+        [EmailAddress(ErrorMessage = "Invalid email address")]
         public string Email { get; set; }
+
+        public string Token { get; set; }
     }
 }

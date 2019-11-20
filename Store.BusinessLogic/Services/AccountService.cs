@@ -25,57 +25,96 @@ namespace Store.BusinessLogic.Services
         }
 
 
-        public async Task<UserModelItem> GetUserById(string id)
+        public async Task<UserModel> GetUserById(string id)
         {
             var user = _mapper.Map<UserModelItem>(await _userRepository.FindById(id));
-            if (user != null)
+            var userModel = new UserModel();
+            
+            if (user == null)
             {
-                user.Roles = await _userRepository.GetUserRoles(user.UserName);
-                return user;
+                userModel.Errors.Add("User is not found");
+                return userModel;
             }
 
-            throw new System.Exception("User not found");
+            user.Roles = await _userRepository.GetUserRoles(user.Username);
+
+            if (user.Roles == null)
+            {
+                userModel.Errors.Add("User is not in any role");
+                return userModel;
+            }
+
+            userModel.Users.Add(user);
+            return userModel;
         }
 
 
-        public async Task<UserModelItem> GetUserByName(string username)
+        public async Task<UserModel> GetUserByName(string username)
         {
             var user = _mapper.Map<UserModelItem>(await _userRepository.FindByName(username));
-            if (user != null)
+            var userModel = new UserModel();
+            
+            if (user == null)
             {
-                user.Roles = await _userRepository.GetUserRoles(user.UserName);
-                return user;
+                userModel.Errors.Add("User is not found");
+                return userModel;
             }
 
-            throw new System.Exception("User not found");
+            user.Roles = await _userRepository.GetUserRoles(user.Username);
+
+            if (user.Roles == null)
+            {
+                userModel.Errors.Add("User is not in any role");
+                return userModel;
+            }
+
+            userModel.Users.Add(user);
+            return userModel;
         }
 
 
-        public async Task<UserModelItem> SignIn(SignInModelItem loginData)
+        public async Task<UserModel> SignIn(SignInData loginData)
         {
+            var userModel = new UserModel();
             //If user created it will get user info or will return empty UserModelItem
-            if (await _userRepository.IsPasswordCorrect(loginData.Username, loginData.Password))
-                return await GetUserByName(loginData.Username);
-            
-            throw new System.Exception("User not found");
+            if (!await _userRepository.IsLoginDataCorrect(loginData.Username, loginData.Password))
+            {
+                userModel.Errors.Add("Username or password is incorrect. Please check data.");
+                return userModel;
+            }
+
+            return await GetUserByName(loginData.Username);
         }
 
 
-        public async Task<string> SignUp(SignUpModelItem signUpData)
+        public async Task<UserModel> SignUp(SignUpData signUpData)
         {
-            //Create user from repository
+            //Check if user exists
+            var userModel = new UserModel(); 
+            if(await _userRepository.FindByName(signUpData.Username) != null)
+            {
+                userModel.Errors.Add("Email is already registered");
+                return userModel;
+            }
+
+            //Create user 
             await _userRepository.Create(_mapper.Map<Users>(signUpData), signUpData.Password);
             
             //Find user
-            var user = await _userRepository.FindByName(signUpData.UserName);
-            
+            var user = await _userRepository.FindByName(signUpData.Username);
+
             //Add user to role
             await _userRepository.AddToRole(user.Id, "Client");
-            
-            //Generate token for registration from repository
-            return await _userRepository.GenerateEmailConfirmationToken(signUpData.UserName);
-        }
 
+            //Unblock
+            await _userRepository.LockOut(user.UserName, false);
+
+            //Generate token for registration from repository
+            userModel.EmailData.Token = await _userRepository.GenerateEmailConfirmationToken(signUpData.Username);
+            userModel.EmailData.Email = signUpData.Email;
+
+            return userModel;
+        }
 
         public async Task<bool> ConfirmEmail(string username, string token)
         {
@@ -83,21 +122,28 @@ namespace Store.BusinessLogic.Services
             return await _userRepository.ConfirmEmail(username, token);
         }
 
-
-        public async Task<bool> IsEmailConfirmed(string username)
+        public async Task<bool> IsAccountLocked(string username)
         {
-            //Check received token for email confirmation
-            return await _userRepository.IsEmailConfirmed(username);
+            return await _userRepository.IsLockedOut(username);
         }
 
-
-        public async Task<string> ResetPassword(string email)
+        public async Task<UserModel> ResetPassword(string email)
         {
             //Map from Users to UserModelItem
             var user = _mapper.Map<UserModelItem>(await _userRepository.FindByEmail(email));
+
+            var userModel = new UserModel();
             
-            //Generate token for password reset from repository
-            return await _userRepository.GeneratePasswordResetToken(user.UserName);
+            if(user == null)
+            {
+                userModel.Errors.Add("User is not found");
+                return userModel;
+            }
+
+            userModel.ResetPasswordData.Token = await _userRepository.GeneratePasswordResetToken(user.Username);
+            userModel.ResetPasswordData.Email = email;
+
+            return userModel;
         }
 
 
@@ -107,7 +153,21 @@ namespace Store.BusinessLogic.Services
             var user = _mapper.Map<UserModelItem>(await _userRepository.FindByEmail(email));
             
             //Check received token for new password confirmation
-            await _userRepository.ConfirmNewPassword(user.UserName, token, newPassword);
+            await _userRepository.ConfirmNewPassword(user.Username, token, newPassword);
+        }
+
+        public async Task<bool> CheckAndRemoveRefreshToken(string username, string ipfingerprint, string token)
+        {
+            var correctToken = await _userRepository.GetRefreshToken(username, ipfingerprint);
+            return token.Equals(correctToken);
+        }
+
+        public async Task SaveRefreshToken(string username, string ipfingerprint, string newToken)
+        {
+            if(await _userRepository.GetRefreshToken(username, ipfingerprint) != null)
+                await _userRepository.RemoveRefreshToken(username, ipfingerprint);
+
+            await _userRepository.SaveRefreshToken(username, ipfingerprint, newToken);
         }
     }
 }

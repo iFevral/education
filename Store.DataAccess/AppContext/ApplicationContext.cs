@@ -28,6 +28,7 @@ namespace Store.DataAccess.AppContext
         public override DbSet<Roles> Roles { get; set; }
         public virtual DbSet<UserInRoles> UserInRoles { get; set; }
         public override DbSet<Users> Users { get; set; }
+        public virtual DbSet<Sessions> Sessions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
