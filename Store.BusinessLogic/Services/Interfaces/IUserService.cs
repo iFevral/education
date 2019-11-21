@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Store.BusinessLogic.Models.Roles;
 using Store.BusinessLogic.Models.Users;
 
 namespace Store.BusinessLogic.Services.Interfaces
@@ -10,7 +10,7 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Get all users
         /// </summary>
         /// <returns>User model</returns>
-        public Task<UserModel> GetAllUsers();
+        public UserModel GetAllUsers(UserFilterData userFilter);
 
         /// <summary>
         /// Get user by id
@@ -27,42 +27,43 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// <summary>
         /// Create user
         /// </summary>
-        public Task CreateUser(SignUpData signUpData);
+        public Task<UserModel> CreateUser(SignUpData signUpData);
 
         /// <summary>
         /// Edit user
         /// </summary>
-        public Task EditUser(SignUpData signUpData);
+        public Task<UserModel> EditUser(SignUpData signUpData);
 
         /// <summary>
         /// Delete user
         /// </summary>
-        public Task DeleteUser(string username);
+        public Task<UserModel> DeleteUser(string username);
 
         /// <summary>
         /// Block user
         /// </summary>
-        public Task BlockUser(string username, bool enabled);
+        public Task<UserModel> BlockUser(string username, bool enabled);
 
         /// <summary>
         /// Add user to role
         /// </summary>
-        public Task AddUserToRole(string username, string rolename);
+        /// <returns>UserRole model</returns>
+        public Task<RoleModel> AddUserToRole(UserRoleModelItem userRoleModel);
 
         /// <summary>
         /// Remove user from role
         /// </summary>
-        /// <returns>User model</returns>
-        public Task RemoveUserFromRole(string username, string rolename);
+        /// <returns>UserRole model</returns>
+        public Task<RoleModel> RemoveUserFromRole(UserRoleModelItem userRoleModel);
 
         /// <summary>
         /// Create role
         /// </summary>
-        public Task CreateRole(string rolename);
+        public Task<RoleModel> CreateRole(RoleModelItem role);
 
         /// <summary>
         /// Remove role
         /// </summary>
-        public Task RemoveRole(string rolename);
+        public Task<RoleModel> RemoveRole(RoleModelItem role);
     }
 }

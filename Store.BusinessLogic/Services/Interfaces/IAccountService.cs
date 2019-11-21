@@ -36,7 +36,7 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// <summary>
         /// Confirm email
         /// </summary>
-        public Task<bool> ConfirmEmail(string username, string token);
+        public Task<UserModel> ConfirmEmail(string username, string token);
 
         /// <summary>
         /// Check if user is blocked

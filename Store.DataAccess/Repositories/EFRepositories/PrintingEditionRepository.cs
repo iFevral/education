@@ -1,45 +1,34 @@
-﻿using Store.DataAccess.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Store.DataAccess.AppContext;
+using Store.DataAccess.Entities;
+using Store.DataAccess.Repositories.Base;
 using Store.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
-    public class PrintingEditionRepository : IPrintingEditionRepository
+    public class PrintingEditionRepository : EFBaseRepository<PrintingEditions>, IPrintingEditionRepository
     {
-        public IEnumerable<PrintingEditions> GetAll()
+        public PrintingEditionRepository(ApplicationContext db) : base(db)
         {
-            throw new NotImplementedException();
+            _db = db;
         }
 
-        public PrintingEditions GetById(int id)
+        public override async Task<IList<PrintingEditions>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _db.PrintingEditions
+                                .Include(pe => pe.AuthorInBooks)
+                                    .ThenInclude(aib => aib.Author).ToListAsync();
         }
 
-        public void Create(PrintingEditions item)
+        public override IList<PrintingEditions> GetAll(Func<PrintingEditions,bool> predicate)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(PrintingEditions item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
+            return _db.PrintingEditions
+                                .Include(pe => pe.AuthorInBooks)
+                                    .ThenInclude(aib => aib.Author).Where(predicate).ToList();
         }
     }
 }

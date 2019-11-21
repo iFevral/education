@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Store.DataAccess.Repositories.Base
 {
     public interface IGenericRepository<T> where T : class
     {
-        void Create(T item);
-        T FindById(int id);
-        IEnumerable<T> Get();
-        IEnumerable<T> Find(Func<T, bool> predicate);
-        void Remove(T item);
-        void Update(T item);
+        public Task<T> FindById(int id);
+        public Task<IList<T>> GetAll();
+        public IList<T> GetAll(Func<T, bool> predicate);
+        public Task<IList<T>> Get(int from,int quantity);
+        public IList<T> Get(Func<T, bool> predicate, int from, int quantity);
+        public IList<T> Find(Func<T, bool> predicate);
+        public Task Create(T item);
+        public Task Update(T item);
+        public Task Remove(int id);
     }
 }

@@ -42,9 +42,17 @@ namespace Store.DataAccess.AppContext
         {
             modelBuilder.Entity<AuthorInBooks>(entity =>
             {
+                entity.HasKey(e => new { e.AuthorId, e.PrintingEditionId });
+
                 entity.HasIndex(e => e.AuthorId);
+                entity.HasOne(x => x.Author)
+                      .WithMany(x => x.AuthorInBooks)
+                      .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasIndex(e => e.PrintingEditionId);
+                entity.HasOne(x => x.PrintingEdition)
+                      .WithMany(x => x.AuthorInBooks)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<OrderItems>(entity =>

@@ -20,7 +20,7 @@ namespace Store.DataAccess.Entities
         public override string Email { get; set; }
         public override bool EmailConfirmed { get; set; } = false;
         public override string PasswordHash { get; set; }
-
+        public override bool LockoutEnabled { get; set; }
 
         [InverseProperty("User")]
         public virtual ICollection<Orders> Orders { get; set; }

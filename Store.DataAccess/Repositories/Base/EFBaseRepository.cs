@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.AppContext;
 
 namespace Store.DataAccess.Repositories.Base
 {
-    public class EFBaseRepository<T> : IGenericRepository<T>
+    public abstract class EFBaseRepository<T> : IGenericRepository<T>
         where T : class
     {
         protected ApplicationContext _db;
@@ -18,37 +19,59 @@ namespace Store.DataAccess.Repositories.Base
             _dbSet = db.Set<T>();
         }
 
-        public IEnumerable<T> Get()
+        public virtual async Task<IList<T>> GetAll()
         {
-            return _dbSet.AsNoTracking().ToList();
+            return await _dbSet.AsNoTracking().ToListAsync();
         }
 
-        public IEnumerable<T> Find(Func<T, bool> predicate)
+        public virtual IList<T> GetAll(Func<T, bool> predicate)
         {
-            return _dbSet.AsNoTracking().Where(predicate).ToList();
+            return _dbSet.AsNoTracking()
+                         .Where(predicate).ToList();
         }
 
-        public T FindById(int id)
+        public virtual async Task<IList<T>> Get(int from, int quantity)
         {
-            return _dbSet.Find(id);
+            return await _dbSet.AsNoTracking()
+                               .Skip(from)
+                               .Take(quantity).ToListAsync();
         }
 
-        public void Create(T item)
+        public virtual IList<T> Get(Func<T, bool> predicate, int from, int quantity)
         {
-            _dbSet.Add(item);
-            _db.SaveChanges();
+            return _dbSet.AsNoTracking()
+                         .Skip(from)
+                         .Take(quantity)
+                         .Where(predicate).ToList();
         }
 
-        public void Update(T item)
+        public virtual IList<T> Find(Func<T, bool> predicate)
+        {
+            return _dbSet.AsNoTracking()
+                         .Where(predicate).ToList();
+        }
+
+        public virtual async Task<T> FindById(int id)
+        {
+            return await _dbSet.FindAsync(id);
+        }
+
+        public virtual async Task Create(T item)
+        {
+            await _dbSet.AddAsync(item);
+            await _db.SaveChangesAsync();
+        }
+
+        public virtual async Task Update(T item)
         {
             _db.Entry(item).State = EntityState.Modified;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public void Remove(T item)
+        public virtual async Task Remove(int id)
         {
-            _dbSet.Remove(item);
-            _db.SaveChanges();
+            _dbSet.Remove(await FindById(id));
+            await _db.SaveChangesAsync();
         }
     }
 }

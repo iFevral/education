@@ -2,39 +2,48 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Store.DataAccess.Entities;
-using Store.DataAccess.AppContext;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.DataAccess.Repositories.Interfaces;
-using Store.DataAccess.Repositories.EFRepository;
+using Store.BusinessLogic.Models.Roles;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System;
 
 namespace Store.BusinessLogic.Services
 {
     public class UserService : IUserService
     {
         private IMapper _mapper;
-        private IUserRepository _userRepository;
-        public UserService(ApplicationContext db,
-                              UserManager<Users> userManager,
-                              RoleManager<Roles> roleManager,
-                              SignInManager<Users> signInManager,
-                              IMapper mapper)
+        private UserManager<Users> _userManager;
+        private RoleManager<Roles> _roleManager;
+        public UserService(UserManager<Users> userManager,
+                           RoleManager<Roles> roleManager,
+                           IMapper mapper)
         {
-            _userRepository = new UserRepository(db, userManager, roleManager, signInManager);
             _mapper = mapper;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
-        public async Task<UserModel> GetAllUsers()
+        public UserModel GetAllUsers(UserFilterData userFilter)
         {
             UserModel userModel = new UserModel();
-            var usersFromRepo = await _userRepository.GetAll();
+
+            Func<Users, bool> predicate = (u => (userFilter.Email == null || u.Email.ToLower().Contains(userFilter.Email.ToLower())) &&
+                                                (userFilter.Firstname == null || u.FirstName.ToLower().Contains(userFilter.Firstname.ToLower())) &&
+                                                (userFilter.Lastname == null || u.LastName.ToLower().Contains(userFilter.Lastname.ToLower())) &&
+                                                (userFilter.Username == null || u.UserName.ToLower().Contains(userFilter.Username.ToLower())) &&
+                                                (userFilter.EmailConfirmed == null || u.EmailConfirmed == userFilter.EmailConfirmed) &&
+                                                (userFilter.LockoutEnabled == null || u.LockoutEnabled == userFilter.LockoutEnabled) &&
+                                                (userFilter.Role == null || u.UserInRoles.Where(uir => uir.Role.Name.ToLower().Contains(userFilter.Role.ToLower())).Any()));
+
+            var usersFromRepo = _userManager.Users.Where(predicate).ToList();
             
             if(usersFromRepo == null)
             {
                 userModel.Errors.Add("No users found");
                 return userModel;
             }
-
 
             foreach (var user in usersFromRepo)
             {
@@ -48,97 +57,202 @@ namespace Store.BusinessLogic.Services
         public async Task<UserModel> GetUserById(string id)
         {
             var userModel = new UserModel();
-            var user = _mapper.Map<UserModelItem>(await _userRepository.FindById(id));
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
                 userModel.Errors.Add("User not found");
                 return userModel;
             }
+            var userItem = _mapper.Map<UserModelItem>(user);
+            userItem.Roles = await _userManager.GetRolesAsync(user);
 
-            user.Roles = await _userRepository.GetUserRoles(user.Username);
-
-            userModel.Users.Add(user);
+            userModel.Users.Add(userItem);
             return userModel;
         }
 
         public async Task<UserModel> GetUserByName(string username)
         {
             var userModel = new UserModel();
-            var user = _mapper.Map<UserModelItem>(await _userRepository.FindByName(username));
-            
+            var user = await _userManager.FindByNameAsync(username);
             if (user == null)
             {
                 userModel.Errors.Add("User not found");
                 return userModel;
             }
+            var userItem = _mapper.Map<UserModelItem>(user);
+            userItem.Roles = await _userManager.GetRolesAsync(user);
 
-            user.Roles = await _userRepository.GetUserRoles(user.Username);
-
-            userModel.Users.Add(user);
+            userModel.Users.Add(userItem);
             return userModel;
         }
 
-        public async Task CreateUser(SignUpData signUpData)
+        public async Task<UserModel> CreateUser(SignUpData signUpData)
         {
-            if (await _userRepository.FindByName(signUpData.Username) != null)
+            var userModel = new UserModel();
+            if (await _userManager.FindByNameAsync(signUpData.Username) != null)
             {
-                throw new System.Exception();
+                userModel.Errors.Add($"User with email '{signUpData.Email}' has already created");
+                return userModel;
             }
 
             //Create user 
-            await _userRepository.Create(_mapper.Map<Users>(signUpData), signUpData.Password);
+            var result = await _userManager.CreateAsync(_mapper.Map<Users>(signUpData), signUpData.Password);
+            if(!result.Succeeded)
+            {
+                userModel.Errors.Add($"User with email '{signUpData.Email}' hasn`t created");
+                return userModel;
+            }
 
             //Find user
-            var user = await _userRepository.FindByName(signUpData.Username);
+            var user = await _userManager.FindByNameAsync(signUpData.Username);
 
             //Add user to role
-            await _userRepository.AddToRole(user.Id, "Client");
+            result = await _userManager.AddToRoleAsync(user, "Client");
+            if (!result.Succeeded)
+            {
+                userModel.Errors.Add($"Role 'Client' doesn`t exists");
+                return userModel;
+            }
 
-            //Unblock
-            await _userRepository.LockOut(user.UserName, false);
+            //Unlock user
+            result = await _userManager.SetLockoutEnabledAsync(user, false);
+            if (!result.Succeeded)
+            {
+                userModel.Errors.Add($"Unlock has failed");
+                return userModel;
+            }
+
+            userModel.Users.Add(_mapper.Map<UserModelItem>(user));
+            return userModel;
         }
 
-        public async Task EditUser(SignUpData signUpData)
+        public async Task<UserModel> EditUser(SignUpData signUpData)
         {
-            var user = await _userRepository.FindByEmail(signUpData.Email);
+            var user = await _userManager.FindByEmailAsync(signUpData.Email);
+            var userModel = new UserModel();
+            if (user == null)
+            {
+                userModel.Errors.Add($"User with email '{signUpData.Email}' is not found");
+                return userModel;
+            }
+            
             user.FirstName = signUpData.Firstname;
             user.LastName = signUpData.Lastname;
+            var result = await _userManager.UpdateAsync(user);
+            
+            if (!result.Succeeded)
+            {
+                userModel.Errors.Add($"Updating user '{signUpData.Username}' has failed");
+                return userModel;
+            }
 
-            await _userRepository.Update(user);
+            userModel.Users.Add(_mapper.Map<UserModelItem>(user));
+            return userModel;
         }
 
-        public async Task DeleteUser(string username)
+        public async Task<UserModel> DeleteUser(string username)
         {
-            var user = await _userRepository.FindByName(username);
-            await _userRepository.Remove(user);
+            var user = await _userManager.FindByNameAsync(username);
+            var userModel = new UserModel();
+            var result = await _userManager.DeleteAsync(user);
+            
+            if(!result.Succeeded)
+            {
+                userModel.Errors.Add($"User '{username}' is not found");
+                return userModel;
+            }
+
+            userModel.Users.Add(_mapper.Map<UserModelItem>(user));
+            return userModel;
         }
 
-        public async Task BlockUser(string username, bool enabled)
+        public async Task<UserModel> BlockUser(string username, bool enabled)
         {
-            await _userRepository.LockOut(username, enabled);
+            var user = await _userManager.FindByNameAsync(username);
+            var userModel = new UserModel();
+            var result = await _userManager.SetLockoutEnabledAsync(user, enabled);
+            
+            if(!result.Succeeded)
+            {
+                userModel.Errors.Add($"User '{username}' is not found");
+                return userModel;
+            }
+
+            userModel.Users.Add(_mapper.Map<UserModelItem>(user));
+            return userModel;
         }
 
-        public async Task CreateRole(string rolename)
+        public async Task<RoleModel> CreateRole(RoleModelItem role)
         {
-            await _userRepository.CreateRole(rolename);
+            var rolename = await _roleManager.FindByNameAsync(role.Role);
+            var roleModel = new RoleModel();
+            var result = await _roleManager.CreateAsync(rolename);
+            
+            if(!result.Succeeded)
+            {
+                roleModel.Errors.Add($"Role '{role.Role}' has already created");
+                return roleModel;
+            }
+
+            roleModel.Roles.Add(role);
+            return roleModel;
         }
 
-        public async Task RemoveRole(string rolename)
+        public async Task<RoleModel> RemoveRole(RoleModelItem role)
         {
-            await _userRepository.DeleteRole(rolename);
+            var rolename = await _roleManager.FindByNameAsync(role.Role);
+            var roleModel = new RoleModel();
+            var result = await _roleManager.DeleteAsync(rolename);
+            if(!result.Succeeded)
+            {
+                roleModel.Errors.Add($"Role '{role.Role}' is not found");
+                return roleModel;
+            }
 
+            roleModel.Roles.Add(role);
+            return roleModel;
         }
 
-        public async Task AddUserToRole(string username, string rolename)
+        public async Task<RoleModel> AddUserToRole(UserRoleModelItem userRole)
         {
-            var user = await _userRepository.FindByName(username);
-            await _userRepository.AddToRole(user.Id, rolename);
+            var user = await _userManager.FindByNameAsync(userRole.Username);
+            var roleModel = new RoleModel();
+            if(user == null)
+            {
+                roleModel.Errors.Add($"User '{userRole.Username}' is not found");
+                return roleModel;
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, userRole.Role);
+            if (!result.Succeeded)
+            {
+                roleModel.Errors.Add($"Role '{userRole.Role}' is not found");
+                return roleModel;
+            }
+
+            roleModel.Users.Add(userRole);
+            return roleModel;
         }
 
-        public async Task RemoveUserFromRole(string username, string rolename)
+        public async Task<RoleModel> RemoveUserFromRole(UserRoleModelItem userRole)
         {
-            var user = await _userRepository.FindByName(username);
-            await _userRepository.RemoveFromRole(user.Id, rolename);
+            var user = await _userManager.FindByNameAsync(userRole.Username);
+            var roleModel = new RoleModel();
+            if (user == null)
+            {
+                roleModel.Errors.Add($"User '{userRole.Username}' is not found");
+                return roleModel;
+            }
+
+            var result = await _userManager.RemoveFromRoleAsync(user, userRole.Role);
+            if (!result.Succeeded)
+            {
+                roleModel.Errors.Add($"Role '{userRole.Role}' is not found");
+                return roleModel;
+            }
+
+            roleModel.Users.Add(userRole);
+            return roleModel;
         }
     }
 }

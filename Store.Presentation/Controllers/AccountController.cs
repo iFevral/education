@@ -24,12 +24,11 @@ namespace Store.Presentation.Controllers
         public AccountController(IConfiguration configuration,
                                  ApplicationContext db,
                                  UserManager<Users> um,
-                                 RoleManager<Roles> rm,
                                  SignInManager<Users> sim,
                                  IMapper mapper)
         {
             _configuration = configuration;
-            _accountService = new AccountService(db, um, rm, sim, mapper);
+            _accountService = new AccountService(db, um, sim, mapper);
         }
 
         [Route("~/[controller]/Home")]
@@ -78,10 +77,10 @@ namespace Store.Presentation.Controllers
             var refreshToken = JwtHelper.GenerateJwtRefreshToken(userModel.Users[0], _configuration);
             await _accountService.SaveRefreshToken(user.Username, ipfingerprint, refreshToken);
 
-            user.AccessToken = JwtHelper.GenerateJwtAccessToken(userModel.Users[0], _configuration);
-            user.RefreshToken = refreshToken;
+            userModel.AccessTokenOutputData.AccessToken = JwtHelper.GenerateJwtAccessToken(userModel.Users[0], _configuration);
+            userModel.AccessTokenOutputData.RefreshToken = refreshToken;
 
-            return Ok(user);
+            return Ok(userModel.AccessTokenOutputData);
         }
 
         [Route("~/[controller]/SignUp")]
@@ -127,17 +126,20 @@ namespace Store.Presentation.Controllers
         public async Task<IActionResult> ConfirmEmail(string username, string token)
         {
             token = token.Replace(" ", "+");
-            if (await _accountService.ConfirmEmail(username, token))
-                 return Ok("Email has successfully confirmed");
+            var userModel = await _accountService.ConfirmEmail(username, token);
+            if (userModel.Errors.Count > 0)
+                return BadRequest("Link not available");
            
-            
-            return BadRequest("Link not available");
+            return Ok("Email has successfully confirmed");
         }
 
         [Route("~/[controller]/ForgotPassword")]
         [HttpPost]
         public async Task<IActionResult> ForgotPassword([FromBody] EmailData user)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var userModel = await _accountService.ResetPassword(user.Email);
             var resetPasswordData = userModel.ResetPasswordData;
             string subject = "Reseting password confirmation";
@@ -165,6 +167,9 @@ namespace Store.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> ConfirmNewPassword([FromBody] ResetPasswordData user)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             user.Token = user.Token.Replace(" ", "+");
             await _accountService.ConfirmNewPassword(user.Email, user.Token, user.Password);
             return Ok("Password has successfully changed");

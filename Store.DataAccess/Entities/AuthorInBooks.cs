@@ -7,11 +7,10 @@ namespace Store.DataAccess.Entities
     public partial class AuthorInBooks
     {
         [Key]
-        public int Id { get; set; }
         public int AuthorId { get; set; }
+        [Key]
         public int PrintingEditionId { get; set; }
-        [Column(TypeName = "date")]
-        public DateTime Date { get; set; }
+
 
         [ForeignKey(nameof(AuthorId))]
         [InverseProperty(nameof(Authors.AuthorInBooks))]

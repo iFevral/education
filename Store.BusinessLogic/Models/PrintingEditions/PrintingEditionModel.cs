@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Store.BusinessLogic.Models.Base;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Store.BusinessLogic.Models.PrintingEditions
 {
-    public class PrintingEditionModel
+    public class PrintingEditionModel : BaseModel
     {
+        public IList<PrintingEditionModelItem> printingEditions = new List<PrintingEditionModelItem>();
     }
 }
