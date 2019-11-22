@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Store.BusinessLogic.Models.Authors
+﻿namespace Store.BusinessLogic.Models.Authors
 {
     public class AuthorFilter
     {

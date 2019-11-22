@@ -8,7 +8,7 @@ using Store.DataAccess.AppContext;
 
 namespace Store.Presentation.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AuthorController : ControllerBase
     {

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Store.DataAccess.Entities;
+using Store.DataAccess.Repositories.Base;
 
 namespace Store.DataAccess.Repositories.Interfaces
 {
-    public interface IOrderItemRepository
+    public interface IOrderItemRepository : IGenericRepository<OrderItems>
     {
     }
 }
