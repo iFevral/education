@@ -1,12 +1,10 @@
 ﻿using Store.DataAccess.Entities;
-using System.Collections.Generic;
+using Store.DataAccess.Repositories.Base;
 
 namespace Store.DataAccess.Repositories.Interfaces
 {
-    public interface IAuthorRepository
+    public interface IAuthorRepository : IGenericRepository<Authors>
     {
-        IEnumerable<Authors> GetAllAuthors();
-        Authors GetAuthorById(int id);
-        Authors GetAuthorByName(string name);
+        public void RemovePrintingEditions(int authorId);
     }
 }

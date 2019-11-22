@@ -12,9 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Store.DataAccess.Entities;
 using Store.DataAccess.AppContext;
-using Store.Presentation.Helpers;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
 
 namespace Store.Presentation
 {
@@ -38,7 +36,7 @@ namespace Store.Presentation
             
             services.AddDbContext<ApplicationContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
+                options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("DbConnection"),
                     assembly => assembly.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName));
             });
 

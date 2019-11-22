@@ -51,7 +51,6 @@ namespace Store.BusinessLogic.Services
             return userModel;
         }
 
-
         public async Task<UserModel> GetUserByName(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
@@ -74,7 +73,6 @@ namespace Store.BusinessLogic.Services
             userModel.Users.Add(userItem);
             return userModel;
         }
-
 
         public async Task<UserModel> SignIn(SignInData loginData)
         {
@@ -181,7 +179,6 @@ namespace Store.BusinessLogic.Services
 
             return userModel;
         }
-
 
         public async Task ConfirmNewPassword(string email, string token, string newPassword)
         {

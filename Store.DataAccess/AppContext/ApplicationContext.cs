@@ -30,14 +30,6 @@ namespace Store.DataAccess.AppContext
         public override DbSet<Users> Users { get; set; }
         public virtual DbSet<Sessions> Sessions { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("DbConnection");
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AuthorInBooks>(entity =>
@@ -112,7 +104,5 @@ namespace Store.DataAccess.AppContext
             modelBuilder.Entity<IdentityRoleClaim<string>>().HasNoKey();
             modelBuilder.Entity<IdentityUserToken<string>>().HasNoKey();
         }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

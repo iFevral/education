@@ -1,55 +1,51 @@
-﻿/*using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Store.DataAccess.Repositories.Interfaces;
-using Store.DataAccess.AppContext;
 using Store.DataAccess.Entities;
+using Store.DataAccess.AppContext;
+using Store.DataAccess.Repositories.Base;
+using Store.DataAccess.Repositories.Interfaces;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
-    public class AuthorRepository : IAuthorRepository
+    public class AuthorRepository : EFBaseRepository<Authors>, IAuthorRepository
     {
-        private readonly ApplicationContext _db;
-
-        public AuthorRepository(ApplicationContext db)
+        public AuthorRepository(ApplicationContext db) : base(db)
         {
             _db = db;
         }
-        public IEnumerable<Authors> GetAllAuthors()
+
+        public override IList<Authors> GetAll(Func<Authors, bool> predicate)
         {
-            return _db.Authors.AsEnumerable();
+            return _db.Authors.Where(predicate).ToList();
         }
 
-        public Authors GetAuthorById(int id)
+        public override async Task<IList<Authors>> GetAllAsync()
         {
-            return _db.Authors.Find(id);
+            return await _db.Authors.ToListAsync();
         }
 
-        public Authors GetAuthorByName(string name)
+        public override IList<Authors> Get(Func<Authors, bool> predicate, int startIndex, int quantity)
         {
-            return _db.Authors.FirstOrDefault(a => a.Name.Equals(name));
+            return _db.Authors.Where(predicate)
+                                       .Skip(startIndex)
+                                       .Take(quantity)
+                                       .ToList();
         }
 
-        public void Create(Authors author)
+        public override async Task<IList<Authors>> GetAsync(int startIndex, int quantity)
         {
-            _db.Authors.Add(author);
+            return await _db.Authors.Skip(startIndex)
+                                             .Take(quantity)
+                                             .ToListAsync();
+        }
+
+        public void RemovePrintingEditions(int authorId)
+        {
+            _db.RemoveRange(_db.AuthorInBooks.Where(aib => aib.AuthorId == authorId));
             _db.SaveChanges();
-        }
-        public void Update(Authors author)
-        {
-            _db.Entry(author).State = EntityState.Modified;
-            _db.SaveChanges();
-        }
-
-        public void Delete(int id)
-        {
-            Authors author = _db.Authors.Find(id);
-            if (author != null)
-            {
-                _db.Authors.Remove(author);
-                _db.SaveChanges();
-            }
         }
     }
 }
-*/
