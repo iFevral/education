@@ -10,8 +10,8 @@ using Store.DataAccess.AppContext;
 namespace Store.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20191120151151_test")]
-    partial class test
+    [Migration("20191125091040_orderitems_edit")]
+    partial class orderitems_edit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -91,21 +91,13 @@ namespace Store.DataAccess.Migrations
 
             modelBuilder.Entity("Store.DataAccess.Entities.AuthorInBooks", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
                     b.Property<int>("AuthorId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("date");
 
                     b.Property<int>("PrintingEditionId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("AuthorId", "PrintingEditionId");
 
                     b.HasIndex("AuthorId");
 
@@ -140,9 +132,6 @@ namespace Store.DataAccess.Migrations
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
@@ -165,13 +154,13 @@ namespace Store.DataAccess.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime?>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PaymentId")
+                    b.Property<int?>("PaymentId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -212,6 +201,9 @@ namespace Store.DataAccess.Migrations
                     b.Property<string>("Currency")
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("date");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -410,9 +402,7 @@ namespace Store.DataAccess.Migrations
                 {
                     b.HasOne("Store.DataAccess.Entities.Payments", "Payment")
                         .WithMany("Orders")
-                        .HasForeignKey("PaymentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PaymentId");
 
                     b.HasOne("Store.DataAccess.Entities.Users", "User")
                         .WithMany("Orders")
@@ -424,7 +414,8 @@ namespace Store.DataAccess.Migrations
                 {
                     b.HasOne("Store.DataAccess.Entities.Users", "User")
                         .WithMany("Sessions")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Store.DataAccess.Entities.UserInRoles", b =>

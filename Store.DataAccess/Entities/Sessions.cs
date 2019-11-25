@@ -9,6 +9,8 @@ namespace Store.DataAccess.Entities
     public class Sessions
     {
         [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+
         public int Id { get; set; }
         public string UserId { get; set; }
         public string IPFingerprint { get; set; }

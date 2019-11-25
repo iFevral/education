@@ -7,6 +7,8 @@ namespace Store.DataAccess.Entities
     public partial class Payments
     {
         [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+
         public int Id { get; set; }
         [StringLength(256)]
         public string TransactionId { get; set; }

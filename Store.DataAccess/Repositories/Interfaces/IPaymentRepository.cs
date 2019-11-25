@@ -3,7 +3,7 @@ using Store.DataAccess.Repositories.Base;
 
 namespace Store.DataAccess.Repositories.Interfaces
 {
-    public interface IPaymentsRepository : IGenericRepository<Payments>
+    public interface IPaymentRepository : IGenericRepository<Payments>
     {
     }
 }

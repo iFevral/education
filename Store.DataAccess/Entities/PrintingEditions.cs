@@ -8,6 +8,8 @@ namespace Store.DataAccess.Entities
     public partial class PrintingEditions
     {
         [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+
         public int Id { get; set; }
         [StringLength(256)]
         public string Title { get; set; }
@@ -15,7 +17,7 @@ namespace Store.DataAccess.Entities
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; } = 0;
         [Column(TypeName = "date")]
-        public DateTime? Date { get; set; }
+        public DateTime? Date { get; set; } = DateTime.Now;
         public bool IsRemoved { get; set; } = false;
         [StringLength(20)]
         public string Status { get; set; }

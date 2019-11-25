@@ -25,7 +25,7 @@ namespace Store.BusinessLogic.Services
             _roleManager = roleManager;
         }
 
-        public UserModel GetAllUsers(UserFilterData userFilter)
+        public UserModel GetAllUsers(UserFilter userFilter)
         {
             UserModel userModel = new UserModel();
 

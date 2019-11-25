@@ -13,22 +13,28 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// </summary>
         /// <returns>All orders</returns>
         public Task<OrderModel> GetAll(OrderFilter orderFilter, int startIndex, int quantity);
-        
+
         /// <summary>
-        /// Get order by id
+        /// Get order by order id
         /// </summary>
         /// <returns>Order with id</returns>
         public Task<OrderModel> FindById(int id);
-        
+
+        /// <summary>
+        /// Get order by order id and username
+        /// </summary>
+        /// <returns>Order with id</returns>
+        public OrderModel FindById(int id, string username);
+
         /// <summary>
         /// Create order
         /// </summary>
-        public Task<OrderModel> Create(OrderModelItem modelItem);
+        public Task<OrderModel> Create(OrderInputData modelItem);
 
         /// <summary>
         /// Edit order
         /// </summary>
-        public Task<OrderModel> Update(int id, OrderModelItem modelItem);
+        public Task<OrderModel> Update(int id, OrderInputData modelItem);
 
         /// <summary>
         /// Delete order
@@ -38,26 +44,11 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// <summary>
         /// Create payment add add to order
         /// </summary>
-        public Task<OrderModel> AddPaymentTransaction(PaymentModelItem modelItem);
+        public Task<OrderModel> AddPaymentTransaction(int OrderId, PaymentModelItem modelItem);
 
         /// <summary>
         /// Remove payment from order and delete
         /// </summary>
-        public Task<OrderModel> RemovePaymentTransaction(PaymentModelItem modelItem);
-
-        /// <summary>
-        /// Create order item 
-        /// </summary>
-        public Task<OrderModel> AddItemToOrder(OrderItemModelItem modelItem);
-
-        /// <summary>
-        /// Update order item
-        /// </summary>
-        public Task<OrderModel> UpdateItemInOrder(OrderItemModelItem modelItem);
-
-        /// <summary>
-        /// Remove order item
-        /// </summary>
-        public Task<OrderModel> RemoveItemFromOrder(OrderItemModelItem modelItem);
+        public Task<OrderModel> RemovePaymentTransaction(int OrderId);
     }
 }

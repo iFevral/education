@@ -7,6 +7,8 @@ namespace Store.DataAccess.Entities
     public partial class Authors
     {
         [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+
         public int Id { get; set; }
         [StringLength(100)]
         public string Name { get; set; }

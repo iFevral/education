@@ -10,8 +10,8 @@ using Store.DataAccess.AppContext;
 namespace Store.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20191121104311_delete_keys")]
-    partial class delete_keys
+    [Migration("20191125083937_order_edit")]
+    partial class order_edit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

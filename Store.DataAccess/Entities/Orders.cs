@@ -8,11 +8,13 @@ namespace Store.DataAccess.Entities
     public partial class Orders
     {
         [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+
         public int Id { get; set; }
         public string Description { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
         public string UserId { get; set; }
-        public int PaymentId { get; set; }
+        public int? PaymentId { get; set; }
 
         [ForeignKey(nameof(PaymentId))]
         [InverseProperty(nameof(Payments.Orders))]

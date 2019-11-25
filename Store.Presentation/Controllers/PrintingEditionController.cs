@@ -5,6 +5,7 @@ using Store.BusinessLogic.Services;
 using Store.DataAccess.AppContext;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Models.PrintingEditions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Store.Presentation.Controllers
 {
@@ -51,6 +52,7 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]/Create")]
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<IActionResult> CreatePrintingEdition([FromBody]PrintingEditionModelItem printingEditionItem)
         {
@@ -62,6 +64,7 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]/Update/{id}")]
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdatePrintingEdition(int id, [FromBody]PrintingEditionModelItem printingEditionItem)
         {
@@ -73,6 +76,7 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]/Delete/{id}")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         public async Task<IActionResult> DeletePrintingEdition(int id)
         {

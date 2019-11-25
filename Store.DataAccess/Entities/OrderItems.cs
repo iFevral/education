@@ -6,11 +6,12 @@ namespace Store.DataAccess.Entities
     public partial class OrderItems
     {
         [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+
         public int Id { get; set; }
         public int Amount { get; set; } = 1;
         public int PrintingEditionId { get; set; }
         public int OrderId { get; set; }
-        public int Count { get; set; } = 0;
 
         [ForeignKey(nameof(OrderId))]
         [InverseProperty(nameof(Orders.OrderItems))]

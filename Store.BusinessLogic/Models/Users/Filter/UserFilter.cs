@@ -1,7 +1,7 @@
 ﻿
 namespace Store.BusinessLogic.Models.Users
 {
-    public class UserFilterData
+    public class UserFilter
     {
         public string Firstname { get; set; }
         public string Lastname { get; set; }

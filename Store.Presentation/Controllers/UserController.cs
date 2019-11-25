@@ -27,7 +27,7 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]/GetAll")]
         [HttpPost]
-        public async Task<IActionResult> GetAllUsers([FromBody]UserFilterData userFilter)
+        public async Task<IActionResult> GetAllUsers([FromBody]UserFilter userFilter)
         {
             var userModel = _userService.GetAllUsers(userFilter);
             if (userModel.Errors.Count > 0)

@@ -10,7 +10,7 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Get all users
         /// </summary>
         /// <returns>User model</returns>
-        public UserModel GetAllUsers(UserFilterData userFilter);
+        public UserModel GetAllUsers(UserFilter userFilter);
 
         /// <summary>
         /// Get user by id

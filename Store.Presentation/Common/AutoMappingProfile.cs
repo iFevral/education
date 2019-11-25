@@ -18,15 +18,12 @@ namespace Store.Presentation.Common
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember, destMember) => srcMember != null && !srcMember.ToString().Equals("0")));
 
             CreateMap<Orders, OrderModelItem>();
-            CreateMap<OrderModelItem, Orders>()
-                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id))
-                .ForMember(dest => dest.PaymentId, opt => opt.MapFrom(src => src.Payment.Id))
+
+            CreateMap<OrderInputData, Orders>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember, destMember) => srcMember != null && !srcMember.ToString().Equals("0")));
 
             CreateMap<OrderItems, OrderItemModelItem>();
-            CreateMap<OrderItemModelItem, OrderItems>()
-                .ForMember(dest => dest.PrintingEditionId, opt => opt.MapFrom(src => src.PrintingEdition.Id))
-                .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.Order.Id))
+            CreateMap<OrderItemInputData, OrderItems>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember, destMember) => srcMember != null && !srcMember.ToString().Equals("0")));
 
             CreateMap<Payments, PaymentModelItem>();

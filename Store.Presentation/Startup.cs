@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Store.DataAccess.Entities;
 using Store.DataAccess.AppContext;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace Store.Presentation
 {
@@ -28,16 +29,21 @@ namespace Store.Presentation
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddAutoMapper(typeof(Startup));
 
             services.AddCors();
-            services.AddControllers();
             
             services.AddDbContext<ApplicationContext>(options =>
             {
                 options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("DbConnection"),
                     assembly => assembly.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName));
+            });
+            
+            services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
 
             services.AddIdentity<Users, Roles>(options => {
@@ -84,6 +90,16 @@ namespace Store.Presentation
             }
 
             loggerFactory.AddFile("Logs/EducationApp-{Date}.txt");
+
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 
