@@ -89,7 +89,7 @@ namespace Store.Presentation
                 app.UseDeveloperExceptionPage();
             }
 
-            loggerFactory.AddFile("Logs/EducationApp-{Date}.txt");
+            loggerFactory.AddFile("Logs/EducationApp-{Date}.txt", LogLevel.Error, isJson:true);
 
             app.UseSwagger();
 

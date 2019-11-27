@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Store.DataAccess.Entities;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.DataAccess.Entities;
 using Store.BusinessLogic.Models.Roles;
 
 namespace Store.Presentation.Controllers

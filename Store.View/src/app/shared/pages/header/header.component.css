@@ -1,0 +1,34 @@
+header {
+    background-color: #3f51b5;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0px 16px;
+}
+
+button {
+    margin-right:5px;
+    padding: 8px;
+    border-radius: 0;
+}
+
+.wrap {
+    width: 100%;
+    position: relative;
+}
+
+.nav-btns-auth {
+    position: absolute;
+    right:0;
+    top:0;
+}
+
+.btn-sign-up {
+    padding: 0;
+    background-color: #FFFFFF;
+    margin-right:0;
+}
+
+.mat-button--active {
+    background-color: #5367d8;
+}
