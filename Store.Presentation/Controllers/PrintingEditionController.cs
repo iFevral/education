@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Store.BusinessLogic.Services;
-using Store.DataAccess.AppContext;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Models.PrintingEditions;
 using Microsoft.AspNetCore.Authorization;
@@ -15,10 +12,9 @@ namespace Store.Presentation.Controllers
     {
         private IPrintingEditionService _printingEditionService;
 
-        public PrintingEditionController(ApplicationContext db,
-                                         IMapper mapper)
+        public PrintingEditionController(IPrintingEditionService printingEditionService)
         {
-            _printingEditionService = new PrintingEditionService(db, mapper);
+            _printingEditionService = printingEditionService;
         }
 
         [Route("~/[controller]s")]

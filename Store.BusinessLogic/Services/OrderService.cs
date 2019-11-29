@@ -5,10 +5,7 @@ using Store.BusinessLogic.Models.Orders;
 using Store.BusinessLogic.Models.Payments;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.DataAccess.Entities;
-using Store.DataAccess.AppContext;
 using Store.DataAccess.Repositories.Interfaces;
-using Store.DataAccess.Repositories.EFRepository;
-using Store.DataAccess.Repositories.EFRepositories;
 
 namespace Store.BusinessLogic.Services
 {
@@ -18,13 +15,15 @@ namespace Store.BusinessLogic.Services
         private IOrderItemRepository _orderItemRepository;
         private IPaymentRepository _paymentsRepository;
         private IMapper _mapper;
-        public OrderService(ApplicationContext db,
-                            IMapper mapper)
+        public OrderService(IMapper mapper,
+                            IPaymentRepository paymentsRepository,
+                            IOrderRepository orderRepository,
+                            IOrderItemRepository orderItemRepository)
         {
             _mapper = mapper;
-            _orderRepository = new OrderRepository(db);
-            _orderItemRepository = new OrderItemRepository(db);
-            _paymentsRepository = new PaymentRepository(db);
+            _paymentsRepository = paymentsRepository;
+            _orderRepository = orderRepository;
+            _orderItemRepository = orderItemRepository;
         }
 
         public async Task<OrderModelItem> AddPaymentTransactionAsync(int orderId, PaymentModelItem modelItem)

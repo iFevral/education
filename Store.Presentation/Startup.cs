@@ -1,19 +1,16 @@
 using System;
 using System.Text;
 using AutoMapper;
+using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Store.DataAccess.Entities;
-using Store.DataAccess.AppContext;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Store.BusinessLogic.Initialization;
 
 namespace Store.Presentation
 {
@@ -32,27 +29,15 @@ namespace Store.Presentation
             services.AddAutoMapper(typeof(Startup));
 
             services.AddCors();
-            
-            services.AddDbContext<ApplicationContext>(options =>
-            {
-                options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("DbConnection"),
-                    assembly => assembly.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName));
-            });
-            
+
+            ServicesInitializator.Initialize(services, Configuration);
+
             services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
-
-            services.AddIdentity<Users, Roles>(options => {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 6;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-            }).AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders().AddTokenProvider("StoreProvider", typeof(DataProtectorTokenProvider<Users>));
 
             var tokenValidationParameters = new TokenValidationParameters
             {

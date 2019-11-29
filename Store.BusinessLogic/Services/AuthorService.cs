@@ -2,9 +2,7 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Store.DataAccess.Entities;
-using Store.DataAccess.AppContext;
 using Store.DataAccess.Repositories.Interfaces;
-using Store.DataAccess.Repositories.EFRepository;
 using Store.BusinessLogic.Models.Authors;
 using Store.BusinessLogic.Services.Interfaces;
 
@@ -15,10 +13,10 @@ namespace Store.BusinessLogic
         private IMapper _mapper;
         private IAuthorRepository _authorRepository;
 
-        public AuthorService(ApplicationContext db,
-                                IMapper mapper)
+        public AuthorService(IMapper mapper,
+                             IAuthorRepository authorRepository)
         {
-            _authorRepository = new AuthorRepository(db);
+            _authorRepository = authorRepository;
             _mapper = mapper;
         }
 

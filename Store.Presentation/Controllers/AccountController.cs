@@ -1,13 +1,9 @@
-﻿using AutoMapper;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
-using Store.DataAccess.Entities;
 using Store.Presentation.Helpers;
 using Store.BusinessLogic.Helpers;
-using Store.BusinessLogic.Services;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
 
@@ -21,13 +17,10 @@ namespace Store.Presentation.Controllers
         private IAccountService _accountService;
 
         public AccountController(IConfiguration configuration,
-                                 UserManager<Users> um,
-                                 SignInManager<Users> sm,
-                                 RoleManager<Roles> rm,
-                                 IMapper mapper)
+                                 IAccountService accountService)
         {
             _configuration = configuration;
-            _accountService = new AccountService(um, sm, rm, mapper);
+            _accountService = accountService;
         }
 
         [Route("~/[controller]/Home")]

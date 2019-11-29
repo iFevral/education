@@ -1,11 +1,7 @@
-﻿using AutoMapper;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Store.DataAccess.Entities;
 using Store.BusinessLogic.Models.Users;
-using Store.BusinessLogic.Services;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Models.Roles;
 
@@ -18,12 +14,9 @@ namespace Store.Presentation.Controllers
     {
         private IUserService _userService;
 
-        public UserController(UserManager<Users> um,
-                              RoleManager<Roles> rm,
-                              SignInManager<Users> sm,
-                              IMapper mapper)
+        public UserController(IUserService userService)
         {
-            _userService = new UserService(um, rm, sm, mapper);
+            _userService = userService;
         }
 
         [Route("~/[controller]s/")]

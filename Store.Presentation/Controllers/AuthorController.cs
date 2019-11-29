@@ -1,10 +1,7 @@
-﻿using AutoMapper;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Store.BusinessLogic;
 using Store.BusinessLogic.Models.Authors;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.DataAccess.AppContext;
 
 namespace Store.Presentation.Controllers
 {
@@ -14,10 +11,9 @@ namespace Store.Presentation.Controllers
     {
         private IAuthorService _authorService;
 
-        public AuthorController(ApplicationContext db,
-                                IMapper mapper)
+        public AuthorController(IAuthorService authorService)
         {
-            _authorService = new AuthorService(db, mapper);
+            _authorService = authorService;
         }
 
         [Route("~/[controller]s")]

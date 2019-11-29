@@ -1,11 +1,8 @@
 ﻿using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Store.BusinessLogic.Models.Orders;
-using Store.BusinessLogic.Services;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.DataAccess.AppContext;
 
 namespace Store.Presentation.Controllers
 {
@@ -16,10 +13,9 @@ namespace Store.Presentation.Controllers
     {
         private IOrderService _orderService;
 
-        public OrderController(ApplicationContext db,
-                                IMapper mapper)
+        public OrderController(IOrderService orderService)
         {
-            _orderService = new OrderService(db, mapper);
+            _orderService = orderService;
         }
 
         [Route("~/[controller]s")]

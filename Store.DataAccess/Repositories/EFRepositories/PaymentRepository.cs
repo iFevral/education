@@ -3,7 +3,7 @@ using Store.DataAccess.AppContext;
 using Store.DataAccess.Repositories.Base;
 using Store.DataAccess.Repositories.Interfaces;
 
-namespace Store.DataAccess.Repositories.EFRepositories
+namespace Store.DataAccess.Repositories.EFRepository
 {
     public class PaymentRepository : EFBaseRepository<Payments>, IPaymentRepository
     {

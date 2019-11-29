@@ -1,15 +1,10 @@
 ﻿using AutoMapper;
-using System;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
-using Store.BusinessLogic.Models.Authors;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Models.PrintingEditions;
-using Store.DataAccess.AppContext;
 using Store.DataAccess.Repositories.Interfaces;
-using Store.DataAccess.Repositories.EFRepository;
 using Store.DataAccess.Entities;
-using System.Threading.Tasks;
 
 namespace Store.BusinessLogic.Services
 {
@@ -19,15 +14,11 @@ namespace Store.BusinessLogic.Services
         private IMapper _mapper;
         private IPrintingEditionRepository _printingEditionRepository;
 
-        private string ValidateString(string str)
-        {
-            return str.Trim().ToLower();
-        }
-
-        public PrintingEditionService(ApplicationContext db, IMapper mapper)
+        public PrintingEditionService(IMapper mapper,
+                                      IPrintingEditionRepository printingEditionRepository)
         {
             _mapper = mapper;
-            _printingEditionRepository = new PrintingEditionRepository(db);
+            _printingEditionRepository = printingEditionRepository;
         }
 
         public PrintingEditionModel GetAll(PrintingEditionFilter peFilter,int startIndex = -1, int quantity = -1)

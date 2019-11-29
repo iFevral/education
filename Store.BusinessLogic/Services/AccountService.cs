@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
 using Store.BusinessLogic.Common;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.DataAccess.Repositories.EFRepository;
 
 namespace Store.BusinessLogic.Services
 {
@@ -14,13 +12,11 @@ namespace Store.BusinessLogic.Services
     {
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
-        public AccountService(UserManager<Users> userManager,
-                              SignInManager<Users> signInManager,
-                              RoleManager<Roles> roleManager,
-                              IMapper mapper)
+        public AccountService(IMapper mapper,
+                              IUserRepository userRepository)
         {
             _mapper = mapper;
-            _userRepository = new UserRepository(userManager,roleManager,signInManager);
+            _userRepository = userRepository;
         }
 
 
