@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace Store.DataAccess.Entities
 {
@@ -24,8 +24,6 @@ namespace Store.DataAccess.Entities
 
         [InverseProperty("User")]
         public virtual ICollection<Orders> Orders { get; set; }
-        [InverseProperty("User")]
-        public virtual ICollection<Sessions> Sessions { get; set; }
         [InverseProperty("User")]
         public virtual ICollection<UserInRoles> UserInRoles { get; set; }
     }

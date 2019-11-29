@@ -1,9 +1,9 @@
-﻿
+﻿using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.PrintingEditions;
 
 namespace Store.BusinessLogic.Models.Orders
 {
-    public class OrderItemModelItem
+    public class OrderItemModelItem : BaseModel
     {
         public int Id { get; set; }
         public int Amount { get; set; } = 1;

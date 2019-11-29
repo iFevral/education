@@ -28,7 +28,6 @@ namespace Store.DataAccess.AppContext
         public override DbSet<Roles> Roles { get; set; }
         public virtual DbSet<UserInRoles> UserInRoles { get; set; }
         public override DbSet<Users> Users { get; set; }
-        public virtual DbSet<Sessions> Sessions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -59,13 +58,6 @@ namespace Store.DataAccess.AppContext
                 entity.HasIndex(e => e.PaymentId);
                 entity.HasOne(x => x.User)
                       .WithMany(x => x.Orders)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            modelBuilder.Entity<Sessions>(entity =>
-            {
-                entity.HasOne(x => x.User)
-                      .WithMany(x => x.Sessions)
                       .OnDelete(DeleteBehavior.Cascade);
             });
 

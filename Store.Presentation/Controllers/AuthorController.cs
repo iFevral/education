@@ -8,7 +8,7 @@ using Store.DataAccess.AppContext;
 
 namespace Store.Presentation.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]s")]
     [ApiController]
     public class AuthorController : ControllerBase
     {
@@ -20,59 +20,69 @@ namespace Store.Presentation.Controllers
             _authorService = new AuthorService(db, mapper);
         }
 
-        [Route("~/[controller]/GetAll")]
+        [Route("~/[controller]s")]
         [HttpGet]
-        public IActionResult GetAuthors(string name, int startIndex = -1, int quantity = -1)
+        public async Task<IActionResult> GetAuthors([FromBody]AuthorFilter authorFilter, int startIndex = -1, int quantity = -1)
         {
-            var authorModel = _authorService.GetAll(name, startIndex, quantity);
+            var authorModel = await _authorService.GetAll(authorFilter, startIndex, quantity);
             if (authorModel.Errors.Count > 0)
-                return NotFound(authorModel.Errors);
+            {
+                return NotFound(authorModel);
+            }
 
-            return Ok(authorModel.Authors);
+            return Ok(authorModel);
         }
 
-        [Route("~/[controller]/{id}")]
+        [Route("~/[controller]s/[controller]/{id}")]
         [HttpGet]
         public async Task<IActionResult> GetAuthor(int id)
         {
-            var authorModel = await _authorService.FindById(id);
+            var authorModel = await _authorService.FindByIdAsync(id);
             if (authorModel.Errors.Count > 0)
-                return NotFound(authorModel.Errors);
+            {
+                return NotFound(authorModel);
+            }
 
-            return Ok(authorModel.Authors);
+            return Ok(authorModel);
         }
 
-        [Route("~/[controller]/Create")]
+        [Route("~/[controller]s/Create")]
         [HttpPut]
         public async Task<IActionResult> CreateAuthor([FromBody]AuthorModelItem authorItem)
         {
-            var authorModel = await _authorService.Create(authorItem);
+            var authorModel = await _authorService.CreateAsync(authorItem);
             if (authorModel.Errors.Count > 0)
-                return NotFound(authorModel.Errors);
+            {
+                return NotFound(authorModel);
+            }
 
-            return Ok(authorModel.Authors);
+            return Ok(authorModel);
         }
 
-        [Route("~/[controller]/Update/{id}")]
+        [Route("~/[controller]s/Update/{id}")]
         [HttpPut]
         public async Task<IActionResult> UpdateAuthor(int id, [FromBody]AuthorModelItem authorItem)
         {
-            var authorModel = await _authorService.Update(id, authorItem);
+            var authorModel = await _authorService.UpdateAsync(id, authorItem);
             if (authorModel.Errors.Count > 0)
-                return NotFound(authorModel.Errors);
+            {
+                return NotFound(authorModel);
+            }
 
-            return Ok(authorModel.Authors);
+            return Ok(authorModel);
         }
 
-        [Route("~/[controller]/Delete/{id}")]
+        [Route("~/[controller]s/Delete/{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAuthor(int id)
         {
-            var authorModel = await _authorService.Delete(id);
+            var authorModel = await _authorService.DeleteAsync(id);
             if (authorModel.Errors.Count > 0)
-                return NotFound(authorModel.Errors);
+            {
+                return NotFound(authorModel);
+            }
 
-            return Ok(authorModel.Authors);
+            return Ok(authorModel);
         }
     }
 }

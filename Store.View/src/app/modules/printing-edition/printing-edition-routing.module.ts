@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ListComponent } from './list/list.component';
+import { ListComponent } from './pages/list/list.component';
 
 const printingEditionRoutes: Routes = [
     { path: 'List', component: ListComponent },

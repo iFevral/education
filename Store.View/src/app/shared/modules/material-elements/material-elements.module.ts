@@ -3,7 +3,9 @@ import {
     MatMenuModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTableModule,
+    MatPaginatorModule
   } from '@angular/material';
 
 
@@ -13,7 +15,9 @@ import {
     MatMenuModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTableModule,
+    MatPaginatorModule
   ]
 })
 export class MaterialElementsModule { }

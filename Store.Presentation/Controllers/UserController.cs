@@ -20,151 +20,131 @@ namespace Store.Presentation.Controllers
 
         public UserController(UserManager<Users> um,
                               RoleManager<Roles> rm,
+                              SignInManager<Users> sm,
                               IMapper mapper)
         {
-            _userService = new UserService(um, rm, mapper);
+            _userService = new UserService(um, rm, sm, mapper);
         }
 
-        [Route("~/[controller]/GetAll")]
+        [Route("~/[controller]s/")]
         [HttpPost]
         public async Task<IActionResult> GetAllUsers([FromBody]UserFilter userFilter)
         {
-            var userModel = _userService.GetAllUsers(userFilter);
+            var userModel = await _userService.GetAllUsersAsync();
             if (userModel.Errors.Count > 0)
-                return NotFound(userModel.Errors);
+            {
+                return NotFound(userModel);
+            }
 
-            return Ok(userModel.Users);
+            return Ok(userModel);
         }
 
-        [Route("~/[controller]/Profile")]
+        [Route("~/[controller]s/[controller]/{username}")]
         [HttpGet]
         public async Task<IActionResult> GetUserProfile(string username)
         {
-            var userModel = await _userService.GetUserByName(username);
+            var userModel = await _userService.GetUserByNameAsync(username);
             if (userModel.Errors.Count > 0)
-                return NotFound(userModel.Errors);
-
-            return Ok(userModel.Users);
+            {
+                return NotFound(userModel);
+            }
+            return Ok(userModel);
         }
 
-        [Route("~/[controller]/Block")]
+        [Route("~/[controller]s/Block")]
         [HttpPost]
         public async Task<IActionResult> BlockUser(string username, bool enabled)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userModel = await _userService.BlockUser(username,enabled);
+            var userModel = await _userService.BlockUserAsync(username,enabled);
             if (userModel.Errors.Count > 0)
-                return NotFound(userModel.Errors);
-
-            var user = userModel.Users[0];
-            return Ok($"User '{user.Username}' has succesfuly blocked'");
+            {
+                return NotFound(userModel);
+            }
+            return Ok(userModel);
         }
 
-        [Route("~/[controller]/Create")]
+        [Route("~/[controller]s/Create")]
         [HttpPut]
-        public async Task<IActionResult> Create([FromBody]SignUpData signUpData)
+        public async Task<IActionResult> Create([FromBody]SignUpModel signUpData)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userModel = await _userService.CreateUser(signUpData);
+            var userModel = await _userService.CreateUserAsync(signUpData);
             if (userModel.Errors.Count > 0)
-                return NotFound(userModel.Errors);
-
-            var user = userModel.Users[0];
-            return Ok($"User '{user.Username}' has succesfuly created'");
+            {
+                return NotFound(userModel);
+            }
+            return Ok(userModel);
         }
 
-        [Route("~/[controller]/Edit")]
+        [Route("~/[controller]s/Update")]
         [HttpPut]
-        public async Task<IActionResult> Edit([FromBody]SignUpData signUpData)
+        public async Task<IActionResult> Update([FromBody]SignUpModel signUpData)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userModel = await _userService.EditUser(signUpData);
+            var userModel = await _userService.UpdateUserAsync(signUpData);
             if (userModel.Errors.Count > 0)
-                return NotFound(userModel.Errors);
-
-            var user = userModel.Users[0];
-            return Ok($"User '{user.Username}' has succesfuly edited'");
+            {
+                return NotFound(userModel);
+            }
+            return Ok(userModel);
         }
 
-        [Route("~/[controller]/Delete")]
+        [Route("~/[controller]s/Delete")]
         [HttpDelete]
         public async Task<IActionResult> Delete(string username)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userModel = await _userService.DeleteUser(username);
+            var userModel = await _userService.DeleteUserAsync(username);
             if (userModel.Errors.Count > 0)
-                return NotFound(userModel.Errors);
-
-            var user = userModel.Users[0];
-            return Ok($"User '{user.Username}' has succesfuly deleted'");
+            {
+                return NotFound(userModel);
+            }
+            return Ok(userModel);
         }
 
-        [Route("~/[controller]/CreateRole")]
+        [Route("~/[controller]s/CreateRole")]
         [HttpPut]
         public async Task<IActionResult> CreateRole([FromBody]RoleModelItem roleModelItem)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var roleModel = await _userService.CreateRole(roleModelItem);
+            var roleModel = await _userService.CreateRoleAsync(roleModelItem);
             if (roleModel.Errors.Count > 0)
-                return NotFound(roleModel.Errors);
-
-            var user = roleModel.Roles[0];
-            return Ok($"Role '{user.Role}' succesfuly created");
+            {
+                return NotFound(roleModel);
+            }
+            return Ok(roleModel);
         }
 
-        [Route("~/[controller]/DeleteRole")]
+        [Route("~/[controller]s/DeleteRole")]
         [HttpDelete]
         public async Task<IActionResult> RemoveRole([FromBody]RoleModelItem roleModelItem)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var roleModel = await _userService.RemoveRole(roleModelItem);
+            var roleModel = await _userService.RemoveRoleAsync(roleModelItem);
             if (roleModel.Errors.Count > 0)
-                return NotFound(roleModel.Errors);
-
-            var user = roleModel.Roles[0];
-            return Ok($"Role '{user.Role}' succesfuly deleted");
+            {
+                return NotFound(roleModel);
+            }
+            return Ok(roleModel);
         }
 
-        [Route("~/[controller]/AddToRole")]
+        [Route("~/[controller]s/AddToRole")]
         [HttpPut]
         public async Task<IActionResult> AddToRole([FromBody]UserRoleModelItem userRoleModelItem)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var roleModel = await _userService.AddUserToRole(userRoleModelItem);
+            var roleModel = await _userService.AddUserToRoleAsync(userRoleModelItem);
             if (roleModel.Errors.Count > 0)
-                return NotFound(roleModel.Errors);
-
-            var user = roleModel.Users[0];
-            return Ok($"User '{user.Username}' added to role '{user.Role}'");
+            {
+                return NotFound(roleModel);
+            }
+            return Ok(roleModel);
         }
 
-        [Route("~/[controller]/RemoveFromRole")]
+        [Route("~/[controller]s/RemoveFromRole")]
         [HttpDelete]
         public async Task<IActionResult> RemoveFromRole([FromBody]UserRoleModelItem userRoleModelItem)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var roleModel = await _userService.RemoveUserFromRole(userRoleModelItem);
+            var roleModel = await _userService.RemoveUserFromRoleAsync(userRoleModelItem);
             if (roleModel.Errors.Count > 0)
-                return NotFound(roleModel.Errors);
-
-            var user = roleModel.Users[0];
-            return Ok($"User '{user.Username}' removed from role '{user.Role}'");
+            {
+                return NotFound(roleModel);
+            }
+            return Ok(roleModel);
         }
     }
 }

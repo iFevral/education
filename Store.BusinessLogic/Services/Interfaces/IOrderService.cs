@@ -12,43 +12,37 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Get part orders or all orders with filtering
         /// </summary>
         /// <returns>All orders</returns>
-        public Task<OrderModel> GetAll(OrderFilter orderFilter, int startIndex, int quantity);
+        public Task<OrderModel> GetAllAsync(OrderFilter orderFilter, int startIndex, int quantity);
 
         /// <summary>
         /// Get order by order id
         /// </summary>
         /// <returns>Order with id</returns>
-        public Task<OrderModel> FindById(int id);
-
-        /// <summary>
-        /// Get order by order id and username
-        /// </summary>
-        /// <returns>Order with id</returns>
-        public OrderModel FindById(int id, string username);
+        public Task<OrderModelItem> FindByIdAsync(int id);
 
         /// <summary>
         /// Create order
         /// </summary>
-        public Task<OrderModel> Create(OrderInputData modelItem);
+        public Task<OrderModelItem> CreateAsync(OrderModelItem modelItem);
 
         /// <summary>
         /// Edit order
         /// </summary>
-        public Task<OrderModel> Update(int id, OrderInputData modelItem);
+        public Task<OrderModelItem> UpdateAsync(int id, OrderModelItem modelItem);
 
         /// <summary>
         /// Delete order
         /// </summary>
-        public Task<OrderModel> Delete(int id);
+        public Task<OrderModelItem> DeleteAsync(int id);
 
         /// <summary>
         /// Create payment add add to order
         /// </summary>
-        public Task<OrderModel> AddPaymentTransaction(int OrderId, PaymentModelItem modelItem);
+        public Task<OrderModelItem> AddPaymentTransactionAsync(int OrderId, PaymentModelItem modelItem);
 
         /// <summary>
         /// Remove payment from order and delete
         /// </summary>
-        public Task<OrderModel> RemovePaymentTransaction(int OrderId);
+        public Task<OrderModelItem> RemovePaymentTransactionAsync(int OrderId);
     }
 }

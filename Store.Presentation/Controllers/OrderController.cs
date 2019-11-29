@@ -9,7 +9,7 @@ using Store.DataAccess.AppContext;
 
 namespace Store.Presentation.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]s")]
     [Authorize]
     [ApiController]
     public class OrderController : ControllerBase
@@ -22,7 +22,7 @@ namespace Store.Presentation.Controllers
             _orderService = new OrderService(db, mapper);
         }
 
-        [Route("~/[controller]")]
+        [Route("~/[controller]s")]
         [HttpGet]
         public async Task<IActionResult> GetAll(string username, int startIndex, int quantity)
         { 
@@ -31,70 +31,68 @@ namespace Store.Presentation.Controllers
                 Username = username
             };
 
-            var orderModel = await _orderService.GetAll(orderFilter, startIndex, quantity);
+            var orderModel = await _orderService.GetAllAsync(orderFilter, startIndex, quantity);
             if (orderModel.Errors.Count > 0)
-                return NotFound(orderModel.Errors);
+            {
+                return NotFound(orderModel);
+            }
 
-            return Ok(orderModel.Orders);
+            return Ok(orderModel);
         }
 
-        [Route("~/[controller]/Find/{id}")]
-        [HttpGet]
-        public async Task<IActionResult> FindBy(int id, string username)
-        {
-            var orderModel = _orderService.FindById(id, username);
-            if (orderModel.Errors.Count > 0)
-                return NotFound(orderModel.Errors);
-
-            return Ok(orderModel.Orders);
-        }
-
-        [Route("~/[controller]/{id}")]
+        [Route("~/[controller]s/[controller]/{id}")]
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> FindById(int id)
         {
-            var orderModel = await _orderService.FindById(id);
+            var orderModel = await _orderService.FindByIdAsync(id);
             if (orderModel.Errors.Count > 0)
-                return NotFound(orderModel.Errors);
-
-            return Ok(orderModel.Orders);
+            {
+                return NotFound(orderModel);
+            }
+            return Ok(orderModel);
         }
 
-        [Route("~/[controller]/Create")]
+        [Route("~/[controller]s/Create")]
         [Authorize(Roles = "Admin")]
         [HttpPut]
-        public async Task<IActionResult> CreateOrder([FromBody]OrderInputData orderItem)
+        public async Task<IActionResult> CreateOrder([FromBody]OrderModelItem OrderModelItem)
         {
-            var orderModel = await _orderService.Create(orderItem);
+            var orderModel = await _orderService.CreateAsync(OrderModelItem);
             if (orderModel.Errors.Count > 0)
-                return NotFound(orderModel.Errors);
+            {
+                return NotFound(orderModel);
+            }
 
-            return Ok(orderModel.Orders);
+            return Ok(orderModel);
         }
 
-        [Route("~/[controller]/Update/{id}")]
+        [Route("~/[controller]s/Update/{id}")]
         [Authorize(Roles = "Admin")]
         [HttpPut]
-        public async Task<IActionResult> UpdateOrder(int id, [FromBody]OrderInputData orderItem)
+        public async Task<IActionResult> UpdateOrder(int id, [FromBody]OrderModelItem OrderModelItem)
         {
-            var orderModel = await _orderService.Update(id, orderItem);
+            var orderModel = await _orderService.UpdateAsync(id, OrderModelItem);
             if (orderModel.Errors.Count > 0)
-                return NotFound(orderModel.Errors);
+            {
+                return NotFound(orderModel);
+            }
 
-            return Ok(orderModel.Orders);
+            return Ok(orderModel);
         }
 
-        [Route("~/[controller]/Delete/{id}")]
+        [Route("~/[controller]s/Delete/{id}")]
         [Authorize(Roles = "Admin")]
         [HttpDelete]
         public async Task<IActionResult> DeleteOrder(int id)
         {
-            var orderModel = await _orderService.Delete(id);
+            var orderModel = await _orderService.DeleteAsync(id);
             if (orderModel.Errors.Count > 0)
-                return NotFound(orderModel.Errors);
+            {
+                return NotFound(orderModel);
+            }
 
-            return Ok(orderModel.Orders);
+            return Ok(orderModel);
         }
     }
 }

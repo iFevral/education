@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Store.DataAccess.Entities;
 using Store.Presentation.Helpers;
 using Store.BusinessLogic.Helpers;
-using Store.DataAccess.AppContext;
 using Store.BusinessLogic.Services;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
@@ -22,13 +21,13 @@ namespace Store.Presentation.Controllers
         private IAccountService _accountService;
 
         public AccountController(IConfiguration configuration,
-                                 ApplicationContext db,
                                  UserManager<Users> um,
-                                 SignInManager<Users> sim,
+                                 SignInManager<Users> sm,
+                                 RoleManager<Roles> rm,
                                  IMapper mapper)
         {
             _configuration = configuration;
-            _accountService = new AccountService(db, um, sim, mapper);
+            _accountService = new AccountService(um, sm, rm, mapper);
         }
 
         [Route("~/[controller]/Home")]
@@ -41,82 +40,72 @@ namespace Store.Presentation.Controllers
         [Route("~/[controller]/Profile")]
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> GetProfile([FromHeader]string Autorization)
+        public async Task<IActionResult> GetProfile([FromHeader]string Authorization)
         {
             //Remove "Bearer " from token
-            string token = Autorization.Substring(7);
+            string token = Authorization.Substring(7);
 
-            var userModel = await _accountService.GetUserById(JwtHelper.GetUserIdFromToken(token));
-            
+            var userModel = await _accountService.GetUserByIdAsync(JwtHelper.GetUserIdFromToken(token));
+
             if (userModel.Errors.Count > 0)
-                return NotFound(userModel.Errors);
+            {
+                return NotFound(userModel);
+            }
 
-            var user = userModel.Users[0];
-
-            return Ok(user);
+            return Ok(userModel);
 
         }
 
         [Route("~/[controller]/SignIn")]
         [HttpPost]
-        public async Task<IActionResult> SignIn([FromHeader]string ipfingerprint, [FromBody] SignInData loginData)
+        public async Task<IActionResult> SignIn([FromBody] SignInModel loginData)
         {
-            if (!ModelState.IsValid)
-                 return BadRequest(ModelState);
+            var userModel = await _accountService.SignInAsync(loginData);
 
-            var userModel = await _accountService.SignIn(loginData);
-           
             if (userModel.Errors.Count > 0)
-                return NotFound(userModel.Errors);
+            {
+                return NotFound(userModel);
+            }
 
-            var user = userModel.Users[0];
-
-            if (await _accountService.IsAccountLocked(user.Username))
+            if (await _accountService.IsAccountLockedAsync(userModel.Username))
+            {
                 return Unauthorized("User is blocked");
+            }
 
-            var refreshToken = JwtHelper.GenerateJwtRefreshToken(userModel.Users[0], _configuration);
-            await _accountService.SaveRefreshToken(user.Username, ipfingerprint, refreshToken);
+            var refreshToken = JwtHelper.GenerateJwtRefreshToken(userModel, _configuration);
 
-            userModel.AccessTokenOutputData.AccessToken = JwtHelper.GenerateJwtAccessToken(userModel.Users[0], _configuration);
-            userModel.AccessTokenOutputData.RefreshToken = refreshToken;
+            var tokenModel = new AccessTokenModel();
+            tokenModel.AccessToken = JwtHelper.GenerateJwtAccessToken(userModel, _configuration);
+            tokenModel.RefreshToken = refreshToken;
 
-            return Ok(userModel.AccessTokenOutputData);
+            return Ok(tokenModel);
         }
 
         [Route("~/[controller]/SignUp")]
         [HttpPost]
-        public async Task<IActionResult> SignUp([FromBody] SignUpData userData)
+        public async Task<IActionResult> SignUp([FromBody] SignUpModel signUpModel)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var emailModel = await _accountService.SignUpAsync(signUpModel);
 
-            var userModel = await _accountService.SignUp(userData);
-            
-            if (userModel.Errors.Count > 0)
-                return BadRequest(userModel.Errors);
+            if (emailModel.Errors.Count > 0)
+            {
+                return BadRequest(emailModel);
+            }
 
-            var emailData = userModel.EmailData;
             string subject = "Account confirmation";
             string body = "Confirmation link: <a href='https://localhost:44312/Account/ConfirmEmail?" +
-                            "username=" + emailData.Email + "&token=" + emailData.Token + "'>Verify email</a>";
+                            "username=" + emailModel.Email + "&token=" + emailModel.Token + "'>Verify email</a>";
             
-            EmailHelper.Send(userData.Email, subject, body, _configuration);
+            EmailHelper.Send(signUpModel.Email, subject, body, _configuration);
             
             return Ok("Check your email to confirm your information");
         }
 
         [Route("~/[controller]/SignOut")]
+        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> SignOut([FromHeader] string ipfingerprint, [FromHeader]string Authorization)
+        public async Task<IActionResult> SignOut()
         {
-            string token = Authorization.Substring(7); //Remove 'Bearer ' from token
-            var userModel = await _accountService.GetUserById(JwtHelper.GetUserIdFromToken(token));
-            if (userModel.Errors.Count > 0)
-                return NotFound(userModel.Errors);
-
-            var user = userModel.Users[0];
-            await _accountService.SignOut(user.Username, ipfingerprint);
-
             return Ok("Sign out success");
         }
 
@@ -126,27 +115,26 @@ namespace Store.Presentation.Controllers
         public async Task<IActionResult> ConfirmEmail(string username, string token)
         {
             token = token.Replace(" ", "+");
-            var userModel = await _accountService.ConfirmEmail(username, token);
+            var userModel = await _accountService.ConfirmEmailAsync(username, token);
             if (userModel.Errors.Count > 0)
+            {
                 return BadRequest("Link not available");
-           
+            }
+
             return Ok("Email has successfully confirmed");
         }
 
         [Route("~/[controller]/ForgotPassword")]
         [HttpPost]
-        public async Task<IActionResult> ForgotPassword([FromBody] EmailData user)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        public async Task<IActionResult> ForgotPassword([FromBody] EmailModel user)
+        { 
 
-            var userModel = await _accountService.ResetPassword(user.Email);
-            var resetPasswordData = userModel.ResetPasswordData;
+            var resetPasswordModel = await _accountService.ResetPasswordAsync(user.Email);
             string subject = "Reseting password confirmation";
             string body = "Confirmation link: <a href='" + _configuration["Url"] + "/Account/ConfirmReseting?" +
-                          "email=" + resetPasswordData.Email + "&token=" + resetPasswordData.Token + "'>Reset password</a>";
+                          "email=" + resetPasswordModel.Email + "&token=" + resetPasswordModel.Token + "'>Reset password</a>";
             
-            EmailHelper.Send(resetPasswordData.Email, subject, body, _configuration);
+            EmailHelper.Send(resetPasswordModel.Email, subject, body, _configuration);
             
             return Ok("Check your email");
         }
@@ -156,7 +144,7 @@ namespace Store.Presentation.Controllers
         public IActionResult ConfirmResetPassword(string email, string token)
         {
             token = token.Replace(" ", "+");
-            return Ok(new ResetPasswordData
+            return Ok(new ResetPasswordModel
             {
                 Email = email,
                 Token = token
@@ -165,41 +153,31 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]/ConfirmNewPassword")]
         [HttpPost]
-        public async Task<IActionResult> ConfirmNewPassword([FromBody] ResetPasswordData user)
+        public async Task<IActionResult> ConfirmNewPassword([FromBody] ResetPasswordModel user)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             user.Token = user.Token.Replace(" ", "+");
-            await _accountService.ConfirmNewPassword(user.Email, user.Token, user.Password);
+            await _accountService.ConfirmNewPasswordAsync(user.Email, user.Token, user.Password);
             return Ok("Password has successfully changed");
         }
 
         [Route("~/RefreshToken")]
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> RefreshTokens([FromHeader]string Authorization, [FromHeader]string ipfingerprint)
+        public async Task<IActionResult> RefreshTokens([FromHeader]string Authorization)
         {
             string token = Authorization.Substring(7); //Remove 'Bearer ' from token
-            var userModel = await _accountService.GetUserById(JwtHelper.GetUserIdFromToken(token));
+            var userModel = await _accountService.GetUserByIdAsync(JwtHelper.GetUserIdFromToken(token));
 
             if (userModel.Errors.Count > 0)
-                return NotFound(userModel.Errors);
-
-            var user = userModel.Users[0];
-
-            if (await _accountService.IsAccountLocked(user.Username) ||
-                !await _accountService.CheckAndRemoveRefreshToken(user.Username, ipfingerprint, token))
             {
-                return Unauthorized();
+                return NotFound(userModel.Errors);
             }
 
-            var refreshToken = JwtHelper.GenerateJwtRefreshToken(user, _configuration);
-            await _accountService.SaveRefreshToken(user.Username, ipfingerprint, refreshToken);
+            var refreshToken = JwtHelper.GenerateJwtRefreshToken(userModel, _configuration);
 
-            return Ok(new AccessTokenData
+            return Ok(new AccessTokenModel
             {
-                AccessToken = JwtHelper.GenerateJwtAccessToken(user, _configuration),
+                AccessToken = JwtHelper.GenerateJwtAccessToken(userModel, _configuration),
                 RefreshToken = refreshToken
             });
         }

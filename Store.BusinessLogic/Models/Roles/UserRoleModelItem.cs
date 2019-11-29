@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Store.BusinessLogic.Models.Base;
 
 namespace Store.BusinessLogic.Models.Roles
 {
-    public class UserRoleModelItem : RoleModelItem
+    public class UserRoleModelItem : BaseModel
     {
-        [Required]
+        public string Rolename { get; set; }
         public string Username { get; set; }
     }
 }

@@ -4,9 +4,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
-using Store.BusinessLogic.Models.Users;
-using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
+using Store.BusinessLogic.Models.Users;
 
 namespace Store.Presentation.Helpers
 {

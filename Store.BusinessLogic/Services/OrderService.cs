@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AutoMapper;
 using System.Threading.Tasks;
-using AutoMapper;
+using System.Collections.Generic;
 using Store.BusinessLogic.Models.Orders;
 using Store.BusinessLogic.Models.Payments;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.DataAccess.AppContext;
 using Store.DataAccess.Entities;
-using Store.DataAccess.Repositories.EFRepositories;
-using Store.DataAccess.Repositories.EFRepository;
+using Store.DataAccess.AppContext;
 using Store.DataAccess.Repositories.Interfaces;
+using Store.DataAccess.Repositories.EFRepository;
+using Store.DataAccess.Repositories.EFRepositories;
 
 namespace Store.BusinessLogic.Services
 {
@@ -28,52 +27,75 @@ namespace Store.BusinessLogic.Services
             _paymentsRepository = new PaymentRepository(db);
         }
 
-        public async Task<OrderModel> AddPaymentTransaction(int orderId, PaymentModelItem modelItem)
+        public async Task<OrderModelItem> AddPaymentTransactionAsync(int orderId, PaymentModelItem modelItem)
         {
             var order = await _orderRepository.FindByIdAsync(orderId);
-            var orderModel = new OrderModel();
+            var orderModel = new OrderModelItem();
             if (order == null)
             {
                 orderModel.Errors.Add("Order not found");
                 return orderModel;
             }
 
-            await _paymentsRepository.CreateAsync(new Payments { TransactionId = modelItem.TransactionId });
+            var result = await _paymentsRepository.CreateAsync(new Payments { TransactionId = modelItem.TransactionId });
+            if(!result)
+            {
+                orderModel.Errors.Add("Creating payment error");
+                return orderModel;
+            }
+
             order.PaymentId = _paymentsRepository.FindBy(p => p.TransactionId.Equals(modelItem.TransactionId)).Id;
-            await _orderRepository.UpdateAsync(order);
+            
+            result = await _orderRepository.UpdateAsync(order);
+            if (!result)
+            {
+                orderModel.Errors.Add("Order not found");
+                return orderModel;
+            }
+
             return orderModel;
         }
 
-        public async Task<OrderModel> Create(OrderInputData modelItem)
+        public async Task<OrderModelItem> CreateAsync(OrderModelItem modelItem)
         {
-            var orderModel = new OrderModel();
+            var orderModel = new OrderModelItem();
             var order = _mapper.Map<Orders>(modelItem);
 
             order.OrderItems = new List<OrderItems>();
-            foreach (var item in modelItem.Items)
-                order.OrderItems.Add(_mapper.Map<OrderItems>(item));
 
-            await _orderRepository.CreateAsync(order);
+            var result = await _orderRepository.CreateAsync(order);
+            if (!result)
+            {
+                orderModel.Errors.Add("Creating order error");
+                return orderModel;
+            }
+
             return orderModel;
         }
 
-        public async Task<OrderModel> Delete(int id)
+        public async Task<OrderModelItem> DeleteAsync(int id)
         {
-            var orderModel = new OrderModel();
             var order = await _orderRepository.FindByIdAsync(id);
+            var orderModel = new OrderModelItem();
             if(order == null)
             {
                 orderModel.Errors.Add("Order not found");
                 return orderModel;
             }
 
-            await _orderRepository.RemoveAsync(order);
+            var result = await _orderRepository.RemoveAsync(order);
+            if (!result)
+            {
+                orderModel.Errors.Add("Creating order error");
+                return orderModel;
+            }
+
             return orderModel;
         }
 
-        public async Task<OrderModel> FindById(int id)
+        public async Task<OrderModelItem> FindByIdAsync(int id)
         {
-            var orderModel = new OrderModel();
+            var orderModel = new OrderModelItem();
             var order = await _orderRepository.FindByIdAsync(id);
             if (order == null)
             {
@@ -81,33 +103,18 @@ namespace Store.BusinessLogic.Services
                 return orderModel;
             }
 
-            orderModel.Orders.Add(_mapper.Map<OrderModelItem>(order));
+            orderModel = _mapper.Map<OrderModelItem>(order);
             return orderModel;
         }
 
-        public OrderModel FindById(int id, string username)
-        {
-            var orderModel = new OrderModel();
-            var order = _orderRepository.FindBy(o => o.User.UserName.Equals(username) && o.Id == id);
-            if (order == null)
-            {
-                orderModel.Errors.Add("Order not found");
-                return orderModel;
-            }
-
-            orderModel.Orders.Add(_mapper.Map<OrderModelItem>(order));
-            return orderModel;
-        }
-
-        public async Task<OrderModel> GetAll(OrderFilter orderFilter, int startIndex = 0, int quantity = 0)
+        public async Task<OrderModel> GetAllAsync(OrderFilter orderFilter, int startIndex = 0, int quantity = 0)
         {
             IList<Orders> orders;
-            Func<Orders, bool> predicate = (o => (orderFilter.Username == null || o.User.UserName == orderFilter.Username));
             var orderModel = new OrderModel();
             
             orders = quantity > 0 
-                ? _orderRepository.Get(predicate, startIndex, quantity)
-                : _orderRepository.GetAll(predicate);
+                ? _orderRepository.Get(orderFilter.Predicate, startIndex, quantity)
+                : _orderRepository.GetAll(orderFilter.Predicate);
 
             if (orders == null)
             {
@@ -118,18 +125,16 @@ namespace Store.BusinessLogic.Services
             foreach(var item in orders)
             {
                 var order = _mapper.Map<OrderModelItem>(item);
-                foreach(var orderitem in item.OrderItems)
-                    order.OrderItems.Add(_mapper.Map<OrderItemModelItem>(orderitem));
-                
                 orderModel.Orders.Add(_mapper.Map<OrderModelItem>(order));
             }
+
             return orderModel;
         }
 
-        public async Task<OrderModel> RemovePaymentTransaction(int orderId)
+        public async Task<OrderModelItem> RemovePaymentTransactionAsync(int orderId)
         {
             var order = await _orderRepository.FindByIdAsync(orderId);
-            var orderModel = new OrderModel();
+            var orderModel = new OrderModelItem();
             if (order == null)
             {
                 orderModel.Errors.Add("Order not found");
@@ -137,28 +142,34 @@ namespace Store.BusinessLogic.Services
             }
 
             order.PaymentId = null;
-            await _orderRepository.UpdateAsync(order);
+            var result = await _orderRepository.UpdateAsync(order);
+            if (!result)
+            {
+                orderModel.Errors.Add("Removing payment error");
+                return orderModel;
+            }
+
             return orderModel;
         }
 
-        public async Task<OrderModel> Update(int id, OrderInputData modelItem)
+        public async Task<OrderModelItem> UpdateAsync(int id, OrderModelItem modelItem)
         {
             var order = await _orderRepository.FindByIdAsync(id);
-            var orderModel = new OrderModel();
+            var orderModel = new OrderModelItem();
             if (order == null)
             {
                 orderModel.Errors.Add("Order not found");
                 return orderModel;
             }
 
-            _mapper.Map<OrderInputData, Orders>(modelItem, order);
+            _mapper.Map<OrderModelItem, Orders>(modelItem, order);
 
-            await _orderItemRepository.RemoveByOrderId(id);
-            order.OrderItems = new List<OrderItems>();
-            foreach (var item in modelItem.Items)
-                order.OrderItems.Add(_mapper.Map<OrderItems>(item));
-
-            await _orderRepository.UpdateAsync(order);
+            var result = await _orderRepository.UpdateAsync(order);
+            if(!result)
+            {
+                orderModel.Errors.Add("Updating order error");
+                return orderModel;
+            }
             return orderModel;
         }
     }

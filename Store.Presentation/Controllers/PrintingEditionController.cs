@@ -21,7 +21,7 @@ namespace Store.Presentation.Controllers
             _printingEditionService = new PrintingEditionService(db, mapper);
         }
 
-        [Route("~/[controller]/GetAll")]
+        [Route("~/[controller]s")]
         [HttpGet]
         public IActionResult GetPrintingEditions(string title, int? minPrice, int? maxPrice, string author, int startIndex = -1, int quantity = -1)
         {
@@ -35,55 +35,64 @@ namespace Store.Presentation.Controllers
 
             var printingEditionModel = _printingEditionService.GetAll(peFilter, startIndex, quantity);
             if (printingEditionModel.Errors.Count > 0)
-                return NotFound(printingEditionModel.Errors);
+            {
+                return NotFound(printingEditionModel);
+            }
 
-            return Ok(printingEditionModel.PrintingEditions);
+            return Ok(printingEditionModel);
         }
 
-        [Route("~/[controller]/{id}")]
+        [Route("~/[controller]s/[controller]/{id}")]
         [HttpGet]
         public async Task<IActionResult> GetPrintingEdition(int id)
         {
-            var printingEditionModel = await _printingEditionService.FindById(id);
+            var printingEditionModel = await _printingEditionService.FindByIdAsync(id);
             if (printingEditionModel.Errors.Count > 0)
+            {
                 return NotFound(printingEditionModel.Errors);
+            }
 
             return Ok(printingEditionModel.PrintingEditions);
         }
 
-        [Route("~/[controller]/Create")]
+        [Route("~/[controller]s/Create")]
         [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<IActionResult> CreatePrintingEdition([FromBody]PrintingEditionModelItem printingEditionItem)
         {
-            var printingEditionModel = await _printingEditionService.Create(printingEditionItem);
+            var printingEditionModel = await _printingEditionService.CreateAsync(printingEditionItem);
             if (printingEditionModel.Errors.Count > 0)
+            {
                 return NotFound(printingEditionModel.Errors);
+            }
 
             return Ok(printingEditionModel.PrintingEditions);
         }
 
-        [Route("~/[controller]/Update/{id}")]
+        [Route("~/[controller]s/Update/{id}")]
         [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdatePrintingEdition(int id, [FromBody]PrintingEditionModelItem printingEditionItem)
         {
-            var printingEditionModel = await _printingEditionService.Update(id, printingEditionItem);
+            var printingEditionModel = await _printingEditionService.UpdateAsync(id, printingEditionItem);
             if (printingEditionModel.Errors.Count > 0)
+            {
                 return NotFound(printingEditionModel.Errors);
+            }
 
             return Ok(printingEditionModel.PrintingEditions);
         }
 
-        [Route("~/[controller]/Delete/{id}")]
+        [Route("~/[controller]s/Delete/{id}")]
         [Authorize(Roles = "Admin")]
         [HttpDelete]
         public async Task<IActionResult> DeletePrintingEdition(int id)
         {
-            var printingEditionModel = await _printingEditionService.Delete(id);
+            var printingEditionModel = await _printingEditionService.DeleteAsync(id);
             if (printingEditionModel.Errors.Count > 0)
+            {
                 return NotFound(printingEditionModel.Errors);
-
+            }
             return Ok(printingEditionModel.PrintingEditions);
         }
     }

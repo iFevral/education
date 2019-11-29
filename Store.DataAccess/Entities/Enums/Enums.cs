@@ -27,7 +27,7 @@
             public enum Statuses
             {
                 Paid = 1,
-                Unpaid =2
+                Unpaid = 2
             }
         }
 
@@ -36,7 +36,7 @@
             public enum RoleNames
             {
                 Admin = 1,
-                Client =2
+                Client = 2
             }
         }
     }

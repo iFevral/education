@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Store.DataAccess.Repositories.Base
 {
@@ -10,7 +11,7 @@ namespace Store.DataAccess.Repositories.Base
         /// Filter and get all instances
         /// </summary>
         /// <returns>Filtered instances</returns>
-        public IList<T> GetAll(Func<T, bool> predicate);
+        public IList<T> GetAll(Expression<Func<T, bool>> predicate);
 
         /// <summary>
         /// Get all instances async
@@ -22,7 +23,7 @@ namespace Store.DataAccess.Repositories.Base
         /// Filter and get part of data
         /// </summary>
         /// <returns>Part of filtered instances</returns>
-        public IList<T> Get(Func<T, bool> predicate, int startIndex, int quantity);
+        public IList<T> Get(Expression<Func<T, bool>> predicate, int startIndex, int quantity);
 
         /// <summary>
         /// Get part of data async
@@ -34,7 +35,7 @@ namespace Store.DataAccess.Repositories.Base
         /// Find instance by predicate
         /// </summary>
         /// <returns>First found instance</returns>
-        public T FindBy(Func<T, bool> predicate);
+        public T FindBy(Expression<Func<T, bool>> predicate);
 
         /// <summary>
         /// Find instance by id async
@@ -45,16 +46,16 @@ namespace Store.DataAccess.Repositories.Base
         /// <summary>
         /// Create instance async
         /// </summary>
-        public Task CreateAsync(T item);
+        public Task<bool> CreateAsync(T item);
 
         /// <summary>
         /// Update instance async
         /// </summary>
-        public Task UpdateAsync(T item);
+        public Task<bool> UpdateAsync(T item);
 
         /// <summary>
         /// Remove instance async
         /// </summary>
-        public Task RemoveAsync(T item);
+        public Task<bool> RemoveAsync(T item);
     }
 }

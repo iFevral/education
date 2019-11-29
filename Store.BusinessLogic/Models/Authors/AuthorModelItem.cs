@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using Store.BusinessLogic.Models.PrintingEditions;
+﻿using Store.BusinessLogic.Models.Base;
 
 namespace Store.BusinessLogic.Models.Authors
 {
-    public class AuthorModelItem
+    public class AuthorModelItem : BaseModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
-
-        public IList<PrintingEditionModelItem> PrintingEditions { get; set; } = new List<PrintingEditionModelItem>();
-
     }
 }

@@ -19,6 +19,11 @@ namespace Store.BusinessLogic.Services
         private IMapper _mapper;
         private IPrintingEditionRepository _printingEditionRepository;
 
+        private string ValidateString(string str)
+        {
+            return str.Trim().ToLower();
+        }
+
         public PrintingEditionService(ApplicationContext db, IMapper mapper)
         {
             _mapper = mapper;
@@ -27,17 +32,17 @@ namespace Store.BusinessLogic.Services
 
         public PrintingEditionModel GetAll(PrintingEditionFilter peFilter,int startIndex = -1, int quantity = -1)
         {
-            Func<PrintingEditions,bool> predicate = pe => (peFilter.Title == null || pe.Title.ToLower().Contains(peFilter.Title.ToLower())) &&
-                                                                           (peFilter.MinPrice == null || pe.Price >= peFilter.MinPrice) &&
-                                                                           (peFilter.MaxPrice == null || pe.Price <= peFilter.MaxPrice) &&
-                                                                           (peFilter.Author == null || pe.AuthorInBooks.Where(aib => aib.Author.Name.ToLower().Contains(peFilter.Author.ToLower())).Any());
             var printingEditionModel = new PrintingEditionModel();
 
             IList<PrintingEditions> printingEditions;
             if (startIndex != -1 && quantity != -1)
-                printingEditions = _printingEditionRepository.Get(predicate,startIndex,quantity);
+            {
+                printingEditions = _printingEditionRepository.Get(peFilter.Predicate, startIndex, quantity);
+            }
             else
-                printingEditions = _printingEditionRepository.GetAll(predicate);
+            {
+                printingEditions = _printingEditionRepository.GetAll(peFilter.Predicate);
+            }
 
             if (printingEditions.Count == 0)
             {
@@ -48,19 +53,13 @@ namespace Store.BusinessLogic.Services
             foreach( var printingEdition in printingEditions)
             {
                 var pe = _mapper.Map<PrintingEditionModelItem>(printingEdition);
-                foreach (var author in printingEdition.AuthorInBooks)
-                {
-                    var a = _mapper.Map<AuthorModelItem>(author.Author);
-                    pe.Authors.Add(a);
-                }
-
                 printingEditionModel.PrintingEditions.Add(pe);
             }
 
             return printingEditionModel;
         }
 
-        public async Task<PrintingEditionModel> FindById(int id)
+        public async Task<PrintingEditionModel> FindByIdAsync(int id)
         {
             var printingEditionModel = new PrintingEditionModel();
             var printingEdition = await _printingEditionRepository.FindByIdAsync(id);
@@ -71,31 +70,24 @@ namespace Store.BusinessLogic.Services
             }
 
             var pe = _mapper.Map<PrintingEditionModelItem>(printingEdition);
-            foreach (var author in printingEdition.AuthorInBooks)
-            {
-                var a = _mapper.Map<AuthorModelItem>(author.Author);
-                pe.Authors.Add(a);
-            }
 
             printingEditionModel.PrintingEditions.Add(pe);
            
             return printingEditionModel;
         }
 
-        public async Task<PrintingEditionModel> Create(PrintingEditionModelItem printingEditionItem)
+        public async Task<PrintingEditionModel> CreateAsync(PrintingEditionModelItem printingEditionItem)
         {
             var printingEditionModel = new PrintingEditionModel();
             var printingEdition = _mapper.Map<PrintingEditions>(printingEditionItem);
             
             printingEdition.AuthorInBooks = new List<AuthorInBooks>();
-            foreach (var authorItem in printingEditionItem.Authors)
-                printingEdition.AuthorInBooks.Add(new AuthorInBooks { AuthorId = authorItem.Id });
 
             await _printingEditionRepository.CreateAsync(printingEdition);
             return printingEditionModel;
         }
 
-        public async Task<PrintingEditionModel> Update(int id, PrintingEditionModelItem printingEditionItem)
+        public async Task<PrintingEditionModel> UpdateAsync(int id, PrintingEditionModelItem printingEditionItem)
         {
             var printingEditionModel = new PrintingEditionModel();
             var printingEdition = await _printingEditionRepository.FindByIdAsync(id);
@@ -106,20 +98,11 @@ namespace Store.BusinessLogic.Services
             }
 
             _mapper.Map<PrintingEditionModelItem, PrintingEditions>(printingEditionItem, printingEdition);
-            _printingEditionRepository.RemoveAuthors(printingEdition.Id);
-
-            foreach (var authorItem in printingEditionItem.Authors)
-            {
-                if (printingEdition.AuthorInBooks == null) 
-                    printingEdition.AuthorInBooks = new List<AuthorInBooks>();
-
-                printingEdition.AuthorInBooks.Add(new AuthorInBooks { AuthorId = authorItem.Id });
-            }
             await _printingEditionRepository.UpdateAsync(printingEdition);
             return printingEditionModel;
         }
 
-        public async Task<PrintingEditionModel> Delete(int id)
+        public async Task<PrintingEditionModel> DeleteAsync(int id)
         {
             var printingEditionModel = new PrintingEditionModel();
             var printingEdition = await _printingEditionRepository.FindByIdAsync(id);

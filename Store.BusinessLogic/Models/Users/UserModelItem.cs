@@ -1,10 +1,9 @@
-﻿using Store.BusinessLogic.Models.Orders;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using Store.BusinessLogic.Models.Base;
 
 namespace Store.BusinessLogic.Models.Users
 {
-    public class UserModelItem : AccessTokenData
+    public class UserModelItem : BaseModel
     {
         public string Id { get; set; }
         public string Firstname { get; set; }
@@ -13,7 +12,5 @@ namespace Store.BusinessLogic.Models.Users
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
         public IList<string> Roles { get; set; } = new List<string>();
-
-        public IList<OrderModelItem> Orders { get; set; } = new List<OrderModelItem>();
     }
 }

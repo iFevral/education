@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Store.BusinessLogic.Models.Base;
 
 namespace Store.BusinessLogic.Models.Users
 {
-    public class EmailData
+    public class EmailModel : BaseModel
     {
         public string Email { get; set; }
 

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.AppContext;
+using System.Linq.Expressions;
 
 namespace Store.DataAccess.Repositories.Base
 {
@@ -19,7 +20,7 @@ namespace Store.DataAccess.Repositories.Base
             _dbSet = db.Set<T>();
         }
 
-        public virtual IList<T> GetAll(Func<T, bool> predicate)
+        public virtual IList<T> GetAll(Expression<Func<T, bool>> predicate)
         {
             return _dbSet.Where(predicate).ToList();
         }
@@ -29,7 +30,7 @@ namespace Store.DataAccess.Repositories.Base
             return await _dbSet.ToListAsync();
         }
 
-        public virtual IList<T> Get(Func<T, bool> predicate, int startIndex, int quantity)
+        public virtual IList<T> Get(Expression<Func<T, bool>> predicate, int startIndex, int quantity)
         {
             return _dbSet.Where(predicate)
                          .Skip(startIndex)
@@ -42,7 +43,7 @@ namespace Store.DataAccess.Repositories.Base
                                .Take(quantity).ToListAsync();
         }
 
-        public virtual T FindBy(Func<T, bool> predicate)
+        public virtual T FindBy(Expression<Func<T, bool>> predicate)
         {
             return _dbSet.Where(predicate).FirstOrDefault();
         }
@@ -52,22 +53,25 @@ namespace Store.DataAccess.Repositories.Base
             return await _dbSet.FindAsync(id);
         }
 
-        public virtual async Task CreateAsync(T item)
+        public virtual async Task<bool> CreateAsync(T item)
         {
             await _dbSet.AddAsync(item);
-            await _db.SaveChangesAsync();
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
         }
 
-        public virtual async Task UpdateAsync(T item)
+        public virtual async Task<bool> UpdateAsync(T item)
         {
             _db.Entry(item).State = EntityState.Modified;
-            await _db.SaveChangesAsync();
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
         }
 
-        public virtual async Task RemoveAsync(T item)
+        public virtual async Task<bool> RemoveAsync(T item)
         {
             _dbSet.Remove(item);
-            await _db.SaveChangesAsync();
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
         }
     }
 }

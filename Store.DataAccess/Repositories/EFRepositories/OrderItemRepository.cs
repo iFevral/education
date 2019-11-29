@@ -15,10 +15,11 @@ namespace Store.DataAccess.Repositories.EFRepository
             _db = db;
         }
 
-        public async Task RemoveByOrderId(int id)
+        public async Task<bool> RemoveByOrderIdAsync(int id)
         {
             _db.OrderItems.RemoveRange(_db.OrderItems.Where(oi => oi.OrderId == id));
-            await _db.SaveChangesAsync();
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
         }
     }
 }

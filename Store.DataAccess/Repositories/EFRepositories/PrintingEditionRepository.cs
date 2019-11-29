@@ -1,12 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
 using Store.DataAccess.Entities;
 using Store.DataAccess.AppContext;
 using Store.DataAccess.Repositories.Base;
 using Store.DataAccess.Repositories.Interfaces;
+using System.Threading.Tasks;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
@@ -17,36 +14,11 @@ namespace Store.DataAccess.Repositories.EFRepository
             _db = db;
         }
 
-        public override IList<PrintingEditions> GetAll(Func<PrintingEditions,bool> predicate)
-        {
-            return _db.PrintingEditions.Where(predicate).ToList();
-        }
-
-        public override async Task<IList<PrintingEditions>> GetAllAsync()
-        {
-            return await _db.PrintingEditions.ToListAsync();
-        }
-
-        public override IList<PrintingEditions> Get(Func<PrintingEditions, bool> predicate, int startIndex, int quantity)
-        {
-            return _db.PrintingEditions.Where(predicate)
-                                       .Skip(startIndex)
-                                       .Take(quantity)
-                                       .ToList();
-        }
-
-        public override async Task<IList<PrintingEditions>> GetAsync(int startIndex, int quantity)
-        {
-            return await _db.PrintingEditions.Skip(startIndex)
-                                             .Take(quantity)
-                                             .ToListAsync();
-        }
-
-        public void RemoveAuthors(int printingEditionId)
+        public async Task<bool> RemoveAuthors(int printingEditionId)
         {
             _db.RemoveRange(_db.AuthorInBooks.Where(aib => aib.PrintingEditionId == printingEditionId));
-            _db.SaveChanges();
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
         }
-
     }
 }

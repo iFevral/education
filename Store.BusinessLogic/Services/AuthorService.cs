@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Store.DataAccess.Entities;
 using Store.DataAccess.AppContext;
@@ -7,8 +7,6 @@ using Store.DataAccess.Repositories.Interfaces;
 using Store.DataAccess.Repositories.EFRepository;
 using Store.BusinessLogic.Models.Authors;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.BusinessLogic.Models.PrintingEditions;
-using System.Threading.Tasks;
 
 namespace Store.BusinessLogic
 {
@@ -24,16 +22,19 @@ namespace Store.BusinessLogic
             _mapper = mapper;
         }
 
-        public AuthorModel GetAll(string authorNameFilter, int startIndex = -1, int quantity = -1)
+        public async Task<AuthorModel> GetAll(AuthorFilter authorFilter, int startIndex = -1, int quantity = -1)
         {
             var authorModel = new AuthorModel();
             IList<Authors> authors;
             
-            Func<Authors, bool> predicate = (a => (authorNameFilter == null || a.Name.Contains(authorNameFilter)));
             if (startIndex != -1 && quantity != -1)
-                authors = _authorRepository.Get(predicate, startIndex, quantity);
+            {
+                authors = _authorRepository.Get(authorFilter.Predicate, startIndex, quantity);
+            }
             else
-                authors = _authorRepository.GetAll(predicate);
+            {
+                authors = _authorRepository.GetAll(authorFilter.Predicate);
+            }
 
             if (authors.Count == 0)
             {
@@ -44,21 +45,15 @@ namespace Store.BusinessLogic
             foreach (var author in authors)
             {
                 var a = _mapper.Map<AuthorModelItem>(author);
-                foreach (var printingEdition in author.AuthorInBooks)
-                {
-                    var pe = _mapper.Map<PrintingEditionModelItem>(printingEdition.PrintingEdition);
-                    a.PrintingEditions.Add(pe);
-                }
-
                 authorModel.Authors.Add(a);
             }
 
             return authorModel;
         }
 
-        public async Task<AuthorModel> FindById(int id)
+        public async Task<AuthorModelItem> FindByIdAsync(int id)
         {
-            var authorModel = new AuthorModel();
+            var authorModel = new AuthorModelItem();
             var author = await _authorRepository.FindByIdAsync(id);
             if (author == null)
             {
@@ -66,35 +61,27 @@ namespace Store.BusinessLogic
                 return authorModel;
             }
 
-            var a = _mapper.Map<AuthorModelItem>(author);
-            foreach (var printingEdition in author.AuthorInBooks)
+            authorModel = _mapper.Map<AuthorModelItem>(author);
+            return authorModel;
+        }
+
+        public async Task<AuthorModelItem> CreateAsync(AuthorModelItem authorItem)
+        {
+            var author = _mapper.Map<Authors>(authorItem);
+            var result = await _authorRepository.CreateAsync(author);
+            var authorModel = new AuthorModelItem();
+            if(!result)
             {
-                var pe = _mapper.Map<PrintingEditionModelItem>(printingEdition.PrintingEdition);
-                a.PrintingEditions.Add(pe);
+                authorModel.Errors.Add("Creating author error");
             }
 
-            authorModel.Authors.Add(a);
-
             return authorModel;
         }
 
-        public async Task<AuthorModel> Create(AuthorModelItem authorItem)
+        public async Task<AuthorModelItem> UpdateAsync(int id, AuthorModelItem authorItem)
         {
-            var authorModel = new AuthorModel();
-            var author = _mapper.Map<Authors>(authorItem);
-
-            author.AuthorInBooks = new List<AuthorInBooks>();
-            foreach (var printingEdition in authorItem.PrintingEditions)
-                author.AuthorInBooks.Add(new AuthorInBooks { PrintingEditionId = printingEdition.Id });
-
-            await _authorRepository.CreateAsync(author);
-            return authorModel;
-        }
-
-        public async Task<AuthorModel> Update(int id, AuthorModelItem authorItem)
-        {
-            var authorModel = new AuthorModel();
             var author = await _authorRepository.FindByIdAsync(id);
+            var authorModel = new AuthorModelItem();
             if (author == null)
             {
                 authorModel.Errors.Add("Author not found");
@@ -102,22 +89,18 @@ namespace Store.BusinessLogic
             }
 
             _mapper.Map<AuthorModelItem, Authors>(authorItem, author);
-            _authorRepository.RemovePrintingEditions(author.Id);
-
-            foreach (var printingEditionItem in authorItem.PrintingEditions)
+            var result = await _authorRepository.UpdateAsync(author);
+            if (!result)
             {
-                if (author.AuthorInBooks == null)
-                    author.AuthorInBooks = new List<AuthorInBooks>();
-
-                author.AuthorInBooks.Add(new AuthorInBooks { PrintingEditionId = printingEditionItem.Id });
+                authorModel.Errors.Add("Updating author error");
             }
-            await _authorRepository.UpdateAsync(author);
+
             return authorModel;
         }
 
-        public async Task<AuthorModel> Delete(int id)
+        public async Task<AuthorModelItem> DeleteAsync(int id)
         {
-            var authorModel = new AuthorModel();
+            var authorModel = new AuthorModelItem();
             var author = await _authorRepository.FindByIdAsync(id);
             if (author == null)
             {
@@ -125,7 +108,11 @@ namespace Store.BusinessLogic
                 return authorModel;
             }
 
-            await _authorRepository.RemoveAsync(author);
+            var result = await _authorRepository.RemoveAsync(author);
+            if (!result)
+            {
+                authorModel.Errors.Add("Deleting author error");
+            }
 
             return authorModel;
         }
