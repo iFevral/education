@@ -1,6 +1,8 @@
-﻿using Store.BusinessLogic.Models.Base;
-using System;
+﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Collections.Generic;
+using Store.BusinessLogic.Models.Base;
 
 namespace Store.BusinessLogic.Models.Orders
 {
@@ -8,12 +10,15 @@ namespace Store.BusinessLogic.Models.Orders
     {
         public DateTime Date { get; set; }
         public string Username { get; set; }
+        public IList<int> Statuses { get; set; }
 
         public Expression<Func<DataAccess.Entities.Orders, bool>> Predicate
         {
             get
             {
-                return o => string.IsNullOrWhiteSpace(this.Username) || ValidateString(o.User.UserName).Contains(ValidateString(this.Username));
+                return o => (string.IsNullOrWhiteSpace(this.Username) || ValidateString(o.User.UserName).Contains(ValidateString(this.Username))) &&
+                            (this.Statuses == null || this.Statuses.Count == 0 || this.Statuses.Any(s => s == (int)o.Status)) &&
+                            (!o.isRemoved);
             }
         }
     }

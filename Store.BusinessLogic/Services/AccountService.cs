@@ -88,7 +88,7 @@ namespace Store.BusinessLogic.Services
         {
             var emailModel = new EmailModel();
             //Check if user exists
-            if(await _userRepository.FindByNameAsync(signUpModel.Username) != null)
+            if(await _userRepository.FindByEmailAsync(signUpModel.Email) != null)
             {
                 emailModel.Errors.Add("Email is already registered");
                 return emailModel;
@@ -103,7 +103,7 @@ namespace Store.BusinessLogic.Services
             }
 
             //Find user
-            var user = await _userRepository.FindByNameAsync(signUpModel.Username);
+            var user = await _userRepository.FindByEmailAsync(signUpModel.Email);
 
             //Add user to role
             result = await _userRepository.AddToRoleAsync(user.Id, "Client");

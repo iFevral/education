@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.Entities;
+using Store.DataAccess.Entities.Enums;
 
 namespace Store.DataAccess.AppContext
 {
@@ -46,19 +47,31 @@ namespace Store.DataAccess.AppContext
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<OrderItems>(entity =>
-            {
-                entity.HasIndex(e => e.OrderId);
-
-                entity.HasIndex(e => e.PrintingEditionId);
-            });
-
             modelBuilder.Entity<Orders>(entity =>
             {
                 entity.HasIndex(e => e.PaymentId);
                 entity.HasOne(x => x.User)
                       .WithMany(x => x.Orders)
                       .OnDelete(DeleteBehavior.Cascade);
+
+                entity.Property(e => e.Status)
+                    .HasConversion(x => (int) x, x => (Enums.Orders.Statuses) x);
+            });
+
+            modelBuilder.Entity<PrintingEditions>(entity =>
+            {
+                entity.Property(e => e.Currency)
+                    .HasConversion(x => (int)x, x => (Enums.PrintingEditions.Currencies)x);
+
+                entity.Property(e => e.Type)
+                    .HasConversion(x => (int)x, x => (Enums.PrintingEditions.Types)x);
+            });
+
+                modelBuilder.Entity<OrderItems>(entity =>
+            {
+                entity.HasIndex(e => e.OrderId);
+
+                entity.HasIndex(e => e.PrintingEditionId);
             });
 
             modelBuilder.Entity<Roles>(entity =>
@@ -67,16 +80,6 @@ namespace Store.DataAccess.AppContext
                     .HasName("RoleNameIndex")
                     .IsUnique()
                     .HasFilter("([NormalizedName] IS NOT NULL)");
-            });
-
-            modelBuilder.Entity<UserInRoles>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.RoleId });
-
-                entity.HasIndex(e => e.RoleId);
-                entity.HasOne(x => x.User)
-                      .WithMany(x => x.UserInRoles)
-                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Users>(entity =>
@@ -89,6 +92,16 @@ namespace Store.DataAccess.AppContext
                     .IsUnique()
                     .HasFilter("([NormalizedUserName] IS NOT NULL)");
                 
+            });
+
+            modelBuilder.Entity<UserInRoles>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.RoleId });
+
+                entity.HasIndex(e => e.RoleId);
+                entity.HasOne(x => x.User)
+                      .WithMany(x => x.UserInRoles)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();

@@ -1,6 +1,6 @@
-﻿using Store.BusinessLogic.Models.Base;
-using System;
+﻿using System;
 using System.Linq.Expressions;
+using Store.BusinessLogic.Models.Base;
 
 namespace Store.BusinessLogic.Models.Authors
 {
@@ -13,7 +13,8 @@ namespace Store.BusinessLogic.Models.Authors
         {
             get
             {
-                return a => string.IsNullOrWhiteSpace(this.Name) || ValidateString(a.Name).Contains(ValidateString(this.Name));
+                return a => (string.IsNullOrWhiteSpace(this.Name) || ValidateString(a.Name).Contains(ValidateString(this.Name))) &&
+                            (!a.isRemoved);
             }
         }
     }

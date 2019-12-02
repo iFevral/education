@@ -19,14 +19,9 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]s")]
-        [HttpGet]
-        public async Task<IActionResult> GetAll(string username, int startIndex, int quantity)
+        [HttpPost]
+        public async Task<IActionResult> GetAll(int startIndex, int quantity, [FromBody]OrderFilter orderFilter)
         { 
-            OrderFilter orderFilter = new OrderFilter
-            {
-                Username = username
-            };
-
             var orderModel = await _orderService.GetAllAsync(orderFilter, startIndex, quantity);
             if (orderModel.Errors.Count > 0)
             {

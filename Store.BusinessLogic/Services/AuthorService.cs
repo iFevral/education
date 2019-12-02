@@ -1,19 +1,19 @@
-﻿using AutoMapper;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Collections.Generic;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
 using Store.BusinessLogic.Models.Authors;
 using Store.BusinessLogic.Services.Interfaces;
+using Store.BusinessLogic.Common.Mappers.Interface;
 
 namespace Store.BusinessLogic
 {
     public class AuthorService : IAuthorService
     {
-        private IMapper _mapper;
+        private IMapper<Authors, AuthorModelItem> _mapper;
         private IAuthorRepository _authorRepository;
 
-        public AuthorService(IMapper mapper,
+        public AuthorService(IMapper<Authors, AuthorModelItem> mapper,
                              IAuthorRepository authorRepository)
         {
             _authorRepository = authorRepository;
@@ -42,7 +42,8 @@ namespace Store.BusinessLogic
 
             foreach (var author in authors)
             {
-                var a = _mapper.Map<AuthorModelItem>(author);
+                var a = new AuthorModelItem();
+                a = _mapper.Map(author, a);
                 authorModel.Authors.Add(a);
             }
 
@@ -59,13 +60,14 @@ namespace Store.BusinessLogic
                 return authorModel;
             }
 
-            authorModel = _mapper.Map<AuthorModelItem>(author);
+            authorModel = _mapper.Map(author, authorModel);
             return authorModel;
         }
 
         public async Task<AuthorModelItem> CreateAsync(AuthorModelItem authorItem)
         {
-            var author = _mapper.Map<Authors>(authorItem);
+            var author = new Authors();
+            author = _mapper.Map(authorItem, author);
             var result = await _authorRepository.CreateAsync(author);
             var authorModel = new AuthorModelItem();
             if(!result)
@@ -86,7 +88,7 @@ namespace Store.BusinessLogic
                 return authorModel;
             }
 
-            _mapper.Map<AuthorModelItem, Authors>(authorItem, author);
+            author = _mapper.Map(authorItem, author);
             var result = await _authorRepository.UpdateAsync(author);
             if (!result)
             {
@@ -106,7 +108,8 @@ namespace Store.BusinessLogic
                 return authorModel;
             }
 
-            var result = await _authorRepository.RemoveAsync(author);
+            author.isRemoved = true;
+            var result = await _authorRepository.UpdateAsync(author);
             if (!result)
             {
                 authorModel.Errors.Add("Deleting author error");

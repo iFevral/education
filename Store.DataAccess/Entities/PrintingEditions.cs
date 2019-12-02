@@ -5,26 +5,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess.Entities
 {
-    public partial class PrintingEditions
+    public partial class PrintingEditions : BaseEntity
     {
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
-
-        public int Id { get; set; }
         [StringLength(256)]
         public string Title { get; set; }
         public string Description { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; } = 0;
         [Column(TypeName = "date")]
-        public DateTime? Date { get; set; } = DateTime.Now;
-        public bool IsRemoved { get; set; } = false;
-        [StringLength(20)]
-        public string Status { get; set; }
+        public DateTime? Date { get; set; }
         [StringLength(10)]
-        public string Currency { get; set; }
+        public Enums.Enums.PrintingEditions.Currencies? Currency { get; set; }
         [StringLength(20)]
-        public string Type { get; set; }
+        public Enums.Enums.PrintingEditions.Types? Type { get; set; }
 
         [InverseProperty("PrintingEdition")]
         public virtual ICollection<AuthorInBooks> AuthorInBooks { get; set; }

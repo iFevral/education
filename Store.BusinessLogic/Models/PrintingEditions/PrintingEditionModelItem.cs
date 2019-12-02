@@ -1,4 +1,6 @@
-﻿using Store.BusinessLogic.Models.Base;
+﻿using System.Collections.Generic;
+using Store.BusinessLogic.Models.Base;
+using Store.BusinessLogic.Models.Authors;
 
 namespace Store.BusinessLogic.Models.PrintingEditions
 {
@@ -10,6 +12,6 @@ namespace Store.BusinessLogic.Models.PrintingEditions
         public decimal Price { get; set; }
         public string Currency { get; set; }
         public string Type { get; set; }
-
+        public IList<AuthorModelItem> Authors { get; set; } = new List<AuthorModelItem>();
     }
 }

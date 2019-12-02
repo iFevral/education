@@ -4,12 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess.Entities
 {
-    public partial class Authors
+    public partial class Authors : BaseEntity
     {
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
-
-        public int Id { get; set; }
         [StringLength(100)]
         public string Name { get; set; }
 

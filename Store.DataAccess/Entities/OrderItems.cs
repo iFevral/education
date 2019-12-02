@@ -1,14 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess.Entities
 {
-    public partial class OrderItems
+    public partial class OrderItems : BaseEntity
     {
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
-
-        public int Id { get; set; }
         public int Amount { get; set; } = 1;
         public int PrintingEditionId { get; set; }
         public int OrderId { get; set; }

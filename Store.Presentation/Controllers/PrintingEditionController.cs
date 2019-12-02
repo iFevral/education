@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Models.PrintingEditions;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Store.Presentation.Controllers
 {
@@ -18,16 +18,9 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]s")]
-        [HttpGet]
-        public IActionResult GetPrintingEditions(string title, int? minPrice, int? maxPrice, string author, int startIndex = -1, int quantity = -1)
+        [HttpPost]
+        public IActionResult GetPrintingEditions(int startIndex, int quantity, [FromBody]PrintingEditionFilter peFilter)
         {
-            PrintingEditionFilter peFilter = new PrintingEditionFilter()
-            {
-                Title = title,
-                MinPrice = minPrice,
-                MaxPrice = maxPrice,
-                Author = author
-            };
 
             var printingEditionModel = _printingEditionService.GetAll(peFilter, startIndex, quantity);
             if (printingEditionModel.Errors.Count > 0)

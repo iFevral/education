@@ -82,7 +82,8 @@ namespace Store.BusinessLogic.Services
                 return orderModel;
             }
 
-            var result = await _orderRepository.RemoveAsync(order);
+            order.isRemoved = true;
+            var result = await _orderRepository.UpdateAsync(order);
             if (!result)
             {
                 orderModel.Errors.Add("Creating order error");

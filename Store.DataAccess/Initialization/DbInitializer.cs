@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Store.DataAccess.AppContext;
 using Store.DataAccess.Entities;
+using Store.DataAccess.AppContext;
 
 namespace Store.DataAccess.Initialization
 {
@@ -25,8 +25,7 @@ namespace Store.DataAccess.Initialization
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
-            }).AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders().AddTokenProvider("StoreProvider", typeof(DataProtectorTokenProvider<Users>));
-
+            }).AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
         }
     }
 }

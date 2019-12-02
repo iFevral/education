@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess.Entities
 {
-    public partial class Orders
+    public partial class Orders : BaseEntity
     {
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
-
-        public int Id { get; set; }
         public string Description { get; set; }
         public DateTime? Date { get; set; }
+        public Enums.Enums.Orders.Statuses? Status { get; set; }
         public string UserId { get; set; }
         public int? PaymentId { get; set; }
 

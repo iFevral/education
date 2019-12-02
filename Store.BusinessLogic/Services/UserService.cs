@@ -71,7 +71,7 @@ namespace Store.BusinessLogic.Services
 
         public async Task<SignUpModel> CreateUserAsync(SignUpModel signUpModel)
         {
-            if (await _userRepository.FindByNameAsync(signUpModel.Username) != null)
+            if (await _userRepository.FindByEmailAsync(signUpModel.Email) != null)
             {
                 signUpModel.Errors.Add(Constants.ServiceValidationErrors.UserExistsError);
                 return signUpModel;
@@ -86,7 +86,7 @@ namespace Store.BusinessLogic.Services
             }
 
             //Find user
-            var user = await _userRepository.FindByNameAsync(signUpModel.Username);
+            var user = await _userRepository.FindByEmailAsync(signUpModel.Email);
 
             //Add user to role
             var result = await _userRepository.AddToRoleAsync(user.Id, "Client");
@@ -108,7 +108,7 @@ namespace Store.BusinessLogic.Services
 
         public async Task<UserModelItem> UpdateUserAsync(SignUpModel signUpModel)
         {
-            var user = await _userRepository.FindByNameAsync(signUpModel.Username);
+            var user = await _userRepository.FindByEmailAsync(signUpModel.Email);
             var userModel = new UserModelItem();
             if(user == null)
             {
