@@ -5,13 +5,14 @@ using Store.DataAccess.Repositories.Interfaces;
 using Store.BusinessLogic.Models.Authors;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Common.Mappers.Interface;
+using Store.BusinessLogic.Common;
 
 namespace Store.BusinessLogic
 {
     public class AuthorService : IAuthorService
     {
-        private IMapper<Authors, AuthorModelItem> _mapper;
-        private IAuthorRepository _authorRepository;
+        private readonly IMapper<Authors, AuthorModelItem> _mapper;
+        private readonly IAuthorRepository _authorRepository;
 
         public AuthorService(IMapper<Authors, AuthorModelItem> mapper,
                              IAuthorRepository authorRepository)
@@ -36,7 +37,7 @@ namespace Store.BusinessLogic
 
             if (authors.Count == 0)
             {
-                authorModel.Errors.Add($"Author not found");
+                authorModel.Errors.Add(Constants.Errors.NotFoundAuthorError);
                 return authorModel;
             }
 
@@ -56,7 +57,7 @@ namespace Store.BusinessLogic
             var author = await _authorRepository.FindByIdAsync(id);
             if (author == null)
             {
-                authorModel.Errors.Add("Author not found");
+                authorModel.Errors.Add(Constants.Errors.NotFoundAuthorError);
                 return authorModel;
             }
 
@@ -64,35 +65,33 @@ namespace Store.BusinessLogic
             return authorModel;
         }
 
-        public async Task<AuthorModelItem> CreateAsync(AuthorModelItem authorItem)
+        public async Task<AuthorModelItem> CreateAsync(AuthorModelItem authorModel)
         {
             var author = new Authors();
-            author = _mapper.Map(authorItem, author);
+            author = _mapper.Map(authorModel, author);
             var result = await _authorRepository.CreateAsync(author);
-            var authorModel = new AuthorModelItem();
             if(!result)
             {
-                authorModel.Errors.Add("Creating author error");
+                authorModel.Errors.Add(Constants.Errors.CreateAuthorError);
             }
 
             return authorModel;
         }
 
-        public async Task<AuthorModelItem> UpdateAsync(int id, AuthorModelItem authorItem)
+        public async Task<AuthorModelItem> UpdateAsync(int id, AuthorModelItem authorModel)
         {
             var author = await _authorRepository.FindByIdAsync(id);
-            var authorModel = new AuthorModelItem();
             if (author == null)
             {
-                authorModel.Errors.Add("Author not found");
+                authorModel.Errors.Add(Constants.Errors.NotFoundAuthorError);
                 return authorModel;
             }
 
-            author = _mapper.Map(authorItem, author);
+            author = _mapper.Map(authorModel, author);
             var result = await _authorRepository.UpdateAsync(author);
             if (!result)
             {
-                authorModel.Errors.Add("Updating author error");
+                authorModel.Errors.Add(Constants.Errors.UpdateAuthorError);
             }
 
             return authorModel;
@@ -104,7 +103,7 @@ namespace Store.BusinessLogic
             var author = await _authorRepository.FindByIdAsync(id);
             if (author == null)
             {
-                authorModel.Errors.Add("Author not found");
+                authorModel.Errors.Add(Constants.Errors.NotFoundAuthorError);
                 return authorModel;
             }
 
@@ -112,7 +111,7 @@ namespace Store.BusinessLogic
             var result = await _authorRepository.UpdateAsync(author);
             if (!result)
             {
-                authorModel.Errors.Add("Deleting author error");
+                authorModel.Errors.Add(Constants.Errors.DeleteAuthorError);
             }
 
             return authorModel;

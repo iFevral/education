@@ -3,6 +3,7 @@ using Store.BusinessLogic.Models.Orders;
 using Store.BusinessLogic.Common.Mappers.Interface;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Entities.Enums;
+using System.Collections.Generic;
 
 namespace Store.BusinessLogic.Common.Mappers
 {
@@ -17,19 +18,21 @@ namespace Store.BusinessLogic.Common.Mappers
                 ? entity.Status
                 : (Enums.Orders.Statuses)Enum.Parse(typeof(Enums.Orders.Statuses), model.Status);
 
-            entity.UserId = string.IsNullOrWhiteSpace(model.User.Id)
+            entity.UserId = model.User == null
                 ? entity.UserId
                 : model.User.Id;
 
-            entity.PaymentId = model.Payment.Id == 0
+            entity.PaymentId = model.Payment == null
                 ? entity.PaymentId
                 : model.Payment.Id;
 
-            foreach(var item in model.OrderItems)
+            entity.OrderItems = new List<OrderItems>();
+            foreach (var item in model.OrderItems)
             {
                 entity.OrderItems.Add(new OrderItems
                 {
-                    Amount = item.Amount
+                    Amount = item.Amount,
+                    PrintingEditionId = item.PrintingEdition.Id
                 });
             }
 
@@ -49,7 +52,6 @@ namespace Store.BusinessLogic.Common.Mappers
                 {
                     Id = item.Id,
                     Amount = item.Amount,
-                    PrintingEditionTitle = item.PrintingEdition.Title
                 });
             }
             return model;

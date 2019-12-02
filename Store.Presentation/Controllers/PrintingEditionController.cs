@@ -38,10 +38,10 @@ namespace Store.Presentation.Controllers
             var printingEditionModel = await _printingEditionService.FindByIdAsync(id);
             if (printingEditionModel.Errors.Count > 0)
             {
-                return NotFound(printingEditionModel.Errors);
+                return NotFound(printingEditionModel);
             }
 
-            return Ok(printingEditionModel.PrintingEditions);
+            return Ok(printingEditionModel);
         }
 
         [Route("~/[controller]s/Create")]
@@ -52,10 +52,10 @@ namespace Store.Presentation.Controllers
             var printingEditionModel = await _printingEditionService.CreateAsync(printingEditionItem);
             if (printingEditionModel.Errors.Count > 0)
             {
-                return NotFound(printingEditionModel.Errors);
+                return NotFound(printingEditionModel);
             }
 
-            return Ok(printingEditionModel.PrintingEditions);
+            return Ok(printingEditionModel);
         }
 
         [Route("~/[controller]s/Update/{id}")]
@@ -66,10 +66,10 @@ namespace Store.Presentation.Controllers
             var printingEditionModel = await _printingEditionService.UpdateAsync(id, printingEditionItem);
             if (printingEditionModel.Errors.Count > 0)
             {
-                return NotFound(printingEditionModel.Errors);
+                return NotFound(printingEditionModel);
             }
 
-            return Ok(printingEditionModel.PrintingEditions);
+            return Ok(printingEditionModel);
         }
 
         [Route("~/[controller]s/Delete/{id}")]
@@ -80,9 +80,9 @@ namespace Store.Presentation.Controllers
             var printingEditionModel = await _printingEditionService.DeleteAsync(id);
             if (printingEditionModel.Errors.Count > 0)
             {
-                return NotFound(printingEditionModel.Errors);
+                return NotFound(printingEditionModel);
             }
-            return Ok(printingEditionModel.PrintingEditions);
+            return Ok(printingEditionModel);
         }
     }
 }

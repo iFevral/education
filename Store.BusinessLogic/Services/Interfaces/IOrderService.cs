@@ -44,5 +44,6 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Remove payment from order and delete
         /// </summary>
         public Task<OrderModelItem> RemovePaymentTransactionAsync(int OrderId);
+
     }
 }

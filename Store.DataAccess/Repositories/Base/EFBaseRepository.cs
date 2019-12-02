@@ -55,7 +55,7 @@ namespace Store.DataAccess.Repositories.Base
 
         public virtual async Task<bool> CreateAsync(T item)
         {
-            await _dbSet.AddAsync(item);
+            _dbSet.Add(item);
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }

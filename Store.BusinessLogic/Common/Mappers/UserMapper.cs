@@ -29,6 +29,7 @@ namespace Store.BusinessLogic.Common.Mappers
             model.Id = entity.Id;
             model.Firstname = entity.FirstName;
             model.Lastname = entity.LastName;
+            model.Username = entity.UserName;
             model.Email = entity.Email;
             model.EmailConfirmed = entity.EmailConfirmed;
             model.Roles = new List<string>();

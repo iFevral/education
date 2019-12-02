@@ -1,8 +1,10 @@
 ﻿namespace Store.BusinessLogic.Common
 {
-    public static partial class Constants
+    public partial class Constants
     {
-        public static partial class ServiceValidationErrors
+        public const string EditUserError = "Editing user has failed";
+
+        public partial class Errors
         {
             public const string EditUserError = "Editing user has failed";
             public const string CreateUserError = "Creating user has failed";
@@ -20,10 +22,22 @@
             public const string WrongCredentialsError = "Username or password is incorrect. Please check data.";
             public const string EmailConfirmationError = "Email confirmation error";
 
+            public const string CreateAuthorError = "Creating author has failed";
+            public const string UpdateAuthorError = "Updating author has failed";
+            public const string DeleteAuthorError = "Deleting author has failed";
             public const string NotFoundAuthorError = "Author not found";
-            
+
+            public const string CreatePaymentError = "Creating payment has failed";
+            public const string RemovePaymentError = "Removing payment has failed";
+
+            public const string CreateOrderError = "Creating order has failed";
+            public const string UpdateOrderError = "Updating order has failed";
+            public const string DeleteOrderError = "Deleting order has failed";
             public const string NotFoundOrderError = "Order not found";
-            
+
+            public const string CreatePringtingEditionError = "Creating pringting Edition has failed";
+            public const string UpdatePringtingEditionError = "Updating pringting Edition has failed";
+            public const string DeletePringtingEditionError = "Deleting pringting Edition has failed";
             public const string NotFoundPringtingEditionError = "Printing edition not found";
         }
     }

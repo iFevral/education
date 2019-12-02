@@ -1,23 +1,27 @@
-﻿using AutoMapper;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Store.DataAccess.Entities;
 using Store.BusinessLogic.Common;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Models.Roles;
 using Store.BusinessLogic.Services.Interfaces;
+using Store.BusinessLogic.Common.Mappers.Interface;
 using Store.DataAccess.Repositories.Interfaces;
 
 namespace Store.BusinessLogic.Services
 {
     public class UserService : IUserService
     {
-        private IMapper _mapper;
-        private IUserRepository _userRepository;
-        public UserService(IMapper mapper,
+        private readonly IMapper<Users, UserModelItem> _mapper;
+        private readonly IMapper<Users, SignUpModel> _signUpMapper;
+        private readonly IUserRepository _userRepository;
+        
+        public UserService(IMapper<Users, UserModelItem> mapper,
+                           IMapper<Users, SignUpModel> signUpMapper,
                            IUserRepository userRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _signUpMapper = signUpMapper;
         }
 
         public async Task<UserModel> GetAllUsersAsync()
@@ -27,7 +31,7 @@ namespace Store.BusinessLogic.Services
 
             if (usersFromRepo == null)
             {
-                userModel.Errors.Add(Constants.ServiceValidationErrors.UsersNotExistError);
+                userModel.Errors.Add(Constants.Errors.UsersNotExistError);
                 return userModel;
             }
 
@@ -35,7 +39,7 @@ namespace Store.BusinessLogic.Services
             foreach (var user in usersFromRepo)
             {
                 //Map from Users to UserModelItem
-                userModel.Users.Add(_mapper.Map<UserModelItem>(user));
+                userModel.Users.Add(_mapper.Map(user, new UserModelItem()));
             }
 
             return userModel;
@@ -43,11 +47,11 @@ namespace Store.BusinessLogic.Services
 
         public async Task<UserModelItem> GetUserByIdAsync(string id)
         {
-            var user = _mapper.Map<UserModelItem>(await _userRepository.FindByIdAsync(id));
+            var user = _mapper.Map(await _userRepository.FindByIdAsync(id), new UserModelItem());
             if (user == null)
             {
                 user = new UserModelItem();
-                user.Errors.Add(Constants.ServiceValidationErrors.UserNotExistsError);
+                user.Errors.Add(Constants.Errors.UsersNotExistError);
                 return user;
             }
 
@@ -57,11 +61,11 @@ namespace Store.BusinessLogic.Services
 
         public async Task<UserModelItem> GetUserByNameAsync(string username)
         {
-            var user = _mapper.Map<UserModelItem>(await _userRepository.FindByNameAsync(username));
+            var user = _mapper.Map(await _userRepository.FindByNameAsync(username), new UserModelItem());
             if (user == null)
             {
                 user = new UserModelItem();
-                user.Errors.Add(Constants.ServiceValidationErrors.UserNotExistsError);
+                user.Errors.Add(Constants.Errors.UserNotExistsError);
                 return user;
             }
 
@@ -73,15 +77,15 @@ namespace Store.BusinessLogic.Services
         {
             if (await _userRepository.FindByEmailAsync(signUpModel.Email) != null)
             {
-                signUpModel.Errors.Add(Constants.ServiceValidationErrors.UserExistsError);
+                signUpModel.Errors.Add(Constants.Errors.UserExistsError);
                 return signUpModel;
             }
 
             //Create user 
-            var repoResult = await _userRepository.CreateAsync(_mapper.Map<Users>(signUpModel), signUpModel.Password);
+            var repoResult = await _userRepository.CreateAsync(_signUpMapper.Map(signUpModel, new Users()), signUpModel.Password);
             if (!repoResult)
             {
-                signUpModel.Errors.Add(Constants.ServiceValidationErrors.CreateUserError);
+                signUpModel.Errors.Add(Constants.Errors.CreateUserError);
                 return signUpModel;
             }
 
@@ -92,7 +96,7 @@ namespace Store.BusinessLogic.Services
             var result = await _userRepository.AddToRoleAsync(user.Id, "Client");
             if (!result)
             {
-                signUpModel.Errors.Add(Constants.ServiceValidationErrors.RoleNotExistsError);
+                signUpModel.Errors.Add(Constants.Errors.RoleNotExistsError);
                 return signUpModel;
             }
 
@@ -100,7 +104,7 @@ namespace Store.BusinessLogic.Services
             result = await _userRepository.LockOutAsync(user.UserName, false);
             if (!result)
             {
-                signUpModel.Errors.Add(Constants.ServiceValidationErrors.UnlockUserError);
+                signUpModel.Errors.Add(Constants.Errors.UnlockUserError);
             }
 
             return signUpModel;
@@ -112,7 +116,7 @@ namespace Store.BusinessLogic.Services
             var userModel = new UserModelItem();
             if(user == null)
             {
-                userModel.Errors.Add(Constants.ServiceValidationErrors.UserNotExistsError);
+                userModel.Errors.Add(Constants.Errors.UserNotExistsError);
                 return userModel;
             }
 
@@ -122,7 +126,7 @@ namespace Store.BusinessLogic.Services
             var result = await _userRepository.UpdateAsync(user);
             if (!result)
             {
-                userModel.Errors.Add(Constants.ServiceValidationErrors.EditUserError);
+                userModel.Errors.Add(Constants.Errors.EditUserError);
             }
 
             return userModel;
@@ -134,14 +138,14 @@ namespace Store.BusinessLogic.Services
             var userModel = new UserModelItem();
             if (user == null)
             {
-                userModel.Errors.Add(Constants.ServiceValidationErrors.UserNotExistsError);
+                userModel.Errors.Add(Constants.Errors.UserNotExistsError);
                 return userModel;
             }
 
             var result = await _userRepository.RemoveAsync(user);
             if (!result)
             {
-                userModel.Errors.Add(Constants.ServiceValidationErrors.DeleteUserError);
+                userModel.Errors.Add(Constants.Errors.DeleteUserError);
             }
 
             return userModel;
@@ -153,7 +157,7 @@ namespace Store.BusinessLogic.Services
             var userModel = new UserModelItem();
             if(!result)
             {
-                userModel.Errors.Add(Constants.ServiceValidationErrors.UnlockUserError);
+                userModel.Errors.Add(Constants.Errors.UnlockUserError);
             }
 
             return userModel;
@@ -164,7 +168,7 @@ namespace Store.BusinessLogic.Services
             var result = await _userRepository.CreateRoleAsync(roleModel.Rolename);
             if (!result)
             {
-                roleModel.Errors.Add(Constants.ServiceValidationErrors.CreateRoleError);
+                roleModel.Errors.Add(Constants.Errors.CreateRoleError);
             }
 
             return roleModel;
@@ -175,7 +179,7 @@ namespace Store.BusinessLogic.Services
             var result = await _userRepository.DeleteRoleAsync(roleModel.Rolename);
             if (!result)
             {
-                roleModel.Errors.Add(Constants.ServiceValidationErrors.DeleteRoleError);
+                roleModel.Errors.Add(Constants.Errors.DeleteRoleError);
             }
 
             return roleModel;
@@ -186,14 +190,14 @@ namespace Store.BusinessLogic.Services
             var user = await _userRepository.FindByNameAsync(userRoleModel.Username);
             if (user == null)
             {
-                userRoleModel.Errors.Add(Constants.ServiceValidationErrors.UserNotExistsError);
+                userRoleModel.Errors.Add(Constants.Errors.UserNotExistsError);
                 return userRoleModel;
             }
 
             var result = await _userRepository.AddToRoleAsync(user.Id, userRoleModel.Rolename);
             if (!result)
             {
-                userRoleModel.Errors.Add(Constants.ServiceValidationErrors.RoleNotExistsError);
+                userRoleModel.Errors.Add(Constants.Errors.RoleNotExistsError);
             }
 
             return userRoleModel;
@@ -204,14 +208,14 @@ namespace Store.BusinessLogic.Services
             var user = await _userRepository.FindByNameAsync(userRoleModel.Username);
             if (user == null)
             {
-                userRoleModel.Errors.Add(Constants.ServiceValidationErrors.UserNotExistsError);
+                userRoleModel.Errors.Add(Constants.Errors.UserNotExistsError);
                 return userRoleModel;
             }
 
             var result = await _userRepository.RemoveFromRoleAsync(user.Id, userRoleModel.Rolename);
             if (!result)
             {
-                userRoleModel.Errors.Add(Constants.ServiceValidationErrors.RoleNotExistsError);
+                userRoleModel.Errors.Add(Constants.Errors.RoleNotExistsError);
             }
 
             return userRoleModel;

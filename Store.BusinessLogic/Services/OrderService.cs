@@ -1,21 +1,22 @@
-﻿using AutoMapper;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Collections.Generic;
 using Store.BusinessLogic.Models.Orders;
 using Store.BusinessLogic.Models.Payments;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
+using Store.BusinessLogic.Common.Mappers.Interface;
+using Store.BusinessLogic.Common;
 
 namespace Store.BusinessLogic.Services
 {
     public class OrderService : IOrderService
     {
-        private IOrderRepository _orderRepository;
-        private IOrderItemRepository _orderItemRepository;
-        private IPaymentRepository _paymentsRepository;
-        private IMapper _mapper;
-        public OrderService(IMapper mapper,
+        private readonly IOrderRepository _orderRepository;
+        private readonly IOrderItemRepository _orderItemRepository;
+        private readonly IPaymentRepository _paymentsRepository;
+        private readonly IMapper<Orders, OrderModelItem> _mapper;
+        public OrderService(IMapper<Orders, OrderModelItem> mapper,
                             IPaymentRepository paymentsRepository,
                             IOrderRepository orderRepository,
                             IOrderItemRepository orderItemRepository)
@@ -32,14 +33,14 @@ namespace Store.BusinessLogic.Services
             var orderModel = new OrderModelItem();
             if (order == null)
             {
-                orderModel.Errors.Add("Order not found");
+                orderModel.Errors.Add(Constants.Errors.NotFoundOrderError);
                 return orderModel;
             }
 
             var result = await _paymentsRepository.CreateAsync(new Payments { TransactionId = modelItem.TransactionId });
             if(!result)
             {
-                orderModel.Errors.Add("Creating payment error");
+                orderModel.Errors.Add(Constants.Errors.CreatePaymentError);
                 return orderModel;
             }
 
@@ -48,7 +49,7 @@ namespace Store.BusinessLogic.Services
             result = await _orderRepository.UpdateAsync(order);
             if (!result)
             {
-                orderModel.Errors.Add("Order not found");
+                orderModel.Errors.Add(Constants.Errors.UpdateOrderError);
                 return orderModel;
             }
 
@@ -57,19 +58,17 @@ namespace Store.BusinessLogic.Services
 
         public async Task<OrderModelItem> CreateAsync(OrderModelItem modelItem)
         {
-            var orderModel = new OrderModelItem();
-            var order = _mapper.Map<Orders>(modelItem);
-
-            order.OrderItems = new List<OrderItems>();
+            var order = new Orders();
+            order = _mapper.Map(modelItem, order);
 
             var result = await _orderRepository.CreateAsync(order);
             if (!result)
             {
-                orderModel.Errors.Add("Creating order error");
-                return orderModel;
+                modelItem.Errors.Add(Constants.Errors.CreateOrderError);
+                return modelItem;
             }
 
-            return orderModel;
+            return modelItem;
         }
 
         public async Task<OrderModelItem> DeleteAsync(int id)
@@ -78,7 +77,7 @@ namespace Store.BusinessLogic.Services
             var orderModel = new OrderModelItem();
             if(order == null)
             {
-                orderModel.Errors.Add("Order not found");
+                orderModel.Errors.Add(Constants.Errors.NotFoundOrderError);
                 return orderModel;
             }
 
@@ -86,7 +85,7 @@ namespace Store.BusinessLogic.Services
             var result = await _orderRepository.UpdateAsync(order);
             if (!result)
             {
-                orderModel.Errors.Add("Creating order error");
+                orderModel.Errors.Add(Constants.Errors.DeleteOrderError);
                 return orderModel;
             }
 
@@ -99,11 +98,11 @@ namespace Store.BusinessLogic.Services
             var order = await _orderRepository.FindByIdAsync(id);
             if (order == null)
             {
-                orderModel.Errors.Add("Order not found");
+                orderModel.Errors.Add(Constants.Errors.NotFoundOrderError);
                 return orderModel;
             }
 
-            orderModel = _mapper.Map<OrderModelItem>(order);
+            orderModel = _mapper.Map(order, orderModel);
             return orderModel;
         }
 
@@ -118,14 +117,15 @@ namespace Store.BusinessLogic.Services
 
             if (orders == null)
             {
-                orderModel.Errors.Add("Orders not found");
+                orderModel.Errors.Add(Constants.Errors.NotFoundOrderError);
                 return orderModel;
             }
 
             foreach(var item in orders)
             {
-                var order = _mapper.Map<OrderModelItem>(item);
-                orderModel.Orders.Add(_mapper.Map<OrderModelItem>(order));
+                var orderItem = new OrderModelItem();
+                orderItem = _mapper.Map(item, orderItem);
+                orderModel.Orders.Add(orderItem);
             }
 
             return orderModel;
@@ -137,7 +137,7 @@ namespace Store.BusinessLogic.Services
             var orderModel = new OrderModelItem();
             if (order == null)
             {
-                orderModel.Errors.Add("Order not found");
+                orderModel.Errors.Add(Constants.Errors.NotFoundOrderError);
                 return orderModel;
             }
 
@@ -145,7 +145,7 @@ namespace Store.BusinessLogic.Services
             var result = await _orderRepository.UpdateAsync(order);
             if (!result)
             {
-                orderModel.Errors.Add("Removing payment error");
+                orderModel.Errors.Add(Constants.Errors.RemovePaymentError);
                 return orderModel;
             }
 
@@ -158,16 +158,15 @@ namespace Store.BusinessLogic.Services
             var orderModel = new OrderModelItem();
             if (order == null)
             {
-                orderModel.Errors.Add("Order not found");
+                orderModel.Errors.Add(Constants.Errors.NotFoundOrderError);
                 return orderModel;
             }
-
-            _mapper.Map<OrderModelItem, Orders>(modelItem, order);
-
+            await _orderItemRepository.RemoveByOrderIdAsync(order.Id);
+            order = _mapper.Map(modelItem, order);
             var result = await _orderRepository.UpdateAsync(order);
             if(!result)
             {
-                orderModel.Errors.Add("Updating order error");
+                orderModel.Errors.Add(Constants.Errors.UpdateOrderError);
                 return orderModel;
             }
             return orderModel;

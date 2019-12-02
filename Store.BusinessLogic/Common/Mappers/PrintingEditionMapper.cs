@@ -1,9 +1,9 @@
 ﻿using System;
+using Store.BusinessLogic.Models.Authors;
 using Store.BusinessLogic.Models.PrintingEditions;
 using Store.BusinessLogic.Common.Mappers.Interface;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Entities.Enums;
-using Store.BusinessLogic.Models.Authors;
 
 namespace Store.BusinessLogic.Common.Mappers
 {

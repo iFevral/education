@@ -1,22 +1,26 @@
-﻿using AutoMapper;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
 using Store.BusinessLogic.Common;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
+using Store.BusinessLogic.Common.Mappers.Interface;
 
 namespace Store.BusinessLogic.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly IMapper _mapper;
+        private readonly IMapper<Users, UserModelItem> _mapper;
+        private readonly IMapper<Users, SignUpModel> _signUpMapper;
         private readonly IUserRepository _userRepository;
-        public AccountService(IMapper mapper,
+
+        public AccountService(IMapper<Users, UserModelItem> mapper,
+                              IMapper<Users, SignUpModel> signUpMapper,
                               IUserRepository userRepository)
         {
             _mapper = mapper;
             _userRepository = userRepository;
+            _signUpMapper = signUpMapper;
         }
 
 
@@ -26,15 +30,15 @@ namespace Store.BusinessLogic.Services
             var userModel = new UserModelItem();
             if (user == null)
             {
-                userModel.Errors.Add(Constants.ServiceValidationErrors.UserNotExistsError);
+                userModel.Errors.Add(Constants.Errors.UserNotExistsError);
                 return userModel;
             }
-            userModel = _mapper.Map<UserModelItem>(user);
+            userModel = _mapper.Map(user, userModel);
             userModel.Roles = await _userRepository.GetUserRolesAsync(user.UserName);
 
             if (userModel.Roles == null)
             {
-                userModel.Errors.Add(Constants.ServiceValidationErrors.UserNotInAnyRoleError);
+                userModel.Errors.Add(Constants.Errors.UserNotInAnyRoleError);
                 return userModel;
             }
 
@@ -47,15 +51,15 @@ namespace Store.BusinessLogic.Services
             var userModel = new UserModelItem();
             if (user == null)
             {
-                userModel.Errors.Add(Constants.ServiceValidationErrors.UserNotExistsError);
+                userModel.Errors.Add(Constants.Errors.UserNotExistsError);
                 return userModel;
             }
-            userModel = _mapper.Map<UserModelItem>(user);
+            userModel = _mapper.Map(user, userModel);
             userModel.Roles = await _userRepository.GetUserRolesAsync(user.Id);
 
             if (userModel.Roles == null)
             {
-                userModel.Errors.Add(Constants.ServiceValidationErrors.UserNotInAnyRoleError);
+                userModel.Errors.Add(Constants.Errors.UserNotInAnyRoleError);
                 return userModel;
             }
 
@@ -68,16 +72,17 @@ namespace Store.BusinessLogic.Services
             var userModel = new UserModelItem();
             if(user == null)
             {
-                userModel.Errors.Add("User not found");
+                userModel.Errors.Add(Constants.Errors.UserNotExistsError);
             }
 
-            userModel = _mapper.Map<UserModelItem>(user);
+            userModel = _mapper.Map(user, userModel);
             userModel.Roles = await _userRepository.GetUserRolesAsync(signInModel.Username);
+            
             //If user created it will get user info or will return empty UserModelItem
             var result = await _userRepository.CheckSignInAsync(signInModel.Username, signInModel.Password);
             if(!result)
             {
-                userModel.Errors.Add("Username or password is incorrect. Please check data.");
+                userModel.Errors.Add(Constants.Errors.WrongCredentialsError);
                 return userModel;
             }
 
@@ -90,15 +95,15 @@ namespace Store.BusinessLogic.Services
             //Check if user exists
             if(await _userRepository.FindByEmailAsync(signUpModel.Email) != null)
             {
-                emailModel.Errors.Add("Email is already registered");
+                emailModel.Errors.Add(Constants.Errors.EmailExistsError);
                 return emailModel;
             }
 
             //Create user 
-            var result = await _userRepository.CreateAsync(_mapper.Map<Users>(signUpModel), signUpModel.Password);
+            var result = await _userRepository.CreateAsync(_signUpMapper.Map(signUpModel, new Users()), signUpModel.Password);
             if(!result)
             {
-                emailModel.Errors.Add("Creating user error");
+                emailModel.Errors.Add(Constants.Errors.CreateUserError);
                 return emailModel;
             }
 
@@ -109,7 +114,7 @@ namespace Store.BusinessLogic.Services
             result = await _userRepository.AddToRoleAsync(user.Id, "Client");
             if(!result)
             {
-                emailModel.Errors.Add($"Role 'Client' doesn`t exists");
+                emailModel.Errors.Add(Constants.Errors.RoleNotExistsError);
                 return emailModel;
             }
 
@@ -117,7 +122,7 @@ namespace Store.BusinessLogic.Services
             result = await _userRepository.LockOutAsync(user.UserName, false);
             if (!result)
             {
-                emailModel.Errors.Add($"Unlock has failed");
+                emailModel.Errors.Add(Constants.Errors.UnlockUserError);
                 return emailModel;
             }
 
@@ -160,7 +165,7 @@ namespace Store.BusinessLogic.Services
             var resetPasswordModel = new ResetPasswordModel();
             if(user == null)
             {
-                resetPasswordModel.Errors.Add("User is not found");
+                resetPasswordModel.Errors.Add(Constants.Errors.UserNotExistsError);
                 return resetPasswordModel;
             }
 
@@ -177,7 +182,7 @@ namespace Store.BusinessLogic.Services
             var resetPasswordModel = new ResetPasswordModel();
             if (user == null)
             {
-                resetPasswordModel.Errors.Add("User is not found");
+                resetPasswordModel.Errors.Add(Constants.Errors.UserNotExistsError);
                 return resetPasswordModel;
             }
 
@@ -185,7 +190,7 @@ namespace Store.BusinessLogic.Services
             var result = await _userRepository.ConfirmNewPasswordAsync(user.UserName, token, newPassword);
             if (!result)
             {
-                resetPasswordModel.Errors.Add("User is not found");
+                resetPasswordModel.Errors.Add(Constants.Errors.UserNotExistsError);
             }
 
             return resetPasswordModel;

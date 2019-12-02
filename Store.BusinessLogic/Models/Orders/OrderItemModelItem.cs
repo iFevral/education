@@ -7,7 +7,6 @@ namespace Store.BusinessLogic.Models.Orders
     {
         public int Id { get; set; }
         public int Amount { get; set; } = 1;
-        public string PrintingEditionTitle { get; set; }
 
         public OrderModelItem Order { get; set; }
         public PrintingEditionModelItem PrintingEdition { get; set; }

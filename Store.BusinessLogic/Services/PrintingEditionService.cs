@@ -5,14 +5,15 @@ using Store.BusinessLogic.Models.PrintingEditions;
 using Store.DataAccess.Repositories.Interfaces;
 using Store.DataAccess.Entities;
 using Store.BusinessLogic.Common.Mappers.Interface;
+using Store.BusinessLogic.Common;
 
 namespace Store.BusinessLogic.Services
 {
     public class PrintingEditionService : IPrintingEditionService
     {
 
-        private IMapper<PrintingEditions, PrintingEditionModelItem> _mapper;
-        private IPrintingEditionRepository _printingEditionRepository;
+        private readonly IMapper<PrintingEditions, PrintingEditionModelItem> _mapper;
+        private readonly IPrintingEditionRepository _printingEditionRepository;
 
         public PrintingEditionService(IMapper<PrintingEditions, PrintingEditionModelItem> mapper,
                                       IPrintingEditionRepository printingEditionRepository)
@@ -37,7 +38,7 @@ namespace Store.BusinessLogic.Services
 
             if (printingEditions.Count == 0)
             {
-                printingEditionModel.Errors.Add($"Printing editions not found");
+                printingEditionModel.Errors.Add(Constants.Errors.NotFoundPringtingEditionError);
                 return printingEditionModel;
             }
 
@@ -51,68 +52,62 @@ namespace Store.BusinessLogic.Services
             return printingEditionModel;
         }
 
-        public async Task<PrintingEditionModel> FindByIdAsync(int id)
+        public async Task<PrintingEditionModelItem> FindByIdAsync(int id)
         {
-            var printingEditionModel = new PrintingEditionModel();
+            var printingEditionModel = new PrintingEditionModelItem();
             var printingEdition = await _printingEditionRepository.FindByIdAsync(id);
             if (printingEdition == null)
             {
-                printingEditionModel.Errors.Add("Printing edition not found");
+                printingEditionModel.Errors.Add(Constants.Errors.NotFoundPringtingEditionError);
                 return printingEditionModel;
             }
             var pe = new PrintingEditionModelItem();
             pe = _mapper.Map(printingEdition, pe);
-
-            printingEditionModel.PrintingEditions.Add(pe);
            
             return printingEditionModel;
         }
 
-        public async Task<PrintingEditionModel> CreateAsync(PrintingEditionModelItem printingEditionItem)
+        public async Task<PrintingEditionModelItem> CreateAsync(PrintingEditionModelItem printingEditionModel)
         {
-            var printingEditionModel = new PrintingEditionModel();
             var printingEdition = new PrintingEditions();
-            printingEdition = _mapper.Map(printingEditionItem, printingEdition);
-            
-            printingEdition.AuthorInBooks = new List<AuthorInBooks>();
-
+            printingEdition = _mapper.Map(printingEditionModel, printingEdition);
+           
             var result = await _printingEditionRepository.CreateAsync(printingEdition);
             if (!result)
             {
-                printingEditionModel.Errors.Add("Creating printing edition error");
+                printingEditionModel.Errors.Add(Constants.Errors.CreatePringtingEditionError);
                 return printingEditionModel;
             }
             return printingEditionModel;
         }
 
-        public async Task<PrintingEditionModel> UpdateAsync(int id, PrintingEditionModelItem printingEditionItem)
+        public async Task<PrintingEditionModelItem> UpdateAsync(int id, PrintingEditionModelItem printingEditionModel)
         {
-            var printingEditionModel = new PrintingEditionModel();
             var printingEdition = await _printingEditionRepository.FindByIdAsync(id);
             if(printingEdition == null)
             {
-                printingEditionModel.Errors.Add("Printing edition not found");
+                printingEditionModel.Errors.Add(Constants.Errors.NotFoundPringtingEditionError);
                 return printingEditionModel;
             }
 
-            printingEdition =_mapper.Map(printingEditionItem, printingEdition);
+            printingEdition =_mapper.Map(printingEditionModel, printingEdition);
             var result = await _printingEditionRepository.UpdateAsync(printingEdition);
             if(!result)
             {
-                printingEditionModel.Errors.Add("Updating printing edition error");
+                printingEditionModel.Errors.Add(Constants.Errors.UpdatePringtingEditionError);
                 return printingEditionModel;
             }
 
             return printingEditionModel;
         }
 
-        public async Task<PrintingEditionModel> DeleteAsync(int id)
+        public async Task<PrintingEditionModelItem> DeleteAsync(int id)
         {
-            var printingEditionModel = new PrintingEditionModel();
+            var printingEditionModel = new PrintingEditionModelItem();
             var printingEdition = await _printingEditionRepository.FindByIdAsync(id);
             if (printingEdition == null)
             {
-                printingEditionModel.Errors.Add("Printing edition not found");
+                printingEditionModel.Errors.Add(Constants.Errors.NotFoundPringtingEditionError);
                 return printingEditionModel;
             }
 
@@ -120,7 +115,7 @@ namespace Store.BusinessLogic.Services
             var result = await _printingEditionRepository.UpdateAsync(printingEdition);
             if (!result)
             {
-                printingEditionModel.Errors.Add("Removing printing edition error");
+                printingEditionModel.Errors.Add(Constants.Errors.DeletePringtingEditionError);
                 return printingEditionModel;
             }
 
