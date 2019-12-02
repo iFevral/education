@@ -21,14 +21,14 @@ namespace Store.BusinessLogic
             _mapper = mapper;
         }
 
-        public async Task<AuthorModel> GetAll(AuthorFilter authorFilter, int startIndex = -1, int quantity = -1)
+        public async Task<AuthorModel> GetAll(AuthorFilter authorFilter,string sortBy, int startIndex, int quantity)
         {
             var authorModel = new AuthorModel();
             IList<Authors> authors;
             
-            if (startIndex != -1 && quantity != -1)
+            if (quantity != 0)
             {
-                authors = _authorRepository.Get(authorFilter.Predicate, startIndex, quantity);
+                authors = _authorRepository.Get(authorFilter.Predicate, startIndex, quantity, sortBy);
             }
             else
             {

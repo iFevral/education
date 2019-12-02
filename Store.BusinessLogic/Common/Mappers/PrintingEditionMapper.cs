@@ -36,6 +36,7 @@ namespace Store.BusinessLogic.Common.Mappers
 
         public PrintingEditionModelItem Map(PrintingEditions entity, PrintingEditionModelItem model)
         {
+            model.Id = entity.Id;
             model.Title = entity.Title;
             model.Description = entity.Description;
             model.Price = entity.Price;

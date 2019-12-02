@@ -30,11 +30,15 @@ namespace Store.DataAccess.Repositories.Base
             return await _dbSet.ToListAsync();
         }
 
-        public virtual IList<T> Get(Expression<Func<T, bool>> predicate, int startIndex, int quantity)
+        public virtual IList<T> Get(Expression<Func<T, bool>> predicate, int startIndex, int quantity, string sortBy)
         {
-            return _dbSet.Where(predicate)
+
+            var set = _dbSet.Where(predicate)
                          .Skip(startIndex)
-                         .Take(quantity).ToList();
+                         .Take(quantity)
+                         .ToList();
+
+            return set.OrderByDescending(x => x.GetType().GetProperty(sortBy).GetValue(x, null)).ToList();
         }
 
         public virtual async Task<IList<T>> GetAsync(int startIndex, int quantity)

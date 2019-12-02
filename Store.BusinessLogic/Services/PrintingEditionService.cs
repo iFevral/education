@@ -22,14 +22,14 @@ namespace Store.BusinessLogic.Services
             _printingEditionRepository = printingEditionRepository;
         }
 
-        public PrintingEditionModel GetAll(PrintingEditionFilter peFilter,int startIndex = 0, int quantity = 0)
+        public PrintingEditionModel GetAll(PrintingEditionFilter peFilter, string sortBy, int startIndex = 0, int quantity = 0)
         {
             var printingEditionModel = new PrintingEditionModel();
 
             IList<PrintingEditions> printingEditions;
             if ( quantity != 0)
             {
-                printingEditions = _printingEditionRepository.Get(peFilter.Predicate, startIndex, quantity);
+                printingEditions = _printingEditionRepository.Get(peFilter.Predicate, startIndex, quantity, sortBy);
             }
             else
             {

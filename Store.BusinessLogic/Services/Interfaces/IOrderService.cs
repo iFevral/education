@@ -1,7 +1,5 @@
 ﻿using Store.BusinessLogic.Models.Orders;
 using Store.BusinessLogic.Models.Payments;
-using Store.DataAccess.Entities;
-using System;
 using System.Threading.Tasks;
 
 namespace Store.BusinessLogic.Services.Interfaces
@@ -12,7 +10,7 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Get part orders or all orders with filtering
         /// </summary>
         /// <returns>All orders</returns>
-        public Task<OrderModel> GetAllAsync(OrderFilter orderFilter, int startIndex, int quantity);
+        public Task<OrderModel> GetAllAsync(OrderFilter orderFilter, string sortBy, int startIndex, int quantity);
 
         /// <summary>
         /// Get order by order id

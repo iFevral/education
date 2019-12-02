@@ -18,9 +18,9 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]s")]
         [HttpGet]
-        public async Task<IActionResult> GetAuthors([FromBody]AuthorFilter authorFilter, int startIndex = -1, int quantity = -1)
+        public async Task<IActionResult> GetAuthors([FromBody]AuthorFilter authorFilter, string sortBy = "Id", int startIndex = 0, int quantity = 1)
         {
-            var authorModel = await _authorService.GetAll(authorFilter, startIndex, quantity);
+            var authorModel = await _authorService.GetAll(authorFilter, sortBy, startIndex, quantity);
             if (authorModel.Errors.Count > 0)
             {
                 return NotFound(authorModel);

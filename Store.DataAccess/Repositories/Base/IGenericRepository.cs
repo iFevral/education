@@ -23,7 +23,7 @@ namespace Store.DataAccess.Repositories.Base
         /// Filter and get part of data
         /// </summary>
         /// <returns>Part of filtered instances</returns>
-        public IList<T> Get(Expression<Func<T, bool>> predicate, int startIndex, int quantity);
+        public IList<T> Get(Expression<Func<T, bool>> predicate, int startIndex, int quantity, string sortBy = "Id");
 
         /// <summary>
         /// Get part of data async

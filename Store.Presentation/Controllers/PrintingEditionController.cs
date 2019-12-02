@@ -19,10 +19,9 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]s")]
         [HttpPost]
-        public IActionResult GetPrintingEditions(int startIndex, int quantity, [FromBody]PrintingEditionFilter peFilter)
+        public IActionResult GetPrintingEditions([FromBody]PrintingEditionFilter peFilter, int startIndex, int quantity, string sortBy = "Id")
         {
-
-            var printingEditionModel = _printingEditionService.GetAll(peFilter, startIndex, quantity);
+            var printingEditionModel = _printingEditionService.GetAll(peFilter, sortBy, startIndex, quantity);
             if (printingEditionModel.Errors.Count > 0)
             {
                 return NotFound(printingEditionModel);

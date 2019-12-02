@@ -106,13 +106,13 @@ namespace Store.BusinessLogic.Services
             return orderModel;
         }
 
-        public async Task<OrderModel> GetAllAsync(OrderFilter orderFilter, int startIndex = 0, int quantity = 0)
+        public async Task<OrderModel> GetAllAsync(OrderFilter orderFilter, string sortBy, int startIndex = 0, int quantity = 0)
         {
             IList<Orders> orders;
             var orderModel = new OrderModel();
             
             orders = quantity > 0 
-                ? _orderRepository.Get(orderFilter.Predicate, startIndex, quantity)
+                ? _orderRepository.Get(orderFilter.Predicate, startIndex, quantity, sortBy)
                 : _orderRepository.GetAll(orderFilter.Predicate);
 
             if (orders == null)
