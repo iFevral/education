@@ -23,13 +23,6 @@ namespace Store.Presentation.Controllers
             _accountService = accountService;
         }
 
-        [Route("~/[controller]/Home")]
-        [HttpGet]
-        public IActionResult Home()
-        {
-            return Ok("Home Page");
-        }
-
         [Route("~/[controller]/Profile")]
         [Authorize]
         [HttpPost]

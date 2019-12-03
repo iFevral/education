@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Store.BusinessLogic.Models.Base
+﻿namespace Store.BusinessLogic.Models.Base
 {
     public class BaseFilterModel
     {
-        protected string ValidateString(string str)
-        {
-            return str.Trim().ToLower();
-        }
+        public string SortProperty { get; set; } = "Id";
+        public string SortWay { get; set; } = "ASC";
+
+        public int StartIndex { get; set; } = 0;
+        public int Quantity { get; set; } = 0;
     }
 }

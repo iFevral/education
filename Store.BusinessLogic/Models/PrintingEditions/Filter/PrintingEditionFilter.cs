@@ -18,14 +18,14 @@ namespace Store.BusinessLogic.Models.PrintingEditions
         {
             get
             {
-                return pe => (string.IsNullOrWhiteSpace(this.Title) || ValidateString(pe.Title).Contains(ValidateString(this.Title))) &&
+                return pe => (string.IsNullOrWhiteSpace(this.Title) || pe.Title.ToLower().Contains(this.Title.ToLower())) &&
                              (this.Types == null || this.Types.Count == 0 || this.Types.Any(t => t == (int)pe.Type)) &&
                              (this.MinPrice == null || pe.Price >= this.MinPrice) &&
                              (this.MaxPrice == null || pe.Price <= this.MaxPrice) &&
                              (!pe.isRemoved) &&
                              (string.IsNullOrWhiteSpace(this.Author) || pe.AuthorInBooks
                                                                           .Any(aib =>
-                                                                               ValidateString(aib.Author.Name).Contains(ValidateString(this.Author))));
+                                                                               aib.Author.Name.ToLower().Contains(this.Author.ToLower())));
             }
         }
     }

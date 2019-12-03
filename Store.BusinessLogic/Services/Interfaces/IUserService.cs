@@ -10,7 +10,7 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Get all users
         /// </summary>
         /// <returns>User model</returns>
-        public Task<UserModel> GetAllUsersAsync();
+        public Task<UserModel> GetAllUsersAsync(UserFilter userFilter);
 
         /// <summary>
         /// Get user by id

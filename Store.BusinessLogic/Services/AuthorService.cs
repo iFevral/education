@@ -21,21 +21,27 @@ namespace Store.BusinessLogic
             _mapper = mapper;
         }
 
-        public async Task<AuthorModel> GetAll(AuthorFilter authorFilter,string sortBy, int startIndex, int quantity)
+        public async Task<AuthorModel> GetAll(AuthorFilter authorFilter)
         {
             var authorModel = new AuthorModel();
-            IList<Authors> authors;
+            IEnumerable<Authors> authors;
             
-            if (quantity != 0)
+            if (authorFilter.Quantity != 0)
             {
-                authors = _authorRepository.Get(authorFilter.Predicate, startIndex, quantity, sortBy);
+                authors = await _authorRepository.GetAsync(authorFilter.Predicate,
+                                                           authorFilter.StartIndex,
+                                                           authorFilter.Quantity, 
+                                                           authorFilter.SortProperty, 
+                                                           authorFilter.SortWay);
             }
             else
             {
-                authors = _authorRepository.GetAll(authorFilter.Predicate);
+                authors = await _authorRepository.GetAllAsync(authorFilter.Predicate,
+                                                              authorFilter.SortProperty,
+                                                              authorFilter.SortWay);
             }
 
-            if (authors.Count == 0)
+            if (authors == null)
             {
                 authorModel.Errors.Add(Constants.Errors.NotFoundAuthorError);
                 return authorModel;

@@ -23,7 +23,7 @@ namespace Store.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> GetAllUsers([FromBody]UserFilter userFilter)
         {
-            var userModel = await _userService.GetAllUsersAsync();
+            var userModel = await _userService.GetAllUsersAsync(userFilter);
             if (userModel.Errors.Count > 0)
             {
                 return NotFound(userModel);

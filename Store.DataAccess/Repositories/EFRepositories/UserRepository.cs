@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,9 +23,32 @@ namespace Store.DataAccess.Repositories.EFRepository
             _signInManager = signInManager;
         }
 
-        public async Task<IEnumerable<Users>> GetAllAsync()
+        public async Task<IEnumerable<Users>> GetAllAsync(Expression<Func<Users, bool>> predicate, string sortProperty, string sortWay)
         {
-            return await _userManager.Users.ToListAsync();
+            var set = await _userManager.Users.Where(predicate).ToListAsync();
+
+            if (sortWay == "DESC")
+            {
+                return set.OrderByDescending(x => x.GetType().GetProperty(sortProperty).GetValue(x, null));
+            }
+
+            return set.OrderBy(x => x.GetType().GetProperty(sortProperty).GetValue(x, null));
+        }
+
+        public async Task<IEnumerable<Users>> GetAsync(Expression<Func<Users, bool>> predicate, string sortProperty,string sortWay, int startIndex, int quantity)
+        {
+            var set = await _userManager.Users.Where(predicate).ToListAsync();
+
+            if(sortWay == "DESC")
+            {
+                return set.OrderByDescending(x => x.GetType().GetProperty(sortProperty).GetValue(x, null))
+                          .Skip(startIndex)
+                          .Take(quantity);
+            }
+
+            return set.OrderBy(x => x.GetType().GetProperty(sortProperty).GetValue(x, null))
+                      .Skip(startIndex)
+                      .Take(quantity);
         }
 
         public async Task<bool> CreateAsync(Users user, string password)

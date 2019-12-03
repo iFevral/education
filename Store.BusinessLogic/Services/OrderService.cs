@@ -44,8 +44,9 @@ namespace Store.BusinessLogic.Services
                 return orderModel;
             }
 
-            order.PaymentId = _paymentsRepository.FindBy(p => p.TransactionId.Equals(modelItem.TransactionId)).Id;
-            
+            var payment = await _paymentsRepository.FindByAsync(p => p.TransactionId.Equals(modelItem.TransactionId));
+            order.PaymentId = payment.Id;
+
             result = await _orderRepository.UpdateAsync(order);
             if (!result)
             {
@@ -106,16 +107,22 @@ namespace Store.BusinessLogic.Services
             return orderModel;
         }
 
-        public async Task<OrderModel> GetAllAsync(OrderFilter orderFilter, string sortBy, int startIndex = 0, int quantity = 0)
+        public async Task<OrderModel> GetAllAsync(OrderFilter orderFilter)
         {
-            IList<Orders> orders;
+            IEnumerable<Orders> orders;
             var orderModel = new OrderModel();
             
-            orders = quantity > 0 
-                ? _orderRepository.Get(orderFilter.Predicate, startIndex, quantity, sortBy)
-                : _orderRepository.GetAll(orderFilter.Predicate);
+            orders = orderFilter.Quantity > 0 
+                ? await _orderRepository.GetAsync(orderFilter.Predicate,
+                                                  orderFilter.StartIndex,
+                                                  orderFilter.Quantity,
+                                                  orderFilter.SortProperty,
+                                                  orderFilter.SortWay)
+                : await _orderRepository.GetAllAsync(orderFilter.Predicate,
+                                                     orderFilter.SortProperty,
+                                                     orderFilter.SortWay);
 
-            if (orders == null)
+            if (orders == null) 
             {
                 orderModel.Errors.Add(Constants.Errors.NotFoundOrderError);
                 return orderModel;

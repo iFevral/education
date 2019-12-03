@@ -22,21 +22,27 @@ namespace Store.BusinessLogic.Services
             _printingEditionRepository = printingEditionRepository;
         }
 
-        public PrintingEditionModel GetAll(PrintingEditionFilter peFilter, string sortBy, int startIndex = 0, int quantity = 0)
+        public async Task<PrintingEditionModel> GetAll(PrintingEditionFilter peFilter)
         {
             var printingEditionModel = new PrintingEditionModel();
 
-            IList<PrintingEditions> printingEditions;
-            if ( quantity != 0)
+            IEnumerable<PrintingEditions> printingEditions;
+            if (peFilter.Quantity != 0)
             {
-                printingEditions = _printingEditionRepository.Get(peFilter.Predicate, startIndex, quantity, sortBy);
+                printingEditions = await _printingEditionRepository.GetAsync(peFilter.Predicate,
+                                                                             peFilter.StartIndex,
+                                                                             peFilter.Quantity,
+                                                                             peFilter.SortProperty, 
+                                                                             peFilter.SortWay);
             }
             else
             {
-                printingEditions = _printingEditionRepository.GetAll(peFilter.Predicate);
+                printingEditions = await _printingEditionRepository.GetAllAsync(peFilter.Predicate,
+                                                                                peFilter.SortProperty,
+                                                                                peFilter.SortWay);
             }
 
-            if (printingEditions.Count == 0)
+            if (printingEditions == null)
             {
                 printingEditionModel.Errors.Add(Constants.Errors.NotFoundPringtingEditionError);
                 return printingEditionModel;

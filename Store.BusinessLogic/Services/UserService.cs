@@ -24,10 +24,19 @@ namespace Store.BusinessLogic.Services
             _signUpMapper = signUpMapper;
         }
 
-        public async Task<UserModel> GetAllUsersAsync()
+        public async Task<UserModel> GetAllUsersAsync(UserFilter userFilter)
         {
             UserModel userModel = new UserModel();
-            var usersFromRepo = await _userRepository.GetAllAsync();
+
+            var usersFromRepo = userFilter.Quantity > 0
+                ? await _userRepository.GetAsync(userFilter.Predicate,
+                                                 userFilter.SortProperty,
+                                                 userFilter.SortWay,
+                                                 userFilter.StartIndex,
+                                                 userFilter.Quantity)
+                : await _userRepository.GetAllAsync(userFilter.Predicate,
+                                                    userFilter.SortProperty,
+                                                    userFilter.SortWay);
 
             if (usersFromRepo == null)
             {

@@ -1,6 +1,8 @@
-﻿using Store.DataAccess.Entities;
-using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
+using System.Collections.Generic;
+using Store.DataAccess.Entities;
 
 namespace Store.DataAccess.Repositories.Interfaces
 {
@@ -10,7 +12,13 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// Return all users
         /// </summary>
         /// <returns>User entity</returns>
-        public Task<IEnumerable<Users>> GetAllAsync();
+        public Task<IEnumerable<Users>> GetAllAsync(Expression<Func<Users, bool>> predicate, string sortProperty, string sortWay);
+
+        /// <summary>
+        /// Return all users
+        /// </summary>
+        /// <returns>User entity</returns>
+        public Task<IEnumerable<Users>> GetAsync(Expression<Func<Users, bool>> predicate, string sortProperty, string sortWay, int startIndex, int quantity);
 
         /// <summary>
         /// Create new user

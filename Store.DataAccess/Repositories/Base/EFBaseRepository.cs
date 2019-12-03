@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.AppContext;
-using System.Linq.Expressions;
 
 namespace Store.DataAccess.Repositories.Base
 {
@@ -20,36 +20,38 @@ namespace Store.DataAccess.Repositories.Base
             _dbSet = db.Set<T>();
         }
 
-        public virtual IList<T> GetAll(Expression<Func<T, bool>> predicate)
+        public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> predicate, string sortProperty, string sortWay)
         {
-            return _dbSet.Where(predicate).ToList();
+            var set = await _dbSet.Where(predicate).ToListAsync();
+
+            if (sortWay == "DESC")
+            {
+                return set.OrderByDescending(x => x.GetType().GetProperty(sortProperty).GetValue(x, null));
+            }
+
+            return set.OrderBy(x => x.GetType().GetProperty(sortProperty).GetValue(x, null));
         }
 
-        public virtual async Task<IList<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate, int startIndex, int quantity, string sortProperty, string sortWay)
         {
-            return await _dbSet.ToListAsync();
+
+            var set = await _dbSet.Where(predicate).ToListAsync();
+
+            if(sortWay == "DESC")
+            {
+                return set.OrderByDescending(x => x.GetType().GetProperty(sortProperty).GetValue(x, null))
+                          .Skip(startIndex)
+                          .Take(quantity);
+            }
+
+            return set.OrderBy(x => x.GetType().GetProperty(sortProperty).GetValue(x, null))
+                      .Skip(startIndex)
+                      .Take(quantity);
         }
 
-        public virtual IList<T> Get(Expression<Func<T, bool>> predicate, int startIndex, int quantity, string sortBy)
+        public virtual async Task<T> FindByAsync(Expression<Func<T, bool>> predicate)
         {
-
-            var set = _dbSet.Where(predicate)
-                         .Skip(startIndex)
-                         .Take(quantity)
-                         .ToList();
-
-            return set.OrderByDescending(x => x.GetType().GetProperty(sortBy).GetValue(x, null)).ToList();
-        }
-
-        public virtual async Task<IList<T>> GetAsync(int startIndex, int quantity)
-        {
-            return await _dbSet.Skip(startIndex)
-                               .Take(quantity).ToListAsync();
-        }
-
-        public virtual T FindBy(Expression<Func<T, bool>> predicate)
-        {
-            return _dbSet.Where(predicate).FirstOrDefault();
+            return await _dbSet.Where(predicate).FirstOrDefaultAsync();
         }
 
         public virtual async Task<T> FindByIdAsync(int id)

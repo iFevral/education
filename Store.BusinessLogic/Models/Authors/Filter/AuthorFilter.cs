@@ -13,7 +13,7 @@ namespace Store.BusinessLogic.Models.Authors
         {
             get
             {
-                return a => (string.IsNullOrWhiteSpace(this.Name) || ValidateString(a.Name).Contains(ValidateString(this.Name))) &&
+                return a => (string.IsNullOrWhiteSpace(this.Name) || a.Name.ToLower().Contains(this.Name.ToLower())) &&
                             (!a.isRemoved);
             }
         }

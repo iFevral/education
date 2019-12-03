@@ -16,7 +16,7 @@ namespace Store.BusinessLogic.Models.Orders
         {
             get
             {
-                return o => (string.IsNullOrWhiteSpace(this.Username) || ValidateString(o.User.UserName).Contains(ValidateString(this.Username))) &&
+                return o => (string.IsNullOrWhiteSpace(this.Username) || o.User.UserName.ToLower().Contains(this.Username.ToLower())) &&
                             (this.Statuses == null || this.Statuses.Count == 0 || this.Statuses.Any(s => s == (int)o.Status)) &&
                             (!o.isRemoved);
             }

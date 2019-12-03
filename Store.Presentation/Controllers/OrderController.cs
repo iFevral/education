@@ -20,10 +20,10 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]s")]
         [HttpPost]
-        public async Task<IActionResult> GetAll([FromBody]OrderFilter orderFilter, string sortBy = "Id", int startIndex = 0, int quantity = 0)
+        public async Task<IActionResult> GetAll([FromBody]OrderFilter orderFilter)
         { 
 
-            var orderModel = await _orderService.GetAllAsync(orderFilter, sortBy, startIndex, quantity);
+            var orderModel = await _orderService.GetAllAsync(orderFilter);
             if (orderModel.Errors.Count > 0)
             {
                 return NotFound(orderModel);

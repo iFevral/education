@@ -10,7 +10,7 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Get part orders or all orders with filtering
         /// </summary>
         /// <returns>All orders</returns>
-        public Task<OrderModel> GetAllAsync(OrderFilter orderFilter, string sortBy, int startIndex, int quantity);
+        public Task<OrderModel> GetAllAsync(OrderFilter orderFilter);
 
         /// <summary>
         /// Get order by order id
