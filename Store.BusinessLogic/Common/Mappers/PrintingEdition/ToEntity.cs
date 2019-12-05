@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Store.BusinessLogic.Models.PrintingEditions;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Entities.Enums;
@@ -12,9 +13,9 @@ namespace Store.BusinessLogic.Common.Mappers.PrintingEdition
             entity.Title = model.Title;
             entity.Description = model.Description;
             entity.Price = model.Price;
-            entity.Currency = (Enums.PrintingEditions.Currencies)Enum.Parse(typeof(Enums.PrintingEditions.Currencies), model.Currency);
-            entity.Type = (Enums.PrintingEditions.Types)Enum.Parse(typeof(Enums.PrintingEditions.Types), model.Type);
-            
+            entity.Currency = model.Currency;
+            entity.Type =  model.Type;
+            entity.AuthorInBooks = new List<AuthorInBooks>();
             foreach(var author in model.Authors)
             {
                 var authorId = author.Id;

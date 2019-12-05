@@ -16,7 +16,7 @@ namespace Store.Presentation.Helpers
             return new Claim[]
                     {
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(ClaimTypes.NameIdentifier, user.Id),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim(ClaimTypes.Email, user.Email),
                         new Claim(ClaimTypes.Role, user.Roles.First())
                     };
@@ -27,7 +27,7 @@ namespace Store.Presentation.Helpers
             return new Claim[]
                     {
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(ClaimTypes.NameIdentifier, user.Id)
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                     };
         }
 
@@ -60,10 +60,10 @@ namespace Store.Presentation.Helpers
             return tokenHandler.WriteToken(token);
         }
 
-        public static string GetUserIdFromToken(string token)
+        public static long GetUserIdFromToken(string token)
         {
             JwtSecurityToken refreshToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
-            return refreshToken.Payload.Where(x => x.Key == "nameid").FirstOrDefault().Value.ToString();
+            return Convert.ToInt64(refreshToken.Payload.Where(x => x.Key == "nameid").FirstOrDefault().Value);
         }
     }
 }

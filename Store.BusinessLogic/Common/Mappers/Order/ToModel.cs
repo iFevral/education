@@ -1,5 +1,4 @@
 ﻿using Store.BusinessLogic.Models.Orders;
-using Store.DataAccess.Entities;
 
 namespace Store.BusinessLogic.Common.Mappers.Order
 {

@@ -33,6 +33,15 @@ namespace Store.Presentation.Controllers
             return Ok(userModel);
         }
 
+        [Route("~/[controller]s/Count")]
+        [HttpPost]
+        public async Task<IActionResult> GetNumber()
+        {
+            int counter = await _userService.GetNumberOfUsers();
+
+            return Ok(counter);
+        }
+
         [Route("~/[controller]s/[controller]/{username}")]
         [HttpPost]
         public async Task<IActionResult> GetUserProfile(string username)

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Store.Presentation.Helpers;
-using Store.BusinessLogic.Helpers;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Common;
@@ -29,15 +28,13 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]/Profile")]
-        [Authorize(Roles = Constants.RoleNames.Client)]
-        [Authorize(Roles = Constants.RoleNames.Admin)]
+        [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPost]
         public async Task<IActionResult> GetProfile([FromHeader]string Authorization)
         {
-            //Remove "Bearer " from token
             string token = Authorization.Substring(7);
-
-            var userModel = await _accountService.GetUserByIdAsync(JwtHelper.GetUserIdFromToken(token));
+            long userId = JwtHelper.GetUserIdFromToken(token);
+            var userModel = await _accountService.GetUserByIdAsync(userId);
 
             if (userModel.Errors.Count > 0)
             {
@@ -86,13 +83,6 @@ namespace Store.Presentation.Controllers
             await _emailHelper.Send(signUpModel.Email, subject, body);
             
             return Ok("Check your email to confirm your information");
-        }
-
-        [Route("~/[controller]/SignOut")]
-        [HttpPost]
-        public async Task<IActionResult> SignOut()
-        {
-            return Ok("Sign out success");
         }
 
 
@@ -151,7 +141,7 @@ namespace Store.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> RefreshTokens([FromHeader]string Authorization)
         {
-            string token = Authorization.Substring(7); //Remove 'Bearer ' from token
+            string token = Authorization.Substring(7);
             var userModel = await _accountService.GetUserByIdAsync(JwtHelper.GetUserIdFromToken(token));
 
             if (userModel.Errors.Count > 0)

@@ -19,7 +19,7 @@ namespace Store.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
                 {
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -30,13 +30,13 @@ namespace Store.DataAccess.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
 
                     b.ToTable("RoleClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
                 {
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -47,13 +47,13 @@ namespace Store.DataAccess.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.ToTable("UserClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(max)");
@@ -64,13 +64,13 @@ namespace Store.DataAccess.Migrations
                     b.Property<string>("ProviderKey")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.ToTable("UserLogins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(max)");
@@ -78,8 +78,8 @@ namespace Store.DataAccess.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -89,9 +89,9 @@ namespace Store.DataAccess.Migrations
 
             modelBuilder.Entity("Store.DataAccess.Entities.Author", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("CreationData")
@@ -110,11 +110,11 @@ namespace Store.DataAccess.Migrations
 
             modelBuilder.Entity("Store.DataAccess.Entities.AuthorInBooks", b =>
                 {
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
+                    b.Property<long>("AuthorId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("PrintingEditionId")
-                        .HasColumnType("int");
+                    b.Property<long>("PrintingEditionId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("AuthorId", "PrintingEditionId");
 
@@ -127,9 +127,9 @@ namespace Store.DataAccess.Migrations
 
             modelBuilder.Entity("Store.DataAccess.Entities.Order", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("CreationData")
@@ -141,14 +141,14 @@ namespace Store.DataAccess.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PaymentId")
-                        .HasColumnType("int");
+                    b.Property<long?>("PaymentId")
+                        .HasColumnType("bigint");
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("isRemoved")
                         .HasColumnType("bit");
@@ -164,9 +164,9 @@ namespace Store.DataAccess.Migrations
 
             modelBuilder.Entity("Store.DataAccess.Entities.OrderItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Amount")
@@ -175,11 +175,11 @@ namespace Store.DataAccess.Migrations
                     b.Property<DateTime?>("CreationData")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
+                    b.Property<long>("OrderId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("PrintingEditionId")
-                        .HasColumnType("int");
+                    b.Property<long>("PrintingEditionId")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("isRemoved")
                         .HasColumnType("bit");
@@ -195,9 +195,9 @@ namespace Store.DataAccess.Migrations
 
             modelBuilder.Entity("Store.DataAccess.Entities.Payment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("CreationData")
@@ -216,9 +216,9 @@ namespace Store.DataAccess.Migrations
 
             modelBuilder.Entity("Store.DataAccess.Entities.PrintingEdition", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("CreationData")
@@ -252,9 +252,10 @@ namespace Store.DataAccess.Migrations
 
             modelBuilder.Entity("Store.DataAccess.Entities.Role", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("nvarchar(max)");
@@ -277,9 +278,10 @@ namespace Store.DataAccess.Migrations
 
             modelBuilder.Entity("Store.DataAccess.Entities.User", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -347,15 +349,13 @@ namespace Store.DataAccess.Migrations
 
             modelBuilder.Entity("Store.DataAccess.Entities.UserInRoles", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("UserId", "RoleId");
-
-                    b.HasAlternateKey("RoleId", "UserId");
 
                     b.HasIndex("RoleId");
 
@@ -386,7 +386,8 @@ namespace Store.DataAccess.Migrations
                     b.HasOne("Store.DataAccess.Entities.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Store.DataAccess.Entities.OrderItem", b =>

@@ -14,7 +14,7 @@ namespace Store.DataAccess.Repositories.EFRepository
             _dbContext = db;
         }
 
-        public async Task<bool> RemovePrintingEditionsAsync(int authorId)
+        public async Task<bool> RemovePrintingEditionsAsync(long authorId)
         {
             _dbContext.RemoveRange(_dbContext.AuthorInBooks.Where(aib => aib.AuthorId == authorId));
             var result = await _dbContext.SaveChangesAsync();

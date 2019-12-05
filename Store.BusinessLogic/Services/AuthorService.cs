@@ -20,10 +20,15 @@ namespace Store.BusinessLogic
             _authorRepository = authorRepository;
         }
 
+        public async Task<int> GetNumberOfAuthors()
+        {
+            return await _authorRepository.GetNumberOfItems();
+        }
+
         public async Task<AuthorModel> GetAll(AuthorFilterModel authorFilter)
         {
             var authorModel = new AuthorModel();
-            
+
             var authors = await _authorRepository.GetAllAsync(authorFilter.MapToDataAccessModel());
 
             if (authors == null)
@@ -53,7 +58,7 @@ namespace Store.BusinessLogic
 
             authorModel = author.MapToModel();
             return authorModel;
-        }
+        } 
 
         public async Task<BaseModel> CreateAsync(AuthorModelItem authorModel)
         {

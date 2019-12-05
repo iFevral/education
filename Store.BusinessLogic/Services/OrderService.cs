@@ -24,6 +24,11 @@ namespace Store.BusinessLogic.Services
             _orderRepository = orderRepository;
         }
 
+        public async Task<int> GetNumberOfOrders()
+        {
+            return await _orderRepository.GetNumberOfItems();
+        }
+
         public async Task<OrderModelItem> FindByIdAsync(int id)
         {
             var orderModel = new OrderModelItem();

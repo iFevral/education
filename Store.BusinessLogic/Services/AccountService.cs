@@ -19,7 +19,7 @@ namespace Store.BusinessLogic.Services
             _userRepository = userRepository;
         }
 
-        public async Task<UserModelItem> GetUserByIdAsync(string id)
+        public async Task<UserModelItem> GetUserByIdAsync(long id)
         {
             var user = await _userRepository.FindByIdAsync(id);
 
@@ -111,6 +111,13 @@ namespace Store.BusinessLogic.Services
             if(!result)
             {
                 resultModel.Errors.Add(Constants.Errors.RoleNotExistsError);
+                return resultModel;
+            }
+
+            result = await _userRepository.LockOutAsync(user.Email, false);
+            if (!result)
+            {
+                resultModel.Errors.Add(Constants.Errors.UserLockError);
                 return resultModel;
             }
 

@@ -9,6 +9,12 @@ namespace Store.DataAccess.Repositories.Base
     public interface IGenericRepository<T> where T : class
     {
         /// <summary>
+        /// Get number of not removed items 
+        /// </summary>
+        /// <returns></returns>
+        public Task<int> GetNumberOfItems();
+
+        /// <summary>
         /// Filter and get part of data
         /// </summary>
         /// <returns>Part of filtered instances</returns>
@@ -24,7 +30,7 @@ namespace Store.DataAccess.Repositories.Base
         /// Find instance by id async
         /// </summary>
         /// <returns>First found instance</returns>
-        public Task<T> FindByIdAsync(int id);
+        public Task<T> FindByIdAsync(long id);
 
         /// <summary>
         /// Create instance async

@@ -8,6 +8,12 @@ namespace Store.DataAccess.Repositories.Interfaces
     public interface IUserRepository
     {
         /// <summary>
+        /// Get number of users that is not removed
+        /// </summary>
+        /// <returns></returns>
+        public Task<int> GetNumberOfUsers();
+
+        /// <summary>
         /// Return all users
         /// </summary>
         /// <returns>User entity</returns>
@@ -37,13 +43,13 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// <summary>
         /// Get all roles of user
         /// </summary>
-        public Task<IList<string>> GetUserRolesAsync(string id);
+        public Task<IList<string>> GetUserRolesAsync(string email);
 
         /// <summary>
         /// Find user by id
         /// </summary>
         /// <returns>User entity</returns>
-        public Task<User> FindByIdAsync(string id);
+        public Task<User> FindByIdAsync(long id);
 
         /// <summary>
         /// Find user by email
@@ -89,6 +95,6 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// <summary>
         /// Add user from role
         /// </summary>
-        public Task<bool> AddToRoleAsync(string id, string rolename);
+        public Task<bool> AddToRoleAsync(long id, string rolename);
     }
 }

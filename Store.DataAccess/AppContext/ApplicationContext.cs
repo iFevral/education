@@ -8,12 +8,12 @@ namespace Store.DataAccess.AppContext
 {
     public partial class ApplicationContext : IdentityDbContext<User,
                                                                 Role,
-                                                                string,
-                                                                IdentityUserClaim<string>,
+                                                                long,
+                                                                IdentityUserClaim<long>,
                                                                 UserInRoles,
-                                                                IdentityUserLogin<string>,
-                                                                IdentityRoleClaim<string>,
-                                                                IdentityUserToken<string>>
+                                                                IdentityUserLogin<long>,
+                                                                IdentityRoleClaim<long>,
+                                                                IdentityUserToken<long>>
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
@@ -27,8 +27,8 @@ namespace Store.DataAccess.AppContext
         public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<PrintingEdition> PrintingEditions { get; set; }
         public override DbSet<Role> Roles { get; set; }
-        public virtual DbSet<UserInRoles> UserInRoles { get; set; }
         public override DbSet<User> Users { get; set; }
+        public virtual DbSet<UserInRoles> UserInRoles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -104,10 +104,10 @@ namespace Store.DataAccess.AppContext
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();
-            modelBuilder.Entity<IdentityUserClaim<string>>().HasNoKey();
-            modelBuilder.Entity<IdentityRoleClaim<string>>().HasNoKey();
-            modelBuilder.Entity<IdentityUserToken<string>>().HasNoKey();
+            modelBuilder.Entity<IdentityUserLogin<long>>().HasNoKey();
+            modelBuilder.Entity<IdentityUserClaim<long>>().HasNoKey();
+            modelBuilder.Entity<IdentityRoleClaim<long>>().HasNoKey();
+            modelBuilder.Entity<IdentityUserToken<long>>().HasNoKey();
         }
     }
 }

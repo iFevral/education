@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Store.DataAccess.Entities;
+using Store.DataAccess.Entities.Enums;
 
 namespace Store.DataAccess.Initialization
 {
@@ -12,34 +13,45 @@ namespace Store.DataAccess.Initialization
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            Seed();
         }
 
         public async Task Seed()
         {
-            if (await _roleManager.FindByNameAsync("Admin") != null)
+            string clientrole = Enums.Role.RoleNames.Admin.ToString();
+            var role = await _roleManager.FindByNameAsync(clientrole);
+            if (role == null)
             {
-                var role = new Role
-                {
-                    Name = "Admin"
-                };
+                var newRole = new Role();
+                newRole.Name = clientrole;
 
-                await _roleManager.CreateAsync(role);
+                await _roleManager.CreateAsync(newRole);
             }
 
-            if (await _userManager.FindByNameAsync("Admin") != null)
+            clientrole = Enums.Role.RoleNames.Client.ToString();
+            role = await _roleManager.FindByNameAsync(clientrole);
+            if (role == null)
             {
-                var user = new User
-                {
-                    UserName = "Admin",
-                    Email = "admin@example.com",
-                    EmailConfirmed = true,
-                    LockoutEnabled = false
-                };
+                var newRole = new Role();
+                newRole.Name = clientrole;
 
-                await _userManager.CreateAsync(user, "4f1df324bfb6");
-                await _userManager.AddToRoleAsync(user, "Admin");
+                await _roleManager.CreateAsync(newRole);
             }
+
+            var user = await _userManager.FindByNameAsync("Admin");
+            if (user == null)
+            {
+                var newUser = new User();
+
+                newUser.UserName = "Admin";
+                newUser.Email = "admin@example.com";
+                newUser.EmailConfirmed = true;
+                newUser.LockoutEnabled = false;
+
+                await _userManager.CreateAsync(newUser, "4f1df324bfb6");
+                await _userManager.SetLockoutEnabledAsync(newUser,false);
+                await _userManager.AddToRoleAsync(newUser, "Admin");
+            };
+
         }
     }
 }

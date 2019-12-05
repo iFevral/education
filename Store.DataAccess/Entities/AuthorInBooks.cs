@@ -7,9 +7,9 @@ namespace Store.DataAccess.Entities
     public partial class AuthorInBooks
     {
         [Key]
-        public int AuthorId { get; set; }
+        public long AuthorId { get; set; }
         [Key]
-        public int PrintingEditionId { get; set; }
+        public long PrintingEditionId { get; set; }
 
 
         public virtual Author Author { get; set; }

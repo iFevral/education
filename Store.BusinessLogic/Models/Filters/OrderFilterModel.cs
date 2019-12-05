@@ -14,8 +14,8 @@ namespace Store.BusinessLogic.Models.Filters
         {
             get
             {
-                return o => (this.Statuses == null || this.Statuses.Count == 0 || this.Statuses.Any(s => s == (int)o.Status)) &&
-                            (!o.isRemoved);
+                return order => (this.Statuses == null || this.Statuses.Count == 0 || this.Statuses.Any(s => s == (int)order.Status)) &&
+                            (!order.isRemoved);
             }
         }
     }

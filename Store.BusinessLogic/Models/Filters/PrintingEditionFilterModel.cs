@@ -13,7 +13,7 @@ namespace Store.BusinessLogic.Models.Filters
         public decimal? MaxPrice { get; set; }
         public IList<int> Types { get; set; }
 
-        public Expression<Func<DataAccess.Entities.PrintingEdition, bool>> Predicate
+        public override Expression<Func<DataAccess.Entities.PrintingEdition, bool>> Predicate
         {
             get
             {

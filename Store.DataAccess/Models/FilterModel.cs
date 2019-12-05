@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Store.DataAccess.Entities.Enums;
+using System;
 using System.Linq.Expressions;
 
 namespace Store.DataAccess.Models
@@ -6,7 +7,7 @@ namespace Store.DataAccess.Models
     public class FilterModel<T> where T : class
     {
         public string SortProperty { get; set; }
-        public int SortWay { get; set; }
+        public Enums.Filter.SortWays SortWay { get; set; }
         public int StartIndex { get; set; }
         public int Quantity { get; set; }
 

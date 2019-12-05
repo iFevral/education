@@ -14,12 +14,5 @@ namespace Store.DataAccess.Repositories.EFRepository
         {
             _db = db;
         }
-
-        public async Task<bool> RemoveByOrderIdAsync(int id)
-        {
-            _db.OrderItems.RemoveRange(_db.OrderItems.Where(oi => oi.OrderId == id));
-            var result = await _db.SaveChangesAsync();
-            return result > 0;
-        }
     }
 }

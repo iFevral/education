@@ -22,6 +22,11 @@ namespace Store.BusinessLogic.Services
             _printingEditionRepository = printingEditionRepository;
         }
 
+        public async Task<int> GetNumberOfPrintingEditions()
+        {
+            return await _printingEditionRepository.GetNumberOfItems();
+        }
+
         public async Task<PrintingEditionModel> GetAll(PrintingEditionFilterModel printingEditionFilter)
         {
             var printingEditionModel = new PrintingEditionModel();

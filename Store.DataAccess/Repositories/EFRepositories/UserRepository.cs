@@ -20,11 +20,17 @@ namespace Store.DataAccess.Repositories.EFRepository
             _signInManager = signInManager;
         }
 
+        public async Task<int> GetNumberOfUsers()
+        {
+            int counter = await _userManager.Users.Where(x => !x.isRemoved).CountAsync();
+            return counter;
+        }
+
         public async Task<IEnumerable<User>> GetAllAsync(FilterModel<User> filterModel)
         {
             var items = await _userManager.Users.Where(filterModel.Predicate).ToListAsync();
 
-            items = filterModel.SortWay == 1
+            items = (int)filterModel.SortWay == 1
                 ? items.OrderByDescending(x => x.GetType().GetProperty(filterModel.SortProperty).GetValue(x, null)).ToList()
                 : items = items.OrderBy(x => x.GetType().GetProperty(filterModel.SortProperty).GetValue(x, null)).ToList();
         
@@ -56,35 +62,42 @@ namespace Store.DataAccess.Repositories.EFRepository
 
         public async Task<bool> LockOutAsync(string email, bool enabled)
         {
-            var result = await _userManager.SetLockoutEnabledAsync(await FindByEmailAsync(email), enabled);
+            var user = await FindByEmailAsync(email);
+            var result = await _userManager.SetLockoutEnabledAsync(user, enabled);
             return result.Succeeded;
         }
 
         public async Task<string> GenerateEmailConfirmationTokenAsync(string email)
         {
-            return await _userManager.GenerateEmailConfirmationTokenAsync(await FindByEmailAsync(email));
+            var user = await FindByEmailAsync(email);
+            string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            return token;
         }
 
         public async Task<bool> ConfirmEmailAsync(string email, string token)
         {
-            var result = await _userManager.ConfirmEmailAsync(await FindByEmailAsync(email), token);
+            var user = await FindByEmailAsync(email);
+            var result = await _userManager.ConfirmEmailAsync(user, token);
             return result.Succeeded;
         }
 
         public async Task<bool> CheckEmailConfirmationAsync(string email)
         {
-            return await _userManager.IsEmailConfirmedAsync(await FindByEmailAsync(email));
+            var user = await FindByEmailAsync(email);
+            return await _userManager.IsEmailConfirmedAsync(user);
         }
 
         public async Task<bool> CheckSignInAsync(string email, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
+            var user = await FindByEmailAsync(email);
+            var result = await _signInManager.PasswordSignInAsync(user, password, false, true);
             return result.Succeeded;
         }
 
         public async Task<string> GeneratePasswordResetTokenAsync(string email)
         {
-            return await _userManager.GeneratePasswordResetTokenAsync(await FindByEmailAsync(email));
+            var user = await FindByEmailAsync(email);
+            return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 
         public async Task<bool> ResetPasswordAsync(string email, string token, string newPassword)
@@ -93,24 +106,28 @@ namespace Store.DataAccess.Repositories.EFRepository
             return result.Succeeded;
         }
 
-        public async Task<User> FindByIdAsync(string id)
+        public async Task<User> FindByIdAsync(long id)
         {
-            return await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            return user;
         }
 
         public async Task<User> FindByEmailAsync(string email)
         {
-            return await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(email);
+            return user;
         }
 
         public async Task<IList<string>> GetUserRolesAsync(string email)
         {
-            return await _userManager.GetRolesAsync(await FindByEmailAsync(email));
+            var user = await FindByEmailAsync(email);
+            return await _userManager.GetRolesAsync(user);
         }
 
-        public async Task<bool> AddToRoleAsync(string id, string rolename)
+        public async Task<bool> AddToRoleAsync(long id, string rolename)
         {
-            var result = await _userManager.AddToRoleAsync(await FindByIdAsync(id), rolename);
+            var user = await FindByIdAsync(id);
+            var result = await _userManager.AddToRoleAsync(user, rolename);
             return result.Succeeded;
         }
     }

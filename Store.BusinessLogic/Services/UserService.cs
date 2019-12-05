@@ -19,6 +19,11 @@ namespace Store.BusinessLogic.Services
             _userRepository = userRepository;
         }
 
+        public async Task<int> GetNumberOfUsers()
+        {
+            return await _userRepository.GetNumberOfUsers();
+        }
+
         public async Task<UserModel> GetAllUsersAsync(UserFilterModel userFilter)
         {
             UserModel userModel = new UserModel();

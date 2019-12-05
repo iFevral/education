@@ -32,6 +32,15 @@ namespace Store.Presentation.Controllers
             return Ok(printingEditionModel);
         }
 
+        [Route("~/[controller]s/Count")]
+        [HttpPost]
+        public async Task<IActionResult> GetNumber()
+        {
+            int counter = await _printingEditionService.GetNumberOfPrintingEditions();
+
+            return Ok(counter);
+        }
+
         [Route("~/[controller]s/[controller]/{id}")]
         [HttpPost]
         public async Task<IActionResult> GetPrintingEdition(int id)

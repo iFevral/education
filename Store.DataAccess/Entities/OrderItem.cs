@@ -6,8 +6,8 @@ namespace Store.DataAccess.Entities
     public partial class OrderItem : BaseEntity
     {
         public int Amount { get; set; } = 1;
-        public int PrintingEditionId { get; set; }
-        public int OrderId { get; set; }
+        public long PrintingEditionId { get; set; }
+        public long OrderId { get; set; }
 
         public virtual Order Order { get; set; }
 

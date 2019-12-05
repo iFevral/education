@@ -10,8 +10,8 @@ namespace Store.DataAccess.Entities
         public string Description { get; set; }
         public DateTime? Date { get; set; }
         public Enums.Enums.Orders.Statuses? Status { get; set; }
-        public string UserId { get; set; }
-        public int? PaymentId { get; set; }
+        public long UserId { get; set; }
+        public long? PaymentId { get; set; }
 
         public virtual Payment Payment { get; set; }
         public virtual User User { get; set; }

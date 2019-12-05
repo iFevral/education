@@ -6,6 +6,5 @@ namespace Store.DataAccess.Repositories.Interfaces
 {
     public interface IOrderItemRepository : IGenericRepository<OrderItem>
     {
-        public Task<bool> RemoveByOrderIdAsync(int id);
     }
 }

@@ -8,7 +8,7 @@ namespace Store.BusinessLogic.Models.Orders
 {
     public class OrderModelItem : BaseModel
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Description { get; set; }
         public string Status { get; set; }
         public DateTime? Date { get; set; } = DateTime.Now;

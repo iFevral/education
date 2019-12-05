@@ -6,11 +6,12 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.AppContext;
 using Store.DataAccess.Models;
+using Store.DataAccess.Entities;
 
 namespace Store.DataAccess.Repositories.Base
 {
     public abstract class EFBaseRepository<T> : IGenericRepository<T>
-        where T : class
+        where T : BaseEntity
     {
         protected ApplicationContext _dbContext;
         private DbSet<T> _dbSet;
@@ -21,32 +22,39 @@ namespace Store.DataAccess.Repositories.Base
             _dbSet = dbContext.Set<T>();
         }
 
+        public virtual async Task<int> GetNumberOfItems()
+        {
+            var counter = await _dbSet.Where(x => !x.isRemoved).CountAsync();
+            return counter;
+        }
+
         public virtual async Task<IEnumerable<T>> GetAllAsync(FilterModel<T> filterModel)
         {
-            //todo add itemsCount
             //todo use IQuer...
-            var items = await _dbSet.Where(filterModel.Predicate).ToListAsync();
+            var items = _dbSet.Where(filterModel.Predicate).AsEnumerable();
 
-            items = filterModel.SortWay == 1
-                ? items.OrderByDescending(x => x.GetType().GetProperty(filterModel.SortProperty).GetValue(x, null)).ToList()
-                : items = items.OrderBy(x => x.GetType().GetProperty(filterModel.SortProperty).GetValue(x, null)).ToList();
+            items = (int)filterModel.SortWay == 1
+                ? items.OrderByDescending(x => x.GetType().GetProperty(filterModel.SortProperty).GetValue(x, null))
+                : items = items.OrderBy(x => x.GetType().GetProperty(filterModel.SortProperty).GetValue(x, null));
         
             if(filterModel.Quantity > 0)
             {
-                items = items.Skip(filterModel.StartIndex).Take(filterModel.Quantity).ToList();
+                items =  items.Skip(filterModel.StartIndex).Take(filterModel.Quantity);
             }
 
-            return items;
+            return items.ToList();
         }
 
         public virtual async Task<T> FindByAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _dbSet.Where(predicate).FirstOrDefaultAsync();
+            var item = await _dbSet.Where(predicate).FirstOrDefaultAsync();
+            return item;
         }
 
-        public virtual async Task<T> FindByIdAsync(int id)
+        public virtual async Task<T> FindByIdAsync(long id)
         {
-            return await _dbSet.FindAsync(id);
+            var item = await _dbSet.FindAsync(id);
+            return item;
         }
 
         public virtual async Task<bool> CreateAsync(T item)

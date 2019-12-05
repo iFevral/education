@@ -9,6 +9,6 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// <summary>
         /// Remove authors from AuthorInBooks
         /// </summary>
-        public Task<bool> RemoveAuthors(int printingEditionId);
+        public Task<bool> RemoveAuthors(long printingEditionId);
     }
 }

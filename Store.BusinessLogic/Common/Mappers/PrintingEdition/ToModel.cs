@@ -14,8 +14,8 @@ namespace Store.BusinessLogic.Common.Mappers.PrintingEdition
             model.Title = entity.Title;
             model.Description = entity.Description;
             model.Price = entity.Price;
-            model.Currency = entity.Currency.ToString();
-            model.Type = entity.Type.ToString();
+            model.Currency = entity.Currency;
+            model.Type = entity.Type;
 
             foreach(var author in entity.AuthorInBooks)
             {

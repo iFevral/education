@@ -10,7 +10,7 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Get user by id
         /// </summary>
         /// <returns>User model item</returns>
-        public Task<UserModelItem> GetUserByIdAsync(string id);
+        public Task<UserModelItem> GetUserByIdAsync(long id);
 
         /// <summary>
         /// Check user login and password and get user data

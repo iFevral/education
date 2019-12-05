@@ -36,7 +36,7 @@ namespace Store.BusinessLogic.Helpers
                 client.EnableSsl = Convert.ToBoolean(_smtpSsl);
 
                 MailMessage message = new MailMessage();
-                message.From = new MailAddress(_smtpServer);
+                message.From = new MailAddress(_smtpEmail);
                 message.To.Add(recipients);
                 message.Body = body;
                 message.Subject = subject;

@@ -34,9 +34,18 @@ namespace Store.Presentation.Controllers
             return Ok(orderModel);
         }
 
-        [Route("~/[controller]s/[controller]/{id}")]
+        [Route("~/[controller]s/Count")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
-        [Authorize(Roles = Constants.RoleNames.Client)]
+        [HttpPost]
+        public async Task<IActionResult> GetNumber()
+        {
+            int counter = await _orderService.GetNumberOfOrders();
+
+            return Ok(counter);
+        }
+
+        [Route("~/[controller]s/[controller]/{id}")]
+        [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPost]
         public async Task<IActionResult> FindById(int id)
         {
@@ -49,7 +58,7 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]s/Create")]
-        [Authorize(Roles = Constants.RoleNames.Admin)]
+        [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPut]
         public async Task<IActionResult> CreateOrder([FromBody]OrderModelItem orderModelItem)
         {
@@ -63,7 +72,7 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]s/Update/")]
-        [Authorize(Roles = Constants.RoleNames.Admin)]
+        [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPut]
         public async Task<IActionResult> UpdateOrder([FromBody]PaymentModelItem paymentModelItem)
         {

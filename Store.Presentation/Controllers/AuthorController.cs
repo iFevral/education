@@ -32,6 +32,15 @@ namespace Store.Presentation.Controllers
             return Ok(authorModel);
         }
 
+        [Route("~/[controller]s/Count")]
+        [HttpPost]
+        public async Task<IActionResult> GetNumber()
+        {
+            int counter = await _authorService.GetNumberOfAuthors();
+
+            return Ok(counter);
+        }
+
         [Route("~/[controller]s/[controller]/{id}")]
         [HttpPost]
         public async Task<IActionResult> GetAuthor(int id)
