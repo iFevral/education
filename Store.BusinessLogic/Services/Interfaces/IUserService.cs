@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Store.BusinessLogic.Models.Roles;
+using Store.BusinessLogic.Models.Base;
+using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Models.Users;
 
 namespace Store.BusinessLogic.Services.Interfaces
@@ -10,59 +11,27 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Get all users
         /// </summary>
         /// <returns>User model</returns>
-        public Task<UserModel> GetAllUsersAsync(UserFilter userFilter);
-
-        /// <summary>
-        /// Get user by id
-        /// </summary>
-        /// <returns>User model</returns>
-        public Task<UserModelItem> GetUserByIdAsync(string id);
+        public Task<UserModel> GetAllUsersAsync(UserFilterModel userFilter);
 
         /// <summary>
         /// Get user by name
         /// </summary>
         /// <returns>User model</returns>
-        public Task<UserModelItem> GetUserByNameAsync(string username);
-
-        /// <summary>
-        /// Create user
-        /// </summary>
-        public Task<SignUpModel> CreateUserAsync(SignUpModel signUpModel);
+        public Task<UserModelItem> GetUserByEmailAsync(string email);
 
         /// <summary>
         /// Edit user
         /// </summary>
-        public Task<UserModelItem> UpdateUserAsync(SignUpModel signUpModel);
+        public Task<BaseModel> UpdateUserAsync(SignUpModel signUpModel);
 
         /// <summary>
         /// Delete user
         /// </summary>
-        public Task<UserModelItem> DeleteUserAsync(string username);
+        public Task<BaseModel> DeleteUserAsync(string email);
 
         /// <summary>
         /// Block user
         /// </summary>
-        public Task<UserModelItem> BlockUserAsync(string username, bool enabled);
-
-        /// <summary>
-        /// Add user to role
-        /// </summary>
-        public Task<UserRoleModelItem> AddUserToRoleAsync(UserRoleModelItem userRoleModel);
-
-        /// <summary>
-        /// Remove user from role
-        /// </summary>
-        /// <returns>User model</returns>
-        public Task<UserRoleModelItem> RemoveUserFromRoleAsync(UserRoleModelItem userRoleModel);
-
-        /// <summary>
-        /// Create role
-        /// </summary>
-        public Task<RoleModelItem> CreateRoleAsync(RoleModelItem roleModel);
-
-        /// <summary>
-        /// Remove role
-        /// </summary>
-        public Task<RoleModelItem> RemoveRoleAsync(RoleModelItem roleModel);
+        public Task<BaseModel> BlockUserAsync(string email, bool enabled);
     }
 }

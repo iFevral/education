@@ -6,6 +6,8 @@ using Store.Presentation.Helpers;
 using Store.BusinessLogic.Helpers;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
+using Store.BusinessLogic.Common;
+using Store.BusinessLogic.Helpers.Interface;
 
 namespace Store.Presentation.Controllers
 {
@@ -13,18 +15,22 @@ namespace Store.Presentation.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private IConfiguration _configuration;
-        private IAccountService _accountService;
-
+        private readonly IConfiguration _configuration;
+        private readonly IAccountService _accountService;
+        private readonly IEmailHelper _emailHelper;
         public AccountController(IConfiguration configuration,
-                                 IAccountService accountService)
+                                 IAccountService accountService,
+                                 IEmailHelper emailHelper)
         {
             _configuration = configuration;
             _accountService = accountService;
+            _emailHelper = emailHelper;
+            _emailHelper.Configure(_configuration.GetSection("SMTP"));
         }
 
         [Route("~/[controller]/Profile")]
-        [Authorize]
+        [Authorize(Roles = Constants.RoleNames.Client)]
+        [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPost]
         public async Task<IActionResult> GetProfile([FromHeader]string Authorization)
         {
@@ -53,11 +59,6 @@ namespace Store.Presentation.Controllers
                 return NotFound(userModel);
             }
 
-            if (await _accountService.IsAccountLockedAsync(userModel.Username))
-            {
-                return Unauthorized("User is blocked");
-            }
-
             var refreshToken = JwtHelper.GenerateJwtRefreshToken(userModel, _configuration);
 
             var tokenModel = new AccessTokenModel();
@@ -82,13 +83,12 @@ namespace Store.Presentation.Controllers
             string body = "Confirmation link: <a href='https://localhost:44312/Account/ConfirmEmail?" +
                             "username=" + emailModel.Email + "&token=" + emailModel.Token + "'>Verify email</a>";
             
-            EmailHelper.Send(signUpModel.Email, subject, body, _configuration);
+            await _emailHelper.Send(signUpModel.Email, subject, body);
             
             return Ok("Check your email to confirm your information");
         }
 
         [Route("~/[controller]/SignOut")]
-        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> SignOut()
         {
@@ -112,15 +112,15 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]/ForgotPassword")]
         [HttpPost]
-        public async Task<IActionResult> ForgotPassword([FromBody] EmailModel user)
+        public async Task<IActionResult> ForgotPassword([FromBody] EmailConfirmationModel user)
         { 
 
-            var resetPasswordModel = await _accountService.ResetPasswordAsync(user.Email);
+            var resetPasswordModel = await _accountService.GeneratePasswordResetTokenAsync(user.Email);
             string subject = "Reseting password confirmation";
             string body = "Confirmation link: <a href='" + _configuration["Url"] + "/Account/ConfirmReseting?" +
                           "email=" + resetPasswordModel.Email + "&token=" + resetPasswordModel.Token + "'>Reset password</a>";
-            
-            EmailHelper.Send(resetPasswordModel.Email, subject, body, _configuration);
+
+            await _emailHelper.Send(resetPasswordModel.Email, subject, body);
             
             return Ok("Check your email");
         }
@@ -142,7 +142,7 @@ namespace Store.Presentation.Controllers
         public async Task<IActionResult> ConfirmNewPassword([FromBody] ResetPasswordModel user)
         {
             user.Token = user.Token.Replace(" ", "+");
-            await _accountService.ConfirmNewPasswordAsync(user.Email, user.Token, user.Password);
+            await _accountService.ResetPasswordAsync(user.Email, user.Token, user.Password);
             return Ok("Password has successfully changed");
         }
 

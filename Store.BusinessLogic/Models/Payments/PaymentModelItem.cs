@@ -6,5 +6,6 @@ namespace Store.BusinessLogic.Models.Payments
     {
         public int Id { get; set; }
         public string TransactionId { get; set; }
+        public int OrderId { get; set; }
     }
 }

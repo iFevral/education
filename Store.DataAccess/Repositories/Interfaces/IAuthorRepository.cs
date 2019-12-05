@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Store.DataAccess.Repositories.Interfaces
 {
-    public interface IAuthorRepository : IGenericRepository<Authors>
+    public interface IAuthorRepository : IGenericRepository<Author>
     {
         /// <summary>
         /// Remove printing editions from AuthorInBooks

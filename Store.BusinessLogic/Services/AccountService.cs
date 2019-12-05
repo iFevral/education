@@ -1,66 +1,49 @@
 ﻿using System.Threading.Tasks;
-using Store.DataAccess.Entities;
-using Store.DataAccess.Repositories.Interfaces;
 using Store.BusinessLogic.Common;
+using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.BusinessLogic.Common.Mappers.Interface;
+using Store.BusinessLogic.Common.Mappers.User;
+using Store.BusinessLogic.Common.Mappers.User.SignUp;
+using Store.DataAccess.Entities.Enums;
+using Store.DataAccess.Repositories.Interfaces;
 
 namespace Store.BusinessLogic.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly IMapper<Users, UserModelItem> _mapper;
-        private readonly IMapper<Users, SignUpModel> _signUpMapper;
         private readonly IUserRepository _userRepository;
 
-        public AccountService(IMapper<Users, UserModelItem> mapper,
-                              IMapper<Users, SignUpModel> signUpMapper,
-                              IUserRepository userRepository)
+        public AccountService(IUserRepository userRepository)
         {
-            _mapper = mapper;
             _userRepository = userRepository;
-            _signUpMapper = signUpMapper;
         }
-
 
         public async Task<UserModelItem> GetUserByIdAsync(string id)
         {
             var user = await _userRepository.FindByIdAsync(id);
-            var userModel = new UserModelItem();
+
+            var userModel = new UserModelItem(); //todo remove copypaste
+
             if (user == null)
             {
                 userModel.Errors.Add(Constants.Errors.UserNotExistsError);
                 return userModel;
             }
-            userModel = _mapper.Map(user, userModel);
-            userModel.Roles = await _userRepository.GetUserRolesAsync(user.UserName);
+
+            if (user.LockoutEnabled)
+            {
+                userModel.Errors.Add(Constants.Errors.UserLockError);
+                return userModel;
+            }
+
+            userModel = user.MapToModel();
+
+            userModel.Roles = await _userRepository.GetUserRolesAsync(user.Email);
 
             if (userModel.Roles == null)
             {
                 userModel.Errors.Add(Constants.Errors.UserNotInAnyRoleError);
-                return userModel;
-            }
-
-            return userModel;
-        }
-
-        public async Task<UserModelItem> GetUserByNameAsync(string username)
-        {
-            var user = await _userRepository.FindByNameAsync(username);
-            var userModel = new UserModelItem();
-            if (user == null)
-            {
-                userModel.Errors.Add(Constants.Errors.UserNotExistsError);
-                return userModel;
-            }
-            userModel = _mapper.Map(user, userModel);
-            userModel.Roles = await _userRepository.GetUserRolesAsync(user.Id);
-
-            if (userModel.Roles == null)
-            {
-                userModel.Errors.Add(Constants.Errors.UserNotInAnyRoleError);
-                return userModel;
             }
 
             return userModel;
@@ -68,99 +51,97 @@ namespace Store.BusinessLogic.Services
 
         public async Task<UserModelItem> SignInAsync(SignInModel signInModel)
         {
-            var user = await _userRepository.FindByNameAsync(signInModel.Username);
+            var user = await _userRepository.FindByEmailAsync(signInModel.Email);
+
             var userModel = new UserModelItem();
+
             if(user == null)
             {
                 userModel.Errors.Add(Constants.Errors.UserNotExistsError);
+                return userModel;
             }
 
-            userModel = _mapper.Map(user, userModel);
-            userModel.Roles = await _userRepository.GetUserRolesAsync(signInModel.Username);
+            if (user.LockoutEnabled)
+            {
+                userModel.Errors.Add(Constants.Errors.UserLockError);
+                return userModel;
+            }
+
+            userModel = user.MapToModel();
+
+            userModel.Roles = await _userRepository.GetUserRolesAsync(signInModel.Email);
             
-            //If user created it will get user info or will return empty UserModelItem
-            var result = await _userRepository.CheckSignInAsync(signInModel.Username, signInModel.Password);
+            var result = await _userRepository.CheckSignInAsync(signInModel.Email, signInModel.Password);
             if(!result)
             {
                 userModel.Errors.Add(Constants.Errors.WrongCredentialsError);
-                return userModel;
             }
 
             return userModel;
         }
 
-        public async Task<EmailModel> SignUpAsync(SignUpModel signUpModel)
+        public async Task<EmailConfirmationModel> SignUpAsync(SignUpModel signUpModel)
         {
-            var emailModel = new EmailModel();
-            //Check if user exists
-            if(await _userRepository.FindByEmailAsync(signUpModel.Email) != null)
-            {
-                emailModel.Errors.Add(Constants.Errors.EmailExistsError);
-                return emailModel;
-            }
+            var resultModel = new EmailConfirmationModel();
 
-            //Create user 
-            var result = await _userRepository.CreateAsync(_signUpMapper.Map(signUpModel, new Users()), signUpModel.Password);
-            if(!result)
-            {
-                emailModel.Errors.Add(Constants.Errors.CreateUserError);
-                return emailModel;
-            }
-
-            //Find user
             var user = await _userRepository.FindByEmailAsync(signUpModel.Email);
 
-            //Add user to role
-            result = await _userRepository.AddToRoleAsync(user.Id, "Client");
+            if (user != null)
+            {
+                resultModel.Errors.Add(Constants.Errors.EmailExistsError);
+                return resultModel;
+            }
+
+
+            var result = await _userRepository.CreateAsync(signUpModel.MapToEntity(), signUpModel.Password);
             if(!result)
             {
-                emailModel.Errors.Add(Constants.Errors.RoleNotExistsError);
-                return emailModel;
+                resultModel.Errors.Add(Constants.Errors.CreateUserError);
+                return resultModel;
             }
 
-            //Unblock
-            result = await _userRepository.LockOutAsync(user.UserName, false);
-            if (!result)
-            {
-                emailModel.Errors.Add(Constants.Errors.UnlockUserError);
-                return emailModel;
-            }
-
-            //Generate token for registration from repository
-            emailModel.Email = signUpModel.Email;
-            emailModel.Token = await _userRepository.GenerateEmailConfirmationTokenAsync(user.UserName);
-
-            return emailModel;
-        }
-
-        public async Task<EmailModel> ConfirmEmailAsync(string username, string token)
-        {
-            var emailModel = new EmailModel();
-            var user = await _userRepository.FindByNameAsync(username);
+            user = await _userRepository.FindByEmailAsync(signUpModel.Email);
             if (user == null)
             {
-                emailModel.Errors.Add($"User not found");
+                resultModel.Errors.Add(Constants.Errors.UserNotExistsError);
+                return resultModel;
+            }
+
+            result = await _userRepository.AddToRoleAsync(user.Id, Enums.Role.RoleNames.Client.ToString()); //todo use const or enum
+            if(!result)
+            {
+                resultModel.Errors.Add(Constants.Errors.RoleNotExistsError);
+                return resultModel;
+            }
+
+            resultModel.Email = signUpModel.Email;
+            resultModel.Token = await _userRepository.GenerateEmailConfirmationTokenAsync(user.Email);
+
+            return resultModel;
+        }
+
+        public async Task<BaseModel> ConfirmEmailAsync(string email, string token)
+        {
+            var emailModel = new EmailConfirmationModel();
+
+            var user = await _userRepository.FindByEmailAsync(email);
+            if (user == null)
+            {
+                emailModel.Errors.Add(Constants.Errors.UsersNotExistError);
                 return emailModel;
             }
 
-            //Check received token for email confirmation
-            var result = await _userRepository.ConfirmEmailAsync(username, token);
+            var result = await _userRepository.ConfirmEmailAsync(email, token);
             if (!result)
             {
-                emailModel.Errors.Add($"Email confirmation error");
+                emailModel.Errors.Add(Constants.Errors.EmailConfirmationError);
             }
 
             return emailModel;
         }
 
-        public async Task<bool> IsAccountLockedAsync(string username)
+        public async Task<ResetPasswordModel> GeneratePasswordResetTokenAsync(string email) //todo rename
         {
-            return await _userRepository.IsLockedOutAsync(username);
-        }
-
-        public async Task<ResetPasswordModel> ResetPasswordAsync(string email)
-        {
-            //Map from Users to UserModelItem
             var user = await _userRepository.FindByEmailAsync(email);            
             var resetPasswordModel = new ResetPasswordModel();
             if(user == null)
@@ -170,24 +151,25 @@ namespace Store.BusinessLogic.Services
             }
 
             resetPasswordModel.Email = email;
-            resetPasswordModel.Token = await _userRepository.GeneratePasswordResetTokenAsync(user.UserName);
+            resetPasswordModel.Token = await _userRepository.GeneratePasswordResetTokenAsync(user.Email);
 
             return resetPasswordModel;
         }
 
-        public async Task<ResetPasswordModel> ConfirmNewPasswordAsync(string email, string token, string newPassword)
+        public async Task<ResetPasswordModel> ResetPasswordAsync(string email, string token, string newPassword) //todo rename
         {
-            //Map from Users to UserModelItem
             var user = await _userRepository.FindByEmailAsync(email);
+
             var resetPasswordModel = new ResetPasswordModel();
+
             if (user == null)
             {
                 resetPasswordModel.Errors.Add(Constants.Errors.UserNotExistsError);
                 return resetPasswordModel;
             }
 
-            //Check received token for new password confirmation
-            var result = await _userRepository.ConfirmNewPasswordAsync(user.UserName, token, newPassword);
+            var result = await _userRepository.ResetPasswordAsync(user.Email, token, newPassword);
+
             if (!result)
             {
                 resetPasswordModel.Errors.Add(Constants.Errors.UserNotExistsError);

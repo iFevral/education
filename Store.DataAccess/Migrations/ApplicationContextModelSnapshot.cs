@@ -87,6 +87,27 @@ namespace Store.DataAccess.Migrations
                     b.ToTable("UserTokens");
                 });
 
+            modelBuilder.Entity("Store.DataAccess.Entities.Author", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("CreationData")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isRemoved")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Authors");
+                });
+
             modelBuilder.Entity("Store.DataAccess.Entities.AuthorInBooks", b =>
                 {
                     b.Property<int>("AuthorId")
@@ -104,7 +125,7 @@ namespace Store.DataAccess.Migrations
                     b.ToTable("AuthorInBooks");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Entities.Authors", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -114,19 +135,34 @@ namespace Store.DataAccess.Migrations
                     b.Property<DateTime?>("CreationData")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PaymentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("isRemoved")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors");
+                    b.HasIndex("PaymentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Entities.OrderItems", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.OrderItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -157,44 +193,7 @@ namespace Store.DataAccess.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Entities.Orders", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime?>("CreationData")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PaymentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("isRemoved")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PaymentId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("Store.DataAccess.Entities.Payments", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.Payment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -205,8 +204,7 @@ namespace Store.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TransactionId")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isRemoved")
                         .HasColumnType("bit");
@@ -216,7 +214,7 @@ namespace Store.DataAccess.Migrations
                     b.ToTable("Payments");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Entities.PrintingEditions", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.PrintingEdition", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -226,12 +224,11 @@ namespace Store.DataAccess.Migrations
                     b.Property<DateTime?>("CreationData")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Currency")
-                        .HasColumnType("int")
-                        .HasMaxLength(10);
+                    b.Property<int?>("Currency")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("Date")
-                        .HasColumnType("date");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -240,12 +237,10 @@ namespace Store.DataAccess.Migrations
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int")
-                        .HasMaxLength(20);
+                    b.Property<int?>("Type")
+                        .HasColumnType("int");
 
                     b.Property<bool>("isRemoved")
                         .HasColumnType("bit");
@@ -255,7 +250,7 @@ namespace Store.DataAccess.Migrations
                     b.ToTable("PrintingEditions");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Entities.Roles", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.Role", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -265,8 +260,7 @@ namespace Store.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedName")
                         .HasColumnType("nvarchar(450)");
@@ -281,24 +275,7 @@ namespace Store.DataAccess.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Entities.UserInRoles", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasAlternateKey("RoleId", "UserId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserInRoles");
-                });
-
-            modelBuilder.Entity("Store.DataAccess.Entities.Users", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -311,19 +288,16 @@ namespace Store.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -353,8 +327,10 @@ namespace Store.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isRemoved")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -369,57 +345,74 @@ namespace Store.DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Store.DataAccess.Entities.UserInRoles", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasAlternateKey("RoleId", "UserId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserInRoles");
+                });
+
             modelBuilder.Entity("Store.DataAccess.Entities.AuthorInBooks", b =>
                 {
-                    b.HasOne("Store.DataAccess.Entities.Authors", "Author")
+                    b.HasOne("Store.DataAccess.Entities.Author", "Author")
                         .WithMany("AuthorInBooks")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Store.DataAccess.Entities.PrintingEditions", "PrintingEdition")
+                    b.HasOne("Store.DataAccess.Entities.PrintingEdition", "PrintingEdition")
                         .WithMany("AuthorInBooks")
                         .HasForeignKey("PrintingEditionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Entities.OrderItems", b =>
+            modelBuilder.Entity("Store.DataAccess.Entities.Order", b =>
                 {
-                    b.HasOne("Store.DataAccess.Entities.Orders", "Order")
+                    b.HasOne("Store.DataAccess.Entities.Payment", "Payment")
+                        .WithMany("Orders")
+                        .HasForeignKey("PaymentId");
+
+                    b.HasOne("Store.DataAccess.Entities.User", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Store.DataAccess.Entities.OrderItem", b =>
+                {
+                    b.HasOne("Store.DataAccess.Entities.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Store.DataAccess.Entities.PrintingEditions", "PrintingEdition")
+                    b.HasOne("Store.DataAccess.Entities.PrintingEdition", "PrintingEdition")
                         .WithMany("OrderItems")
                         .HasForeignKey("PrintingEditionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Store.DataAccess.Entities.Orders", b =>
-                {
-                    b.HasOne("Store.DataAccess.Entities.Payments", "Payment")
-                        .WithMany("Orders")
-                        .HasForeignKey("PaymentId");
-
-                    b.HasOne("Store.DataAccess.Entities.Users", "User")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Store.DataAccess.Entities.UserInRoles", b =>
                 {
-                    b.HasOne("Store.DataAccess.Entities.Roles", "Role")
+                    b.HasOne("Store.DataAccess.Entities.Role", "Role")
                         .WithMany("UserInRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Store.DataAccess.Entities.Users", "User")
+                    b.HasOne("Store.DataAccess.Entities.User", "User")
                         .WithMany("UserInRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

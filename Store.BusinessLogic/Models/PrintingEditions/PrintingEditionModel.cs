@@ -5,6 +5,6 @@ namespace Store.BusinessLogic.Models.PrintingEditions
 {
     public class PrintingEditionModel : BaseModel
     {
-        public IList<PrintingEditionModelItem> PrintingEditions = new List<PrintingEditionModelItem>();
+        public IList<PrintingEditionModelItem> Items = new List<PrintingEditionModelItem>();
     }
 }

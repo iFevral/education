@@ -5,6 +5,6 @@ namespace Store.BusinessLogic.Models.Users
 {
     public class UserModel : BaseModel
     {
-        public IList<UserModelItem> Users = new List<UserModelItem>();
+        public IList<UserModelItem> Items = new List<UserModelItem>();
     }
 }

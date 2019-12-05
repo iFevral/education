@@ -5,6 +5,6 @@ namespace Store.BusinessLogic.Models.Authors
 {
     public class AuthorModel : BaseModel
     {
-        public IList<AuthorModelItem> Authors = new List<AuthorModelItem>();
+        public IList<AuthorModelItem> Items = new List<AuthorModelItem>();
     }
 }

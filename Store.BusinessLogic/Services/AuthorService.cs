@@ -1,45 +1,30 @@
 ﻿using System.Threading.Tasks;
-using System.Collections.Generic;
+using Store.BusinessLogic.Common;
+using Store.BusinessLogic.Models.Base;
+using Store.BusinessLogic.Models.Authors;
+using Store.BusinessLogic.Models.Filters;
+using Store.BusinessLogic.Services.Interfaces;
+using Store.BusinessLogic.Common.Mappers.Author;
+using Store.BusinessLogic.Common.Mappers.Filter;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
-using Store.BusinessLogic.Models.Authors;
-using Store.BusinessLogic.Services.Interfaces;
-using Store.BusinessLogic.Common.Mappers.Interface;
-using Store.BusinessLogic.Common;
 
 namespace Store.BusinessLogic
 {
     public class AuthorService : IAuthorService
     {
-        private readonly IMapper<Authors, AuthorModelItem> _mapper;
         private readonly IAuthorRepository _authorRepository;
 
-        public AuthorService(IMapper<Authors, AuthorModelItem> mapper,
-                             IAuthorRepository authorRepository)
+        public AuthorService(IAuthorRepository authorRepository)
         {
             _authorRepository = authorRepository;
-            _mapper = mapper;
         }
 
-        public async Task<AuthorModel> GetAll(AuthorFilter authorFilter)
+        public async Task<AuthorModel> GetAll(AuthorFilterModel authorFilter)
         {
             var authorModel = new AuthorModel();
-            IEnumerable<Authors> authors;
             
-            if (authorFilter.Quantity != 0)
-            {
-                authors = await _authorRepository.GetAsync(authorFilter.Predicate,
-                                                           authorFilter.StartIndex,
-                                                           authorFilter.Quantity, 
-                                                           authorFilter.SortProperty, 
-                                                           authorFilter.SortWay);
-            }
-            else
-            {
-                authors = await _authorRepository.GetAllAsync(authorFilter.Predicate,
-                                                              authorFilter.SortProperty,
-                                                              authorFilter.SortWay);
-            }
+            var authors = await _authorRepository.GetAllAsync(authorFilter.MapToDataAccessModel());
 
             if (authors == null)
             {
@@ -49,9 +34,8 @@ namespace Store.BusinessLogic
 
             foreach (var author in authors)
             {
-                var a = new AuthorModelItem();
-                a = _mapper.Map(author, a);
-                authorModel.Authors.Add(a);
+                var authorModelItem = new AuthorModelItem();
+                authorModel.Items.Add(author.MapToModel());
             }
 
             return authorModel;
@@ -67,15 +51,16 @@ namespace Store.BusinessLogic
                 return authorModel;
             }
 
-            authorModel = _mapper.Map(author, authorModel);
+            authorModel = author.MapToModel();
             return authorModel;
         }
 
-        public async Task<AuthorModelItem> CreateAsync(AuthorModelItem authorModel)
+        public async Task<BaseModel> CreateAsync(AuthorModelItem authorModel)
         {
-            var author = new Authors();
-            author = _mapper.Map(authorModel, author);
+            var author = new Author();
+            author = authorModel.MapToEntity(author);
             var result = await _authorRepository.CreateAsync(author);
+
             if(!result)
             {
                 authorModel.Errors.Add(Constants.Errors.CreateAuthorError);
@@ -84,16 +69,16 @@ namespace Store.BusinessLogic
             return authorModel;
         }
 
-        public async Task<AuthorModelItem> UpdateAsync(int id, AuthorModelItem authorModel)
+        public async Task<BaseModel> UpdateAsync(AuthorModelItem authorModel) //todo remove id
         {
-            var author = await _authorRepository.FindByIdAsync(id);
+            var author = await _authorRepository.FindByIdAsync(authorModel.Id);
             if (author == null)
             {
                 authorModel.Errors.Add(Constants.Errors.NotFoundAuthorError);
                 return authorModel;
             }
 
-            author = _mapper.Map(authorModel, author);
+            author = authorModel.MapToEntity(author);
             var result = await _authorRepository.UpdateAsync(author);
             if (!result)
             {
@@ -103,10 +88,12 @@ namespace Store.BusinessLogic
             return authorModel;
         }
 
-        public async Task<AuthorModelItem> DeleteAsync(int id)
+        public async Task<BaseModel> DeleteAsync(int id)
         {
             var authorModel = new AuthorModelItem();
+
             var author = await _authorRepository.FindByIdAsync(id);
+
             if (author == null)
             {
                 authorModel.Errors.Add(Constants.Errors.NotFoundAuthorError);
@@ -114,7 +101,9 @@ namespace Store.BusinessLogic
             }
 
             author.isRemoved = true;
+
             var result = await _authorRepository.UpdateAsync(author);
+
             if (!result)
             {
                 authorModel.Errors.Add(Constants.Errors.DeleteAuthorError);

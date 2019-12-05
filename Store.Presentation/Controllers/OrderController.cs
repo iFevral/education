@@ -1,13 +1,15 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Store.BusinessLogic.Common;
+using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Models.Orders;
+using Store.BusinessLogic.Models.Payments;
 using Store.BusinessLogic.Services.Interfaces;
 
 namespace Store.Presentation.Controllers
 {
     [Route("[controller]s")]
-    [Authorize]
     [ApiController]
     public class OrderController : ControllerBase
     {
@@ -19,10 +21,10 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]s")]
+        [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPost]
-        public async Task<IActionResult> GetAll([FromBody]OrderFilter orderFilter)
-        { 
-
+        public async Task<IActionResult> GetAll([FromBody]OrderFilterModel orderFilter)
+        {
             var orderModel = await _orderService.GetAllAsync(orderFilter);
             if (orderModel.Errors.Count > 0)
             {
@@ -33,8 +35,9 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]s/[controller]/{id}")]
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
+        [Authorize(Roles = Constants.RoleNames.Admin)]
+        [Authorize(Roles = Constants.RoleNames.Client)]
+        [HttpPost]
         public async Task<IActionResult> FindById(int id)
         {
             var orderModel = await _orderService.FindByIdAsync(id);
@@ -46,11 +49,11 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]s/Create")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPut]
-        public async Task<IActionResult> CreateOrder([FromBody]OrderModelItem OrderModelItem)
+        public async Task<IActionResult> CreateOrder([FromBody]OrderModelItem orderModelItem)
         {
-            var orderModel = await _orderService.CreateAsync(OrderModelItem);
+            var orderModel = await _orderService.CreateAsync(orderModelItem);
             if (orderModel.Errors.Count > 0)
             {
                 return NotFound(orderModel);
@@ -59,12 +62,12 @@ namespace Store.Presentation.Controllers
             return Ok(orderModel);
         }
 
-        [Route("~/[controller]s/Update/{id}")]
-        [Authorize(Roles = "Admin")]
+        [Route("~/[controller]s/Update/")]
+        [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPut]
-        public async Task<IActionResult> UpdateOrder(int id, [FromBody]OrderModelItem OrderModelItem)
+        public async Task<IActionResult> UpdateOrder([FromBody]PaymentModelItem paymentModelItem)
         {
-            var orderModel = await _orderService.UpdateAsync(id, OrderModelItem);
+            var orderModel = await _orderService.UpdateAsync(paymentModelItem);
             if (orderModel.Errors.Count > 0)
             {
                 return NotFound(orderModel);
@@ -74,7 +77,7 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]s/Delete/{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpDelete]
         public async Task<IActionResult> DeleteOrder(int id)
         {

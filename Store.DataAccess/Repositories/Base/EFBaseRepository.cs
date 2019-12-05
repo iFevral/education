@@ -5,48 +5,38 @@ using System.Linq.Expressions;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.AppContext;
+using Store.DataAccess.Models;
 
 namespace Store.DataAccess.Repositories.Base
 {
     public abstract class EFBaseRepository<T> : IGenericRepository<T>
         where T : class
     {
-        protected ApplicationContext _db;
+        protected ApplicationContext _dbContext;
         private DbSet<T> _dbSet;
 
-        public EFBaseRepository(ApplicationContext db)
+        public EFBaseRepository(ApplicationContext dbContext)
         {
-            _db = db;
-            _dbSet = db.Set<T>();
+            _dbContext = dbContext;
+            _dbSet = dbContext.Set<T>();
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> predicate, string sortProperty, string sortWay)
+        public virtual async Task<IEnumerable<T>> GetAllAsync(FilterModel<T> filterModel)
         {
-            var set = await _dbSet.Where(predicate).ToListAsync();
+            //todo add itemsCount
+            //todo use IQuer...
+            var items = await _dbSet.Where(filterModel.Predicate).ToListAsync();
 
-            if (sortWay == "DESC")
+            items = filterModel.SortWay == 1
+                ? items.OrderByDescending(x => x.GetType().GetProperty(filterModel.SortProperty).GetValue(x, null)).ToList()
+                : items = items.OrderBy(x => x.GetType().GetProperty(filterModel.SortProperty).GetValue(x, null)).ToList();
+        
+            if(filterModel.Quantity > 0)
             {
-                return set.OrderByDescending(x => x.GetType().GetProperty(sortProperty).GetValue(x, null));
+                items = items.Skip(filterModel.StartIndex).Take(filterModel.Quantity).ToList();
             }
 
-            return set.OrderBy(x => x.GetType().GetProperty(sortProperty).GetValue(x, null));
-        }
-
-        public virtual async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate, int startIndex, int quantity, string sortProperty, string sortWay)
-        {
-
-            var set = await _dbSet.Where(predicate).ToListAsync();
-
-            if(sortWay == "DESC")
-            {
-                return set.OrderByDescending(x => x.GetType().GetProperty(sortProperty).GetValue(x, null))
-                          .Skip(startIndex)
-                          .Take(quantity);
-            }
-
-            return set.OrderBy(x => x.GetType().GetProperty(sortProperty).GetValue(x, null))
-                      .Skip(startIndex)
-                      .Take(quantity);
+            return items;
         }
 
         public virtual async Task<T> FindByAsync(Expression<Func<T, bool>> predicate)
@@ -62,21 +52,21 @@ namespace Store.DataAccess.Repositories.Base
         public virtual async Task<bool> CreateAsync(T item)
         {
             _dbSet.Add(item);
-            var result = await _db.SaveChangesAsync();
+            var result = await _dbContext.SaveChangesAsync();
             return result > 0;
         }
 
         public virtual async Task<bool> UpdateAsync(T item)
         {
-            _db.Entry(item).State = EntityState.Modified;
-            var result = await _db.SaveChangesAsync();
+            _dbContext.Entry(item).State = EntityState.Modified;
+            var result = await _dbContext.SaveChangesAsync();
             return result > 0;
         }
 
         public virtual async Task<bool> RemoveAsync(T item)
         {
             _dbSet.Remove(item);
-            var result = await _db.SaveChangesAsync();
+            var result = await _dbContext.SaveChangesAsync();
             return result > 0;
         }
     }

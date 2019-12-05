@@ -5,9 +5,9 @@ export class PrintingEditionModelItem {
         public id?: number,
         public title?: string,
         public description?: string,
-        public authors?: Array<AuthorModelItem>,
-        public price?: number,
-        public currency?: string,
-        public type?: string
+        //public authors?: Array<AuthorModelItem>,
+        public price?: number
+        //public currency?: string,
+        //public type?: string
     ) { }
 }

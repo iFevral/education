@@ -1,0 +1,9 @@
+.pe-card  {
+    width: 100%;
+    height: 100%;
+    float: left;
+}
+
+.pe-card :last-child {
+    margin-right: 0;
+}

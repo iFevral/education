@@ -12,29 +12,29 @@ namespace Store.Presentation.Common
     {
         public AutoMappingProfile()
         {
-            CreateMap<Authors, AuthorModelItem>();
-            CreateMap<AuthorModelItem, Authors>()
+            CreateMap<Author, AuthorModelItem>();
+            CreateMap<AuthorModelItem, Author>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember, destMember) => srcMember != null && !srcMember.ToString().Equals("0")));
 
-            CreateMap<Orders, OrderModelItem>();
-            CreateMap<OrderModelItem, Orders>()
+            CreateMap<Order, OrderModelItem>();
+            CreateMap<OrderModelItem, Order>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember, destMember) => srcMember != null && !srcMember.ToString().Equals("0")));
 
-            CreateMap<OrderItems, OrderItemModelItem>();
-            CreateMap<OrderItemModelItem, OrderItems>()
+            CreateMap<OrderItem, OrderItemModelItem>();
+            CreateMap<OrderItemModelItem, OrderItem>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember, destMember) => srcMember != null && !srcMember.ToString().Equals("0")));
 
-            CreateMap<Payments, PaymentModelItem>();
-            CreateMap<PaymentModelItem, Payments>()
+            CreateMap<Payment, PaymentModelItem>();
+            CreateMap<PaymentModelItem, Payment>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember, destMember) => srcMember != null && !srcMember.ToString().Equals("0")));
 
-            CreateMap<PrintingEditions, PrintingEditionModelItem>();
-            CreateMap<PrintingEditionModelItem, PrintingEditions>()
+            CreateMap<PrintingEdition, PrintingEditionModelItem>();
+            CreateMap<PrintingEditionModelItem, PrintingEdition>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember, destMember) => srcMember != null && !srcMember.ToString().Equals("0")));
 
-            CreateMap<Users, UserModelItem>();
-            CreateMap<UserModelItem, Users>();
-            CreateMap<SignUpModel, Users>();
+            CreateMap<User, UserModelItem>();
+            CreateMap<UserModelItem, User>();
+            CreateMap<SignUpModel, User>();
             
         }
     }

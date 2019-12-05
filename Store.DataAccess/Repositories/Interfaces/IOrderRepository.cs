@@ -3,7 +3,7 @@ using Store.DataAccess.Repositories.Base;
 
 namespace Store.DataAccess.Repositories.Interfaces
 {
-    public interface IOrderRepository : IGenericRepository<Orders>
+    public interface IOrderRepository : IGenericRepository<Order>
     {
     }
 }

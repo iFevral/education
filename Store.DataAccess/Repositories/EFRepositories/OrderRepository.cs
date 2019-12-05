@@ -5,7 +5,7 @@ using Store.DataAccess.AppContext;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
-    public class OrderRepository : EFBaseRepository<Orders>, IOrderRepository
+    public class OrderRepository : EFBaseRepository<Order>, IOrderRepository
     {
         private readonly ApplicationContext _db;
 

@@ -10,11 +10,20 @@ export class SignUpComponent {
     signInForm: FormGroup;
     constructor() {
         this.signInForm = new FormGroup({
+            'firstname': new FormControl('', [
+                Validators.required,
+            ]),
+            'lastname': new FormControl('', [
+                Validators.required
+            ]),
             'email': new FormControl('', [
                 Validators.required,
                 Validators.email
             ]),
             'password': new FormControl('', [
+                Validators.required
+            ]),
+            'confirmPassword': new FormControl('', [
                 Validators.required
             ])
         });

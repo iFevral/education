@@ -6,9 +6,10 @@ import { PrintingEditionRoutingModule } from './printing-edition-routing.module'
 import { PrintingEditionService } from '../../shared/services/printing-edition.service';
 
 import { ListComponent } from './pages/list/list.component';
+import { CardComponent } from './pages/list/card/card.component';
 
 @NgModule({
-    declarations: [ListComponent],
+    declarations: [ListComponent, CardComponent],
     imports: [
         BrowserModule,
         MaterialElementsModule,

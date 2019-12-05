@@ -6,9 +6,9 @@ namespace Store.DataAccess.Initialization
 {
     public class DataSeeder
     {
-        private UserManager<Users> _userManager;
-        private RoleManager<Roles> _roleManager;
-        public DataSeeder(UserManager<Users> userManager, RoleManager<Roles> roleManager)
+        private UserManager<User> _userManager;
+        private RoleManager<Role> _roleManager;
+        public DataSeeder(UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -19,7 +19,7 @@ namespace Store.DataAccess.Initialization
         {
             if (await _roleManager.FindByNameAsync("Admin") != null)
             {
-                var role = new Roles
+                var role = new Role
                 {
                     Name = "Admin"
                 };
@@ -29,7 +29,7 @@ namespace Store.DataAccess.Initialization
 
             if (await _userManager.FindByNameAsync("Admin") != null)
             {
-                var user = new Users
+                var user = new User
                 {
                     UserName = "Admin",
                     Email = "admin@example.com",

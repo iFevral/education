@@ -1,9 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess.Entities
 {
+    [Table("AuthorInBooks")]
     public partial class AuthorInBooks
     {
         [Key]
@@ -12,11 +12,7 @@ namespace Store.DataAccess.Entities
         public int PrintingEditionId { get; set; }
 
 
-        [ForeignKey(nameof(AuthorId))]
-        [InverseProperty(nameof(Authors.AuthorInBooks))]
-        public virtual Authors Author { get; set; }
-        [ForeignKey(nameof(PrintingEditionId))]
-        [InverseProperty(nameof(PrintingEditions.AuthorInBooks))]
-        public virtual PrintingEditions PrintingEdition { get; set; }
+        public virtual Author Author { get; set; }
+        public virtual PrintingEdition PrintingEdition { get; set; }
     }
 }

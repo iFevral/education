@@ -1,0 +1,61 @@
+<mat-sidenav-container class="example-container">
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened" (opened)="events.push('open!')"
+        (closed)="events.push('close!')">
+        <br>
+        <div class="categories">
+            <h4>Categories</h4>
+            <mat-checkbox color="primary">Book</mat-checkbox>
+            <mat-checkbox color="primary">Newspaper</mat-checkbox>
+            <mat-checkbox color="primary">Magazine</mat-checkbox>
+        </div>
+        <hr>
+        <div class="Price">
+            <h4>Price</h4>
+            <mat-form-field class="example-margin">
+                <input matInput type="number" placeholder="Min value">
+            </mat-form-field>
+            <mat-form-field class="example-margin">
+                <input matInput type="number" placeholder="Max value">
+            </mat-form-field>
+        </div>
+        <div class="btn-apply">
+            <button mat-flat-button color="primary" (click)="sidenav.toggle()">Apply</button>
+        </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <section class="printing-edition-container">
+
+            <h1>Printing editions</h1>
+            <button mat-flat-button color="primary" (click)="sidenav.toggle()">Filter</button>
+            <mat-form-field>
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+            </mat-form-field>
+
+            <div class="mat-elevation-z8">
+                <table mat-table [dataSource]="dataSource" matSort>
+
+                    <ng-container matColumnDef="id">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+                        <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="title">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+                        <td mat-cell *matCellDef="let row"> {{row.title}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="price">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Price </th>
+                        <td mat-cell *matCellDef="let row"> {{row.price}} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+                    </tr>
+                </table>
+
+                <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+        </section>
+    </mat-sidenav-content>
+</mat-sidenav-container>

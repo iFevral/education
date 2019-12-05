@@ -7,17 +7,17 @@ using Store.DataAccess.Repositories.Interfaces;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
-    public class AuthorRepository : EFBaseRepository<Authors>, IAuthorRepository
+    public class AuthorRepository : EFBaseRepository<Author>, IAuthorRepository
     {
         public AuthorRepository(ApplicationContext db) : base(db)
         {
-            _db = db;
+            _dbContext = db;
         }
 
         public async Task<bool> RemovePrintingEditionsAsync(int authorId)
         {
-            _db.RemoveRange(_db.AuthorInBooks.Where(aib => aib.AuthorId == authorId));
-            var result = await _db.SaveChangesAsync();
+            _dbContext.RemoveRange(_dbContext.AuthorInBooks.Where(aib => aib.AuthorId == authorId));
+            var result = await _dbContext.SaveChangesAsync();
             return result > 0;
         }
     }

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
+﻿using System.Threading.Tasks;
 using System.Collections.Generic;
 using Store.DataAccess.Entities;
+using Store.DataAccess.Models;
 
 namespace Store.DataAccess.Repositories.Interfaces
 {
@@ -12,56 +11,28 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// Return all users
         /// </summary>
         /// <returns>User entity</returns>
-        public Task<IEnumerable<Users>> GetAllAsync(Expression<Func<Users, bool>> predicate, string sortProperty, string sortWay);
-
-        /// <summary>
-        /// Return all users
-        /// </summary>
-        /// <returns>User entity</returns>
-        public Task<IEnumerable<Users>> GetAsync(Expression<Func<Users, bool>> predicate, string sortProperty, string sortWay, int startIndex, int quantity);
+        public Task<IEnumerable<User>> GetAllAsync(FilterModel<User> filterModel);
 
         /// <summary>
         /// Create new user
         /// </summary>
         /// <returns>Enumerable of users</returns>
-        public Task<bool> CreateAsync(Users user, string password);
+        public Task<bool> CreateAsync(User user, string password);
 
         /// <summary>
         /// Edit user
         /// </summary>
-        public Task<bool> UpdateAsync(Users user);
+        public Task<bool> UpdateAsync(User user);
 
         /// <summary>
         /// Delete user
         /// </summary>
-        public Task<bool> RemoveAsync(Users user);
+        public Task<bool> RemoveAsync(User user);
 
         /// <summary>
         /// Lock user
         /// </summary>
-        public Task<bool> LockOutAsync(string username, bool enabled);
-
-        /// <summary>
-        /// Check if user locked
-        /// </summary>
-        /// <returns>True if user locked</returns>
-        public Task<bool> IsLockedOutAsync(string username);
-
-        /// <summary>
-        /// Check if role created
-        /// </summary>
-        /// <returns>True if role created</returns>
-        public Task<bool> CheckRoleAvailabilityAsync(string rolename);
-
-        /// <summary>
-        /// Create new role
-        /// </summary>
-        public Task<bool> CreateRoleAsync(string rolename);
-
-        /// <summary>
-        /// Delete role
-        /// </summary>
-        public Task<bool> DeleteRoleAsync(string rolename);
+        public Task<bool> LockOutAsync(string email, bool enabled);
 
         /// <summary>
         /// Get all roles of user
@@ -69,71 +40,55 @@ namespace Store.DataAccess.Repositories.Interfaces
         public Task<IList<string>> GetUserRolesAsync(string id);
 
         /// <summary>
-        /// Check that user has role
-        /// </summary>
-        public Task<bool> CheckRoleAsync(string id, string rolename);
-
-        /// <summary>
-        /// Add user from role
-        /// </summary>
-        public Task<bool> AddToRoleAsync(string id, string rolename);
-
-        /// <summary>
-        /// Remove user from role
-        /// </summary>
-        public Task<bool> RemoveFromRoleAsync(string id, string rolename);
-
-        /// <summary>
         /// Find user by id
         /// </summary>
         /// <returns>User entity</returns>
-        public Task<Users> FindByIdAsync(string id);
+        public Task<User> FindByIdAsync(string id);
 
         /// <summary>
         /// Find user by email
         /// </summary>
         /// <returns>User entity</returns>
-        public Task<Users> FindByEmailAsync(string email);
-
-        /// <summary>
-        /// Find user by name
-        /// </summary>
-        /// <returns>User entity</returns>
-        public Task<Users> FindByNameAsync(string username);
+        public Task<User> FindByEmailAsync(string email);
 
         /// <summary>
         /// Check that user is created
         /// </summary>
         /// <returns>True if user is found</returns>
-        public Task<bool> CheckSignInAsync(string username, string password);
+        public Task<bool> CheckSignInAsync(string email, string password);
 
         /// <summary>
         /// Generate token for email confirmation
         /// </summary>
         /// <returns>Token for registration</returns>
-        public Task<string> GenerateEmailConfirmationTokenAsync(string username);
+        public Task<string> GenerateEmailConfirmationTokenAsync(string email);
 
         /// <summary>
         /// Confirm email
         /// </summary>
-        public Task<bool> ConfirmEmailAsync(string username, string token);
+        public Task<bool> ConfirmEmailAsync(string email, string token);
 
         /// <summary>
         /// Check email confirmation token
         /// </summary>
         /// <returns>True if registration token is correct</returns>
-        public Task<bool> CheckEmailConfirmationAsync(string username);
+        public Task<bool> CheckEmailConfirmationAsync(string email);
 
         /// <summary>
         /// Generate token for password reseting
         /// </summary>
         /// <returns>Token for password reset</returns>
-        public Task<string> GeneratePasswordResetTokenAsync(string username);
+        public Task<string> GeneratePasswordResetTokenAsync(string email);
 
         /// <summary>
         /// Check password token and set new password
         /// </summary>
         /// <returns>True if token for password reset is correct</returns>
-        public Task<bool> ConfirmNewPasswordAsync(string username, string token, string newPassword);
+        public Task<bool> ResetPasswordAsync(string email, string token, string newPassword);
+
+        /// <summary>
+        /// Add user from role
+        /// </summary>
+        public Task<bool> AddToRoleAsync(string id, string rolename);
     }
 }

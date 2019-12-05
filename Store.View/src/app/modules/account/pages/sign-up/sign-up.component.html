@@ -3,6 +3,26 @@
     <form [formGroup]="signInForm" novalidate (ngSubmit)="submit()">
         <div class="input-form-group">
             <mat-form-field>
+                <input placeholder="Firstname" name="passwordInput" matInput formControlName="firstname">
+            </mat-form-field>
+            <div class="alert alert-danger"
+                *ngIf="signInForm.controls['firstname'].invalid && signInForm.controls['firstname'].touched">
+                Firstname can`t be empty
+            </div>
+        </div>
+
+        <div class="input-form-group">
+            <mat-form-field>
+                <input placeholder="Lastname" name="passwordInput" matInput formControlName="lastname">
+            </mat-form-field>
+            <div class="alert alert-danger"
+                *ngIf="signInForm.controls['lastname'].invalid && signInForm.controls['lastname'].touched">
+                Lastname can`t be empty
+            </div>
+        </div>
+        
+        <div class="input-form-group">
+            <mat-form-field>
                 <input placeholder="Email" name="emailInput" matInput formControlName="email">
             </mat-form-field>
             <div class="alert alert-danger"
@@ -17,6 +37,16 @@
             </mat-form-field>
             <div class="alert alert-danger"
                 *ngIf="signInForm.controls['password'].invalid && signInForm.controls['password'].touched">
+                Password can`t be empty
+            </div>
+        </div>
+
+        <div class="input-form-group">
+            <mat-form-field>
+                <input placeholder="Confirm Password" name="passwordInput" matInput formControlName="confirmPassword">
+            </mat-form-field>
+            <div class="alert alert-danger"
+                *ngIf="signInForm.controls['confirmPassword'].invalid && signInForm.controls['confirmPassword'].touched">
                 Password can`t be empty
             </div>
         </div>

@@ -1,19 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+
 import { PrintingEditionService } from '../../../../shared/services/printing-edition.service';
 import { PrintingEditionModel } from '../../../../shared/models/printing-edition/printing-edition.model';
 import { PrintingEditionModelItem } from '../../../../shared/models/printing-edition/printing-edition.model.item';
 
-const ELEMENT_DATA: PrintingEditionModelItem[] = [
-    { id: 1, title: 'Hydrogen' },
-    { id: 2, title: 'Helium' }
-]
-
 @Component({
     selector: 'app-list',
     templateUrl: './list.component.html',
-    styleUrls: ['./list.component.css']
+    styleUrls: ['./list.component.css'],
+    providers: [PrintingEditionService]
 })
-export class ListComponent {
-    displayedColumns: string[] = ['id', 'title'];
-    dataSource = ELEMENT_DATA;
+export class ListComponent implements OnInit {
+    opened: boolean;
+    printingEditionModel: PrintingEditionModel;
+
+    constructor(private pringtingEditionService: PrintingEditionService) { }
+
+    ngOnInit() {
+        this.pringtingEditionService.getAll().then((resp) => {
+            this.printingEditionModel = resp;
+        });
+    }
 }

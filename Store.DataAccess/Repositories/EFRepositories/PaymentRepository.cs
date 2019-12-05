@@ -5,7 +5,7 @@ using Store.DataAccess.Repositories.Interfaces;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
-    public class PaymentRepository : EFBaseRepository<Payments>, IPaymentRepository
+    public class PaymentRepository : EFBaseRepository<Payment>, IPaymentRepository
     {
         private readonly ApplicationContext _db;
         public PaymentRepository(ApplicationContext db) : base(db)

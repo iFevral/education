@@ -5,6 +5,6 @@ namespace Store.BusinessLogic.Models.Orders
 {
     public class OrderItemModel : BaseModel
     {
-        public IList<OrderModelItem> OrderItems = new List<OrderModelItem>();
+        public IList<OrderModelItem> Items = new List<OrderModelItem>();
     }
 }

@@ -1,32 +1,47 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Net;
 using System.Net.Mail;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Store.BusinessLogic.Helpers.Interface;
 
 namespace Store.BusinessLogic.Helpers
 {
-    public static class EmailHelper
+    public class EmailHelper : IEmailHelper//todo add interface, use DI, use options
     {
-        public static void Send(string recipients,
-                                string subject,
-                                string body,
-                                IConfiguration configuration)
-        {
-            SmtpClient client = new SmtpClient(configuration["SmtpServer"],
-                                               Convert.ToInt32(configuration["SmtpPort"]));
-            client.UseDefaultCredentials = false;
-            client.Credentials = new NetworkCredential(configuration["SmtpEmail"],
-                                                       configuration["SmtpPassword"]);
-            client.EnableSsl = Convert.ToBoolean(configuration["SmtpSsl"]);
+        private bool _smtpSsl;
+        private int _smtpPort;
+        private string _smtpEmail;
+        private string _smtpServer;
+        private string _smtpPassword;
 
-            MailMessage message = new MailMessage();
-            message.From = new MailAddress(configuration["SmtpEmail"]);
-            message.To.Add(recipients);
-            message.Body = body;
-            message.Subject = subject;
-            client.Send(message);
+        public void Configure(IConfigurationSection smtpConfig)
+        {
+            _smtpSsl = smtpConfig.GetValue<bool>("SmtpSsl");
+            _smtpPort = smtpConfig.GetValue<int>("SmtpPort");
+            _smtpEmail = smtpConfig.GetValue<string>("SmtpEmail");
+            _smtpServer = smtpConfig.GetValue<string>("SmtpServer");
+            _smtpPassword = smtpConfig.GetValue<string>("SmtpPassword");
+        }
+
+        public async Task Send(string recipients, //todo async
+                                string subject,
+                                string body)
+        {
+            //todo using
+            using (SmtpClient client = new SmtpClient(_smtpServer, _smtpPort))
+            {
+                client.UseDefaultCredentials = false;
+                client.Credentials = new NetworkCredential(_smtpEmail, _smtpPassword);
+                client.EnableSsl = Convert.ToBoolean(_smtpSsl);
+
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress(_smtpServer);
+                message.To.Add(recipients);
+                message.Body = body;
+                message.Subject = subject;
+                await client.SendMailAsync(message);
+            }
         }
     }
 }
-//TODO: Доделать EmailHelper

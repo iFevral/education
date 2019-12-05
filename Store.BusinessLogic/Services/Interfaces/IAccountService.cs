@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Users;
 
 namespace Store.BusinessLogic.Services.Interfaces
@@ -12,12 +13,6 @@ namespace Store.BusinessLogic.Services.Interfaces
         public Task<UserModelItem> GetUserByIdAsync(string id);
 
         /// <summary>
-        /// Get user by username
-        /// </summary>
-        /// <returns>User model item</returns>
-        public Task<UserModelItem> GetUserByNameAsync(string username);
-
-        /// <summary>
         /// Check user login and password and get user data
         /// </summary>
         /// <returns>User model item</returns>
@@ -27,28 +22,22 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Create new user and generate token for registration
         /// </summary>
         /// <returns>Email token for registration</returns>
-        public Task<EmailModel> SignUpAsync(SignUpModel signUpModel);
+        public Task<EmailConfirmationModel> SignUpAsync(SignUpModel signUpModel);
 
         /// <summary>
         /// Confirm email
         /// </summary>
-        public Task<EmailModel> ConfirmEmailAsync(string username, string token);
-
-        /// <summary>
-        /// Check if user is blocked
-        /// </summary>
-        /// <returns>True if user is blocked</returns>
-        public Task<bool> IsAccountLockedAsync(string username);
+        public Task<BaseModel> ConfirmEmailAsync(string username, string token);
 
         /// <summary>
         /// Check user from repository and create token for password reset
         /// </summary>
         /// <returns>Token for password reset</returns>
-        public Task<ResetPasswordModel> ResetPasswordAsync(string username);
+        public Task<ResetPasswordModel> GeneratePasswordResetTokenAsync(string username);
 
         /// <summary>
         /// Set new password 
         /// </summary>
-        public Task<ResetPasswordModel> ConfirmNewPasswordAsync(string email, string token, string newPassword);
+        public Task<ResetPasswordModel> ResetPasswordAsync(string email, string token, string newPassword);
     }
 }

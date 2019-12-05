@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Models.PrintingEditions;
+using Store.BusinessLogic.Common;
+using Store.BusinessLogic.Models.Filters;
 
 namespace Store.Presentation.Controllers
 {
@@ -19,9 +21,9 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]s")]
         [HttpPost]
-        public async Task<IActionResult> GetPrintingEditions([FromBody]PrintingEditionFilter peFilter)
+        public async Task<IActionResult> GetPrintingEditions([FromBody]PrintingEditionFilterModel printingEditionFilter)
         {
-            var printingEditionModel = await _printingEditionService.GetAll(peFilter);
+            var printingEditionModel = await _printingEditionService.GetAll(printingEditionFilter);
             if (printingEditionModel.Errors.Count > 0)
             {
                 return NotFound(printingEditionModel);
@@ -31,7 +33,7 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]s/[controller]/{id}")]
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> GetPrintingEdition(int id)
         {
             var printingEditionModel = await _printingEditionService.FindByIdAsync(id);
@@ -44,7 +46,7 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]s/Create")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPut]
         public async Task<IActionResult> CreatePrintingEdition([FromBody]PrintingEditionModelItem printingEditionItem)
         {
@@ -57,12 +59,12 @@ namespace Store.Presentation.Controllers
             return Ok(printingEditionModel);
         }
 
-        [Route("~/[controller]s/Update/{id}")]
-        [Authorize(Roles = "Admin")]
+        [Route("~/[controller]s/Update")]
+        [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPut]
-        public async Task<IActionResult> UpdatePrintingEdition(int id, [FromBody]PrintingEditionModelItem printingEditionItem)
+        public async Task<IActionResult> UpdatePrintingEdition([FromBody]PrintingEditionModelItem printingEditionItem)
         {
-            var printingEditionModel = await _printingEditionService.UpdateAsync(id, printingEditionItem);
+            var printingEditionModel = await _printingEditionService.UpdateAsync(printingEditionItem);
             if (printingEditionModel.Errors.Count > 0)
             {
                 return NotFound(printingEditionModel);
@@ -72,7 +74,7 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]s/Delete/{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpDelete]
         public async Task<IActionResult> DeletePrintingEdition(int id)
         {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess.Entities
 {
@@ -11,12 +10,8 @@ namespace Store.DataAccess.Entities
         [Key]
         public override string RoleId { get; set; }
 
-        [ForeignKey(nameof(RoleId))]
-        [InverseProperty(nameof(Roles.UserInRoles))]
-        public virtual Roles Role { get; set; }
+        public virtual Role Role { get; set; }
 
-        [ForeignKey(nameof(UserId))]
-        [InverseProperty(nameof(Users.UserInRoles))]
-        public virtual Users User { get; set; }
+        public virtual User User { get; set; }
     }
 }

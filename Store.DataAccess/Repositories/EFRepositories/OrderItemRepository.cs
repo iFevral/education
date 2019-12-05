@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
-    public class OrderItemRepository : EFBaseRepository<OrderItems>, IOrderItemRepository
+    public class OrderItemRepository : EFBaseRepository<OrderItem>, IOrderItemRepository
     {
         private readonly ApplicationContext _db;
         public OrderItemRepository(ApplicationContext db) : base(db)

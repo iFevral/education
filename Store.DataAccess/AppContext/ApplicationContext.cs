@@ -6,8 +6,8 @@ using Store.DataAccess.Entities.Enums;
 
 namespace Store.DataAccess.AppContext
 {
-    public partial class ApplicationContext : IdentityDbContext<Users,
-                                                                Roles,
+    public partial class ApplicationContext : IdentityDbContext<User,
+                                                                Role,
                                                                 string,
                                                                 IdentityUserClaim<string>,
                                                                 UserInRoles,
@@ -21,14 +21,14 @@ namespace Store.DataAccess.AppContext
         }
 
         public virtual DbSet<AuthorInBooks> AuthorInBooks { get; set; }
-        public virtual DbSet<Authors> Authors { get; set; }
-        public virtual DbSet<OrderItems> OrderItems { get; set; }
-        public virtual DbSet<Orders> Orders { get; set; }
-        public virtual DbSet<Payments> Payments { get; set; }
-        public virtual DbSet<PrintingEditions> PrintingEditions { get; set; }
-        public override DbSet<Roles> Roles { get; set; }
+        public virtual DbSet<Author> Authors { get; set; }
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
+        public virtual DbSet<PrintingEdition> PrintingEditions { get; set; }
+        public override DbSet<Role> Roles { get; set; }
         public virtual DbSet<UserInRoles> UserInRoles { get; set; }
-        public override DbSet<Users> Users { get; set; }
+        public override DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,7 +47,7 @@ namespace Store.DataAccess.AppContext
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<Orders>(entity =>
+            modelBuilder.Entity<Order>(entity =>
             {
                 entity.HasIndex(e => e.PaymentId);
                 entity.HasOne(x => x.User)
@@ -58,7 +58,7 @@ namespace Store.DataAccess.AppContext
                     .HasConversion(x => (int) x, x => (Enums.Orders.Statuses) x);
             });
 
-            modelBuilder.Entity<PrintingEditions>(entity =>
+            modelBuilder.Entity<PrintingEdition>(entity =>
             {
                 entity.Property(e => e.Currency)
                     .HasConversion(x => (int)x, x => (Enums.PrintingEditions.Currencies)x);
@@ -67,14 +67,14 @@ namespace Store.DataAccess.AppContext
                     .HasConversion(x => (int)x, x => (Enums.PrintingEditions.Types)x);
             });
 
-                modelBuilder.Entity<OrderItems>(entity =>
+                modelBuilder.Entity<OrderItem>(entity =>
             {
                 entity.HasIndex(e => e.OrderId);
 
                 entity.HasIndex(e => e.PrintingEditionId);
             });
 
-            modelBuilder.Entity<Roles>(entity =>
+            modelBuilder.Entity<Role>(entity =>
             {
                 entity.HasIndex(e => e.NormalizedName)
                     .HasName("RoleNameIndex")
@@ -82,7 +82,7 @@ namespace Store.DataAccess.AppContext
                     .HasFilter("([NormalizedName] IS NOT NULL)");
             });
 
-            modelBuilder.Entity<Users>(entity =>
+            modelBuilder.Entity<User>(entity =>
             {
                 entity.HasIndex(e => e.NormalizedEmail)
                     .HasName("EmailIndex");

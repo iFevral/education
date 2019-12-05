@@ -5,6 +5,6 @@ namespace Store.BusinessLogic.Models.Payments
 {
     public class PaymentModel : BaseModel
     {
-        public IList<PaymentModelItem> Payments = new List<PaymentModelItem>();
+        public IList<PaymentModelItem> Items = new List<PaymentModelItem>();
     }
 }
