@@ -7,7 +7,7 @@ namespace Store.DataAccess.Entities
     {
         [Key]
         public long Id { get; set; }
-        public DateTime? CreationData { get; set; } = DateTime.Now;
+        public DateTime? CreationDate { get; set; } = DateTime.Now;
         public bool isRemoved { get; set; } = false;
     }
 }

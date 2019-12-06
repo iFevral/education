@@ -12,18 +12,22 @@ namespace Store.BusinessLogic.Common.Mappers.Order
         {
             entity.Description = model.Description;
 
-            entity.Status = (Enums.Orders.Statuses)Enum.Parse(typeof(Enums.Orders.Statuses), model.Status);
+            entity.Status = model.Status;
 
-            entity.PaymentId = model.Payment.Id;
+            if (model.Payment != null)
+            {
+                entity.PaymentId = model.Payment.Id;
+            }
+
+            entity.UserId = model.User.Id;
 
             entity.OrderItems = new List<OrderItem>();
-            foreach (var orderItems in model.OrderItems)
+            foreach (var item in model.OrderItems)
             {
-                entity.OrderItems.Add(new OrderItem
-                {
-                    Amount = orderItems.Amount,
-                    PrintingEditionId = orderItems.PrintingEdition.Id
-                });
+                var orderItem = new OrderItem();
+                orderItem .Amount = item.Amount;
+                orderItem .PrintingEditionId = item.PrintingEdition.Id;
+                entity.OrderItems.Add(orderItem);
             }
 
             return entity;

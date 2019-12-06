@@ -39,5 +39,11 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Set new password 
         /// </summary>
         public Task<ResetPasswordModel> ResetPasswordAsync(string email, string token, string newPassword);
+
+        /// <summary>
+        /// Edit profile
+        /// </summary>
+        /// <returns></returns>
+        public Task<BaseModel> UpdateProfile(SignUpModel signUpModel);
     }
 }

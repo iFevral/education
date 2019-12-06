@@ -5,16 +5,17 @@ using System.Linq.Expressions;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.AppContext;
-using Store.DataAccess.Models;
 using Store.DataAccess.Entities;
+using Store.DataAccess.Models.EFFilters;
+using Store.DataAccess.Common.Extensions.Sorting;
 
 namespace Store.DataAccess.Repositories.Base
 {
     public abstract class EFBaseRepository<T> : IGenericRepository<T>
         where T : BaseEntity
     {
-        protected ApplicationContext _dbContext;
-        private DbSet<T> _dbSet;
+        protected readonly ApplicationContext _dbContext;
+        protected DbSet<T> _dbSet;
 
         public EFBaseRepository(ApplicationContext dbContext)
         {
@@ -28,15 +29,15 @@ namespace Store.DataAccess.Repositories.Base
             return counter;
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync(FilterModel<T> filterModel)
+        public virtual async Task<IEnumerable<T>> GetAllAsync(EFFilterModel<T> filterModel)
         {
+            var s = filterModel.SortProperty.ToString();
             //todo use IQuer...
-            var items = _dbSet.Where(filterModel.Predicate).AsEnumerable();
+            var items = _dbSet.Where(filterModel.Predicate)
+                               .AsEnumerable()
+                               .GetSortedEnumerable(filterModel.IsAscending,
+                                                    filterModel.SortProperty.ToString());
 
-            items = (int)filterModel.SortWay == 1
-                ? items.OrderByDescending(x => x.GetType().GetProperty(filterModel.SortProperty).GetValue(x, null))
-                : items = items.OrderBy(x => x.GetType().GetProperty(filterModel.SortProperty).GetValue(x, null));
-        
             if(filterModel.Quantity > 0)
             {
                 items =  items.Skip(filterModel.StartIndex).Take(filterModel.Quantity);

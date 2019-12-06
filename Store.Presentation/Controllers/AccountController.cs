@@ -30,16 +30,11 @@ namespace Store.Presentation.Controllers
         [Route("~/[controller]/Profile")]
         [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPost]
-        public async Task<IActionResult> GetProfile([FromHeader]string Authorization)
+        public async Task<IActionResult> GetProfileAsync([FromHeader]string Authorization)
         {
             string token = Authorization.Substring(7);
             long userId = JwtHelper.GetUserIdFromToken(token);
             var userModel = await _accountService.GetUserByIdAsync(userId);
-
-            if (userModel.Errors.Count > 0)
-            {
-                return NotFound(userModel);
-            }
 
             return Ok(userModel);
 
@@ -47,13 +42,13 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]/SignIn")]
         [HttpPost]
-        public async Task<IActionResult> SignIn([FromBody] SignInModel loginData)
+        public async Task<IActionResult> SignInAsync([FromBody] SignInModel loginData)
         {
             var userModel = await _accountService.SignInAsync(loginData);
 
             if (userModel.Errors.Count > 0)
             {
-                return NotFound(userModel);
+                return Ok(userModel);
             }
 
             var refreshToken = JwtHelper.GenerateJwtRefreshToken(userModel, _configuration);
@@ -67,43 +62,50 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]/SignUp")]
         [HttpPost]
-        public async Task<IActionResult> SignUp([FromBody] SignUpModel signUpModel)
+        public async Task<IActionResult> SignUpAsync([FromBody] SignUpModel signUpModel)
         {
-            var emailModel = await _accountService.SignUpAsync(signUpModel);
+            var emailConfirmationModel = await _accountService.SignUpAsync(signUpModel);
 
-            if (emailModel.Errors.Count > 0)
+            if (emailConfirmationModel.Errors.Count > 0)
             {
-                return BadRequest(emailModel);
+                return Ok(emailConfirmationModel);
             }
 
             string subject = "Account confirmation";
             string body = "Confirmation link: <a href='https://localhost:44312/Account/ConfirmEmail?" +
-                            "username=" + emailModel.Email + "&token=" + emailModel.Token + "'>Verify email</a>";
-            
+                            "username=" + emailConfirmationModel.Email + "&token=" + emailConfirmationModel.Token + "'>Verify email</a>";
+
             await _emailHelper.Send(signUpModel.Email, subject, body);
-            
-            return Ok("Check your email to confirm your information");
+
+            return Ok(emailConfirmationModel);
+        }
+
+        [Route("~/[controller]/Edit")]
+        [HttpPost]
+        public async Task<IActionResult> EditProfileAsync([FromHeader]string Authorization, [FromBody] SignUpModel signUpModel)
+        {
+            var token = Authorization.Substring(7);
+            signUpModel.Id = JwtHelper.GetUserIdFromToken(token);
+            var model = await _accountService.UpdateProfile(signUpModel);
+
+            return Ok(model);
         }
 
 
         [Route("~/[controller]/ConfirmEmail")]
         [HttpGet]
-        public async Task<IActionResult> ConfirmEmail(string username, string token)
+        public async Task<IActionResult> ConfirmEmailAsync(string username, string token)
         {
             token = token.Replace(" ", "+");
             var userModel = await _accountService.ConfirmEmailAsync(username, token);
-            if (userModel.Errors.Count > 0)
-            {
-                return BadRequest("Link not available");
-            }
 
-            return Ok("Email has successfully confirmed");
+            return Ok(userModel);
         }
 
         [Route("~/[controller]/ForgotPassword")]
         [HttpPost]
-        public async Task<IActionResult> ForgotPassword([FromBody] EmailConfirmationModel user)
-        { 
+        public async Task<IActionResult> ForgotPasswordAsync([FromBody] EmailConfirmationModel user)
+        {
 
             var resetPasswordModel = await _accountService.GeneratePasswordResetTokenAsync(user.Email);
             string subject = "Reseting password confirmation";
@@ -111,51 +113,54 @@ namespace Store.Presentation.Controllers
                           "email=" + resetPasswordModel.Email + "&token=" + resetPasswordModel.Token + "'>Reset password</a>";
 
             await _emailHelper.Send(resetPasswordModel.Email, subject, body);
-            
-            return Ok("Check your email");
+
+            return Ok(resetPasswordModel);
         }
 
         [Route("~/[controller]/ConfirmReseting")]
         [HttpGet]
-        public IActionResult ConfirmResetPassword(string email, string token)
+        public async Task<IActionResult> ConfirmResetPasswordAsync(string email, string token)
         {
             token = token.Replace(" ", "+");
-            return Ok(new ResetPasswordModel
-            {
-                Email = email,
-                Token = token
-            });
-        }
+            var resetPasswordModel = new ResetPasswordModel();
+            
+            resetPasswordModel.Email = email;
+            resetPasswordModel.Token = token;
+            
+            return Ok(resetPasswordModel);
+        } 
 
         [Route("~/[controller]/ConfirmNewPassword")]
         [HttpPost]
-        public async Task<IActionResult> ConfirmNewPassword([FromBody] ResetPasswordModel user)
+        public async Task<IActionResult> ConfirmNewPasswordAsync([FromBody] ResetPasswordModel user)
         {
             user.Token = user.Token.Replace(" ", "+");
-            await _accountService.ResetPasswordAsync(user.Email, user.Token, user.Password);
-            return Ok("Password has successfully changed");
+            
+            var model = await _accountService.ResetPasswordAsync(user.Email, user.Token, user.Password);
+            
+            return Ok(model);
         }
 
         [Route("~/RefreshToken")]
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> RefreshTokens([FromHeader]string Authorization)
+        public async Task<IActionResult> RefreshTokensAsync([FromHeader]string Authorization)
         {
             string token = Authorization.Substring(7);
             var userModel = await _accountService.GetUserByIdAsync(JwtHelper.GetUserIdFromToken(token));
 
             if (userModel.Errors.Count > 0)
             {
-                return NotFound(userModel.Errors);
+                return Ok(userModel.Errors);
             }
 
             var refreshToken = JwtHelper.GenerateJwtRefreshToken(userModel, _configuration);
+            
+            var accessTokenModel = new AccessTokenModel();
+            accessTokenModel.AccessToken = JwtHelper.GenerateJwtAccessToken(userModel, _configuration);
+            accessTokenModel.RefreshToken = refreshToken;
 
-            return Ok(new AccessTokenModel
-            {
-                AccessToken = JwtHelper.GenerateJwtAccessToken(userModel, _configuration),
-                RefreshToken = refreshToken
-            });
+            return Ok(accessTokenModel);
         }
     }
 }

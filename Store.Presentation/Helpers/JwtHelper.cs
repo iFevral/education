@@ -9,7 +9,7 @@ using Store.BusinessLogic.Models.Users;
 
 namespace Store.Presentation.Helpers
 {
-    public class JwtHelper
+    public static class JwtHelper
     {
         public static Claim[] GetAccessClaims(UserModelItem user)
         {
@@ -63,7 +63,8 @@ namespace Store.Presentation.Helpers
         public static long GetUserIdFromToken(string token)
         {
             JwtSecurityToken refreshToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
-            return Convert.ToInt64(refreshToken.Payload.Where(x => x.Key == "nameid").FirstOrDefault().Value);
+            long id = Convert.ToInt64(refreshToken.Payload.Where(x => x.Key == "nameid").FirstOrDefault().Value);
+            return id;
         }
     }
 }

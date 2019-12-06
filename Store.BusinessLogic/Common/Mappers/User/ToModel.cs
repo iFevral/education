@@ -9,7 +9,10 @@ namespace Store.BusinessLogic.Common.Mappers.User
         {
             var model = new UserModelItem();
             model.Id = entity.Id;
+            model.FirstName = entity.FirstName;
+            model.LastName = entity.LastName;
             model.Email = entity.Email;
+            model.IsLocked = entity.LockoutEnabled;
             model.Roles = new List<string>();
 
             foreach (var role in entity.UserInRoles)

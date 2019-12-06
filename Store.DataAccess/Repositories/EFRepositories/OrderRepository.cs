@@ -7,11 +7,8 @@ namespace Store.DataAccess.Repositories.EFRepository
 {
     public class OrderRepository : EFBaseRepository<Order>, IOrderRepository
     {
-        private readonly ApplicationContext _db;
-
-        public OrderRepository(ApplicationContext db) : base(db)
+        public OrderRepository(ApplicationContext dbContext) : base(dbContext)
         {
-            _db = db;
         }
     }
 }

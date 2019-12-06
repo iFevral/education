@@ -2,11 +2,11 @@
 using Store.BusinessLogic.Common;
 using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Users;
-using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Common.Mappers.User;
-using Store.BusinessLogic.Common.Mappers.Filter;
 using Store.DataAccess.Repositories.Interfaces;
+using Store.BusinessLogic.Models.Filters;
+using Store.BusinessLogic.Common.Mappers.Filter;
 
 namespace Store.BusinessLogic.Services
 {
@@ -28,7 +28,7 @@ namespace Store.BusinessLogic.Services
         {
             UserModel userModel = new UserModel();
 
-            var usersFromRepo = await _userRepository.GetAllAsync(userFilter.MapToDataAccessModel());
+            var usersFromRepo = await _userRepository.GetAllAsync(userFilter.MapToEFFilterModel());
 
             if (usersFromRepo == null)
             {
@@ -62,7 +62,7 @@ namespace Store.BusinessLogic.Services
 
         public async Task<BaseModel> UpdateUserAsync(SignUpModel signUpModel)
         {
-            var user = await _userRepository.FindByEmailAsync(signUpModel.Email);
+            var user = await _userRepository.FindByIdAsync(signUpModel.Id);
             var userModel = new UserModelItem();
             if(user == null)
             {
@@ -72,8 +72,9 @@ namespace Store.BusinessLogic.Services
 
             user.FirstName = signUpModel.FirstName;
             user.LastName = signUpModel.LastName;
+            user.Email = signUpModel.Email;
 
-            var result = await _userRepository.UpdateAsync(user);
+            var result = await _userRepository.UpdateAsync(user, signUpModel.Password);
             if (!result)
             {
                 userModel.Errors.Add(Constants.Errors.EditUserError);
@@ -92,7 +93,7 @@ namespace Store.BusinessLogic.Services
                 return userModel;
             }
             user.isRemoved = true;
-            var result = await _userRepository.UpdateAsync(user);
+            var result = await _userRepository.UpdateAsync(user, null);
             if (!result)
             {
                 userModel.Errors.Add(Constants.Errors.DeleteUserError);

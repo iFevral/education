@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Collections.Generic;
 using Store.DataAccess.Entities;
-using Store.DataAccess.Models;
+using Store.DataAccess.Models.EFFilters;
 
 namespace Store.DataAccess.Repositories.Interfaces
 {
@@ -17,7 +17,7 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// Return all users
         /// </summary>
         /// <returns>User entity</returns>
-        public Task<IEnumerable<User>> GetAllAsync(FilterModel<User> filterModel);
+        public Task<IEnumerable<User>> GetAllAsync(EFFilterModel<User> filterModel);
 
         /// <summary>
         /// Create new user
@@ -28,7 +28,7 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// <summary>
         /// Edit user
         /// </summary>
-        public Task<bool> UpdateAsync(User user);
+        public Task<bool> UpdateAsync(User user, string newPassword);
 
         /// <summary>
         /// Delete user

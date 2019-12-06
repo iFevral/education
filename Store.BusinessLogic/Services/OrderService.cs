@@ -47,8 +47,8 @@ namespace Store.BusinessLogic.Services
         {
             IEnumerable<Order> orders;
             var orderModel = new OrderModel();
-
-            orders = await _orderRepository.GetAllAsync(orderFilter.MapToDataAccessModel());
+            var EFfilter = orderFilter.MapToEFFilterModel();
+            orders = await _orderRepository.GetAllAsync(EFfilter);
 
             if (orders == null)
             {
@@ -113,14 +113,17 @@ namespace Store.BusinessLogic.Services
                 return orderModel;
             }
 
-            var result = await _paymentsRepository.CreateAsync(new Payment { TransactionId = modelItem.TransactionId }); //todo optimize
+            var payment = new Payment();
+            payment.TransactionId = modelItem.TransactionId;
+
+            var result = await _paymentsRepository.CreateAsync(payment); //todo optimize
             if (!result)
             {
                 orderModel.Errors.Add(Constants.Errors.CreatePaymentError);
                 return orderModel;
             }
-
-            var payment = await _paymentsRepository.FindByAsync(p => p.TransactionId.Equals(modelItem.TransactionId));
+        
+            payment = await _paymentsRepository.FindByAsync(p => p.TransactionId.Equals(modelItem.TransactionId));
             order.PaymentId = payment.Id;
 
             result = await _orderRepository.UpdateAsync(order);

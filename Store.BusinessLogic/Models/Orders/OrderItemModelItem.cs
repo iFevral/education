@@ -8,7 +8,6 @@ namespace Store.BusinessLogic.Models.Orders
         public long Id { get; set; }
         public int Amount { get; set; } = 1;
 
-        public OrderModelItem Order { get; set; } //todo check and remove
         public PrintingEditionModelItem PrintingEdition { get; set; }
     }
 }

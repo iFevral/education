@@ -8,8 +8,7 @@ namespace Store.DataAccess.Entities
     public partial class Order : BaseEntity
     {
         public string Description { get; set; }
-        public DateTime? Date { get; set; }
-        public Enums.Enums.Orders.Statuses? Status { get; set; }
+        public Enums.Enums.Order.Statuses Status { get; set; }
         public long UserId { get; set; }
         public long? PaymentId { get; set; }
 

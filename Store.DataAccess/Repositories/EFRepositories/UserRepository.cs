@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
-using Store.DataAccess.Models;
+using Store.DataAccess.Models.EFFilters;
+using Store.DataAccess.Common.Extensions.Sorting;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
@@ -26,20 +27,20 @@ namespace Store.DataAccess.Repositories.EFRepository
             return counter;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync(FilterModel<User> filterModel)
+        public async Task<IEnumerable<User>> GetAllAsync(EFFilterModel<User> filterModel)
         {
-            var items = await _userManager.Users.Where(filterModel.Predicate).ToListAsync();
+            var items = _userManager.Users
+                                    .Where(filterModel.Predicate)
+                                    .AsEnumerable()
+                                    .GetSortedEnumerable(filterModel.IsAscending, 
+                                                         filterModel.SortProperty.ToString());
 
-            items = (int)filterModel.SortWay == 1
-                ? items.OrderByDescending(x => x.GetType().GetProperty(filterModel.SortProperty).GetValue(x, null)).ToList()
-                : items = items.OrderBy(x => x.GetType().GetProperty(filterModel.SortProperty).GetValue(x, null)).ToList();
-        
-            if(filterModel.Quantity > 0)
+            if (filterModel.Quantity > 0)
             {
-                items = items.Skip(filterModel.StartIndex).Take(filterModel.Quantity).ToList();
+                items = items.Skip(filterModel.StartIndex).Take(filterModel.Quantity);
             }
 
-            return items;
+            return items.ToList();
         }
 
         public async Task<bool> CreateAsync(User user, string password)
@@ -48,11 +49,18 @@ namespace Store.DataAccess.Repositories.EFRepository
             return result.Succeeded;
         }
 
-        public async Task<bool> UpdateAsync(User user)
+        public async Task<bool> UpdateAsync(User user, string newPassword)
         {
             var result = await _userManager.UpdateAsync(user);
+            if (string.IsNullOrWhiteSpace(newPassword))
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result2 = await _userManager.ResetPasswordAsync(user, token, newPassword);
+                return result.Succeeded && result2.Succeeded;
+            }
+
             return result.Succeeded;
-        }
+        } 
 
         public async Task<bool> RemoveAsync(User user)
         {

@@ -9,6 +9,7 @@ namespace Store.BusinessLogic.Models.Users
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
+        public bool IsLocked { get; set; }
         public IList<string> Roles { get; set; } = new List<string>();
     }
 }

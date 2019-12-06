@@ -22,72 +22,56 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]s/")]
         [HttpPost]
-        public async Task<IActionResult> GetAllUsers([FromBody]UserFilterModel userFilter)
+        public async Task<IActionResult> GetAllAsync([FromBody]UserFilterModel userFilter)
         {
             var userModel = await _userService.GetAllUsersAsync(userFilter);
-            if (userModel.Errors.Count > 0)
-            {
-                return NotFound(userModel);
-            }
 
             return Ok(userModel);
         }
 
         [Route("~/[controller]s/Count")]
         [HttpPost]
-        public async Task<IActionResult> GetNumber()
+        public async Task<IActionResult> GetNumberAsync()
         {
             int counter = await _userService.GetNumberOfUsers();
 
             return Ok(counter);
         }
 
-        [Route("~/[controller]s/[controller]/{username}")]
+        [Route("~/[controller]s/[controller]")]
         [HttpPost]
-        public async Task<IActionResult> GetUserProfile(string username)
+        public async Task<IActionResult> GetProfileAsync([FromBody]UserModelItem userModel)
         {
-            var userModel = await _userService.GetUserByEmailAsync(username);
-            if (userModel.Errors.Count > 0)
-            {
-                return NotFound(userModel);
-            }
+            userModel = await _userService.GetUserByEmailAsync(userModel.Email);
+ 
             return Ok(userModel);
         }
 
         [Route("~/[controller]s/Block")]
         [HttpPost]
-        public async Task<IActionResult> BlockUser(string username, bool enabled)
+        public async Task<IActionResult> BlockAsync([FromBody]UserModelItem userModel)
         {
-            var userModel = await _userService.BlockUserAsync(username,enabled);
-            if (userModel.Errors.Count > 0)
-            {
-                return NotFound(userModel);
-            }
-            return Ok(userModel);
+            var model = await _userService.BlockUserAsync(userModel.Email, userModel.IsLocked);
+
+            return Ok(model);
         }
 
         [Route("~/[controller]s/Update")]
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody]SignUpModel signUpData)
+        public async Task<IActionResult> UpdateAsync([FromBody]SignUpModel signUpData)
         {
             var userModel = await _userService.UpdateUserAsync(signUpData);
-            if (userModel.Errors.Count > 0)
-            {
-                return NotFound(userModel);
-            }
+
             return Ok(userModel);
         }
 
         [Route("~/[controller]s/Delete")]
         [HttpDelete]
-        public async Task<IActionResult> Delete(string username)
+        public async Task<IActionResult> DeleteAsync([FromBody]UserModelItem userModel)
         {
-            var userModel = await _userService.DeleteUserAsync(username);
-            if (userModel.Errors.Count > 0)
-            {
-                return NotFound(userModel);
-            }
-            return Ok(userModel);
+            var model = await _userService.DeleteUserAsync(userModel.Email);
+ 
+            return Ok(model);
         }
     }
 }

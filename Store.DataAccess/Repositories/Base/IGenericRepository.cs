@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Collections.Generic;
-using Store.DataAccess.Models;
+using Store.DataAccess.Models.EFFilters;
 
 namespace Store.DataAccess.Repositories.Base
 {
@@ -18,7 +18,7 @@ namespace Store.DataAccess.Repositories.Base
         /// Filter and get part of data
         /// </summary>
         /// <returns>Part of filtered instances</returns>
-        public Task<IEnumerable<T>> GetAllAsync(FilterModel<T> filterModel);
+        public Task<IEnumerable<T>> GetAllAsync(EFFilterModel<T> filterModel);
 
         /// <summary>
         /// Find instance by predicate

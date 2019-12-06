@@ -55,7 +55,7 @@ namespace Store.DataAccess.AppContext
                       .OnDelete(DeleteBehavior.Cascade);
 
                 entity.Property(e => e.Status)
-                    .HasConversion(x => (int) x, x => (Enums.Orders.Statuses) x);
+                    .HasConversion(x => (int) x, x => (Enums.Order.Statuses) x);
             });
 
             modelBuilder.Entity<PrintingEdition>(entity =>

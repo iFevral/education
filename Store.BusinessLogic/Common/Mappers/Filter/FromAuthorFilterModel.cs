@@ -1,19 +1,17 @@
-﻿using Store.BusinessLogic.Models.Base;
-using Store.DataAccess.Models;
+﻿using Store.BusinessLogic.Models.Filters;
+using Store.DataAccess.Models.EFFilters;
 
 namespace Store.BusinessLogic.Common.Mappers.Filter
 {
     public static partial class FilterMapperExtension
     {
-        public static FilterModel<T> MapToDataAccessModel<T>(this BaseFilterModel<T> filterBL) where T : class
+        public static EFFilterModel<DataAccess.Entities.Author> MapToEFFilterModel(this AuthorFilterModel filterBL)
         {
-            var filterDAL = new FilterModel<T>();
+            var filterDAL = new EFFilterModel<DataAccess.Entities.Author>();
             filterDAL.SortProperty = filterBL.SortProperty;
-            filterDAL.SortWay = filterBL.SortWay;
+            filterDAL.IsAscending = filterBL.IsAscending;
             filterDAL.StartIndex = filterBL.StartIndex;
             filterDAL.Quantity = filterBL.Quantity;
-            filterDAL.Predicate = filterBL.Predicate;
-
             return filterDAL;
         }
     }

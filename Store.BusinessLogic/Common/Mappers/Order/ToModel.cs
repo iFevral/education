@@ -1,4 +1,7 @@
 ﻿using Store.BusinessLogic.Models.Orders;
+using Store.BusinessLogic.Models.PrintingEditions;
+using Store.BusinessLogic.Models.Users;
+using System.Linq;
 
 namespace Store.BusinessLogic.Common.Mappers.Order
 {
@@ -9,17 +12,35 @@ namespace Store.BusinessLogic.Common.Mappers.Order
             var model = new OrderModelItem();
 
             model.Id = entity.Id;
-            model.Date = entity.Date;
-            model.Status = entity.Status.ToString();
+            model.Date = entity.CreationDate;
+            model.Status = entity.Status;
             model.Description = entity.Description;
             
-            foreach(var item in entity.OrderItems)
+            model.User = new UserModelItem();
+            model.User.Id = entity.UserId;
+
+            var query = entity.OrderItems
+                .GroupBy(item => item.OrderId)
+                .Select(g => new 
+                             { 
+                                 OrderId = g.Key,
+                                 Amount = g.Sum(item => item.PrintingEdition.Price * item.Amount) 
+                             });
+
+            model.OrderPrice = query.First().Amount;
+
+            foreach (var item in entity.OrderItems)
             {
-                model.OrderItems.Add(new OrderItemModelItem
-                {
-                    Id = item.Id,
-                    Amount = item.Amount,
-                });
+                var orderItem = new OrderItemModelItem();
+                orderItem.Id = item.Id;
+                orderItem.Amount = item.Amount;
+                
+                orderItem.PrintingEdition = new PrintingEditionModelItem();
+                orderItem.PrintingEdition.Title = item.PrintingEdition.Title;
+                orderItem.PrintingEdition.Type = item.PrintingEdition.Type;
+                orderItem.PrintingEdition.Price = item.PrintingEdition.Price;
+
+                model.OrderItems.Add(orderItem);
             }
             return model;
         }

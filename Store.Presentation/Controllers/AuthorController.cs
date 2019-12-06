@@ -21,20 +21,16 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]s")]
         [HttpPost]
-        public async Task<IActionResult> GetAuthors([FromBody]AuthorFilterModel authorFilter)
+        public async Task<IActionResult> GetAllAsync([FromBody]AuthorFilterModel authorFilter)
         {
             var authorModel = await _authorService.GetAll(authorFilter);
-            if (authorModel.Errors.Count > 0)
-            {
-                return NotFound(authorModel);
-            }
 
             return Ok(authorModel);
         }
 
         [Route("~/[controller]s/Count")]
         [HttpPost]
-        public async Task<IActionResult> GetNumber()
+        public async Task<IActionResult> GetNumberAsync()
         {
             int counter = await _authorService.GetNumberOfAuthors();
 
@@ -43,13 +39,9 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]s/[controller]/{id}")]
         [HttpPost]
-        public async Task<IActionResult> GetAuthor(int id)
+        public async Task<IActionResult> GetAsync(int id)
         {
             var authorModel = await _authorService.FindByIdAsync(id);
-            if (authorModel.Errors.Count > 0)
-            {
-                return NotFound(authorModel);
-            }
 
             return Ok(authorModel);
         }
@@ -57,13 +49,9 @@ namespace Store.Presentation.Controllers
         [Route("~/[controller]s/Create")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPut]
-        public async Task<IActionResult> CreateAuthor([FromBody]AuthorModelItem authorItem)
+        public async Task<IActionResult> CreateAsync([FromBody]AuthorModelItem authorItem)
         {
             var authorModel = await _authorService.CreateAsync(authorItem);
-            if (authorModel.Errors.Count > 0)
-            {
-                return NotFound(authorModel);
-            }
 
             return Ok(authorModel);
         }
@@ -71,13 +59,9 @@ namespace Store.Presentation.Controllers
         [Route("~/[controller]s/Update/")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPut]
-        public async Task<IActionResult> UpdateAuthor([FromBody]AuthorModelItem authorItem)
+        public async Task<IActionResult> UpdateAsync([FromBody]AuthorModelItem authorItem)
         {
             var authorModel = await _authorService.UpdateAsync(authorItem);
-            if (authorModel.Errors.Count > 0)
-            {
-                return NotFound(authorModel);
-            }
 
             return Ok(authorModel);
         }
@@ -85,13 +69,9 @@ namespace Store.Presentation.Controllers
         [Route("~/[controller]s/Delete/{id}")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpDelete]
-        public async Task<IActionResult> DeleteAuthor(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
             var authorModel = await _authorService.DeleteAsync(id);
-            if (authorModel.Errors.Count > 0)
-            {
-                return NotFound(authorModel);
-            }
 
             return Ok(authorModel);
         }

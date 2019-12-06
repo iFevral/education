@@ -1,16 +1,12 @@
-﻿using System;
-using System.Linq.Expressions;
-using Store.DataAccess.Entities.Enums;
+﻿using Store.DataAccess.Entities.Enums;
 
 namespace Store.BusinessLogic.Models.Base
 {
-    public abstract class BaseFilterModel<T> where T : class
+    public abstract class BaseFilterModel
     {
-        public string SortProperty { get; set; } = "Id";
-        public Enums.Filter.SortWays SortWay { get; set; } = Enums.Filter.SortWays.asc; //todo enums
+        public Enums.Filter.SortProperties SortProperty { get; set; } = Enums.Filter.SortProperties.Id;
+        public bool IsAscending { get; set; } = true; //todo enums
         public int StartIndex { get; set; } = 0;
         public int Quantity { get; set; } = 0;
-
-        public virtual Expression<Func<T, bool>> Predicate { get; } 
     }
 }

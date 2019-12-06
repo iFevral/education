@@ -32,8 +32,8 @@ namespace Store.BusinessLogic.Services
             var printingEditionModel = new PrintingEditionModel();
 
             IEnumerable<PrintingEdition> printingEditions;
-            
-            printingEditions = await _printingEditionRepository.GetAllAsync(printingEditionFilter.MapToDataAccessModel());
+            var EFFilter = printingEditionFilter.MapToEFFilterModel();
+            printingEditions = await _printingEditionRepository.GetAllAsync(EFFilter);
             
 
             if (printingEditions == null)

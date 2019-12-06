@@ -2,7 +2,7 @@
 {
     public static partial class Enums
     {
-        public static class Orders
+        public static class Order
         {
             public enum Statuses
             {

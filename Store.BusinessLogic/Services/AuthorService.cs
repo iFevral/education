@@ -5,9 +5,9 @@ using Store.BusinessLogic.Models.Authors;
 using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Common.Mappers.Author;
-using Store.BusinessLogic.Common.Mappers.Filter;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
+using Store.BusinessLogic.Common.Mappers.Filter;
 
 namespace Store.BusinessLogic
 {
@@ -28,8 +28,8 @@ namespace Store.BusinessLogic
         public async Task<AuthorModel> GetAll(AuthorFilterModel authorFilter)
         {
             var authorModel = new AuthorModel();
-
-            var authors = await _authorRepository.GetAllAsync(authorFilter.MapToDataAccessModel());
+            var DALfilter = authorFilter.MapToEFFilterModel();
+            var authors = await _authorRepository.GetAllAsync(DALfilter);
 
             if (authors == null)
             {

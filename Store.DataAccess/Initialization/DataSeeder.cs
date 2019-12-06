@@ -43,6 +43,7 @@ namespace Store.DataAccess.Initialization
                 var newUser = new User();
 
                 newUser.UserName = "Admin";
+                newUser.LastName = "Admin";
                 newUser.Email = "admin@example.com";
                 newUser.EmailConfirmed = true;
                 newUser.LockoutEnabled = false;

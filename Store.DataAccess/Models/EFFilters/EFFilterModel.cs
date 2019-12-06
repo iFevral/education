@@ -2,12 +2,12 @@
 using System;
 using System.Linq.Expressions;
 
-namespace Store.DataAccess.Models
+namespace Store.DataAccess.Models.EFFilters
 {
-    public class FilterModel<T> where T : class
+    public class EFFilterModel<T> where T : class
     {
-        public string SortProperty { get; set; }
-        public Enums.Filter.SortWays SortWay { get; set; }
+        public Enums.Filter.SortProperties SortProperty { get; set; }
+        public bool IsAscending { get; set; }
         public int StartIndex { get; set; }
         public int Quantity { get; set; }
 

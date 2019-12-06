@@ -2,7 +2,7 @@
 
 namespace Store.BusinessLogic.Models.Filters
 {
-    public class AuthorFilterModel : BaseFilterModel<DataAccess.Entities.Author>
+    public class AuthorFilterModel : BaseFilterModel
     {
     }
 }

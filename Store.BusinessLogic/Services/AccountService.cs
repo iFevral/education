@@ -184,5 +184,28 @@ namespace Store.BusinessLogic.Services
 
             return resetPasswordModel;
         }
+
+        public async Task<BaseModel> UpdateProfile(SignUpModel signUpModel)
+        {
+            var user = await _userRepository.FindByIdAsync(signUpModel.Id);
+            var userModel = new UserModelItem();
+            if (user == null)
+            {
+                userModel.Errors.Add(Constants.Errors.UserNotExistsError);
+                return userModel;
+            }
+
+            user.FirstName = signUpModel.FirstName;
+            user.LastName = signUpModel.LastName;
+            user.Email = signUpModel.Email;
+
+            var result = await _userRepository.UpdateAsync(user, signUpModel.Password);
+            if (!result)
+            {
+                userModel.Errors.Add(Constants.Errors.EditUserError);
+            }
+
+            return userModel;
+        }
     }
 }

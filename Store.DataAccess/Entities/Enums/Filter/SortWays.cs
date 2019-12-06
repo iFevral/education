@@ -2,7 +2,7 @@
 {
     public static partial class Enums
     {
-        public static class Filter
+        public static partial class Filter
         {
             public enum SortWays
             {

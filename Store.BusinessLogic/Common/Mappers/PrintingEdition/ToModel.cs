@@ -17,13 +17,13 @@ namespace Store.BusinessLogic.Common.Mappers.PrintingEdition
             model.Currency = entity.Currency;
             model.Type = entity.Type;
 
-            foreach(var author in entity.AuthorInBooks)
+            foreach(var item in entity.AuthorInBooks)
             {
-                model.Authors.Add(new AuthorModelItem
-                {
-                    Id = author.AuthorId,
-                    Name = author.Author.Name
-                });
+                var author = new AuthorModelItem();
+                author.Id = item.AuthorId;
+                author.Name = item.Author.Name;
+                
+                model.Authors.Add(author);
             }
 
             return model;

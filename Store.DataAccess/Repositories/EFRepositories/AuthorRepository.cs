@@ -9,9 +9,8 @@ namespace Store.DataAccess.Repositories.EFRepository
 {
     public class AuthorRepository : EFBaseRepository<Author>, IAuthorRepository
     {
-        public AuthorRepository(ApplicationContext db) : base(db)
+        public AuthorRepository(ApplicationContext dbContext) : base(dbContext)
         {
-            _dbContext = db;
         }
 
         public async Task<bool> RemovePrintingEditionsAsync(long authorId)
