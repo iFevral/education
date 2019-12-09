@@ -3,7 +3,14 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+    production: false,
+    apiUrl: 'https://localhost:44312',
+
+    userControllerUrl: '/User',
+    orderControllerUrl: '/Order',
+    authorControllerUrl: '/Author',
+    accountControllerUrl: '/Account',
+    printingEditionControllerUrl: '/PrintingEdition',
 };
 
 /*

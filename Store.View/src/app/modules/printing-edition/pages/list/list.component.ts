@@ -1,12 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { Component, OnInit } from '@angular/core';
 
 import { PrintingEditionService } from '../../../../shared/services/printing-edition.service';
 import { PrintingEditionModel } from '../../../../shared/models/printing-edition/printing-edition.model';
-import { PrintingEditionModelItem } from '../../../../shared/models/printing-edition/printing-edition.model.item';
 
 @Component({
     selector: 'app-list',
@@ -21,8 +16,8 @@ export class ListComponent implements OnInit {
     constructor(private pringtingEditionService: PrintingEditionService) { }
 
     ngOnInit() {
-        this.pringtingEditionService.getAll().then((resp) => {
-            this.printingEditionModel = resp;
+        this.pringtingEditionService.getAll().subscribe((data) => {
+            this.printingEditionModel = data;
         });
     }
 }

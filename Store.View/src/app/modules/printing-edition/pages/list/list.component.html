@@ -1,6 +1,5 @@
 <mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav mode="side" [(opened)]="opened" (opened)="events.push('open!')"
-        (closed)="events.push('close!')">
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened">
         <br>
         <div class="categories">
             <h4>Categories</h4>
@@ -30,6 +29,7 @@
             <h1>Printing editions</h1>
             <button mat-flat-button color="primary" (click)="sidenav.toggle()">Filter</button>
             <br>
+            <br>
             <div class="form-fields">
                 <mat-form-field class="search-input-field">
                     <input matInput placeholder="Search">
@@ -47,9 +47,9 @@
             </div>
             <hr>
             <div class="cards">
-                <app-card *ngFor="let printingEdition of printingEditionModel?.printingEditions"
+                <app-card *ngFor="let printingEdition of printingEditionModel?.items"
                     [printingEdition]="printingEdition"></app-card>
-                <app-card *ngFor="let printingEdition of printingEditionModel?.printingEditions"
+                <app-card *ngFor="let printingEdition of printingEditionModel?.items"
                     [printingEdition]="printingEdition"></app-card>
             </div>
         </section>

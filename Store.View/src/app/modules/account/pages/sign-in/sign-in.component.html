@@ -1,6 +1,6 @@
 <section class="sign-in-container">
     <h1>Sign In</h1>
-    <form [formGroup]="signInForm" novalidate (ngSubmit)="submit()">
+    <form [formGroup]="signInForm" novalidate>
         <div class="input-form-group">
             <mat-form-field>
                 <input placeholder="Email" name="emailInput" matInput formControlName="email">
@@ -13,7 +13,7 @@
 
         <div class="input-form-group">
             <mat-form-field>
-                <input placeholder="Password" name="passwordInput" matInput formControlName="password">
+                <input type="password" placeholder="Password" name="passwordInput" matInput formControlName="password">
             </mat-form-field>
             <div class="alert alert-danger"
                 *ngIf="signInForm.controls['password'].invalid && signInForm.controls['password'].touched">
@@ -22,7 +22,7 @@
         </div>
         
         <div class="input-form-group">
-            <button mat-flat-button color="primary" [disabled]="signInForm.invalid">Sign In</button>
+            <button mat-flat-button color="primary" [disabled]="signInForm.invalid" (click)="signIn()">Sign In</button>
         </div>
     </form>
 </section>

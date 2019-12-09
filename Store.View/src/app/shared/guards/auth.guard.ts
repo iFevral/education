@@ -1,24 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { AuthenticationService } from '../services/authentication.service';
+import { AccountService } from '../services/account.service';
 
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
+    private currentUser: any;
     constructor(
         private router: Router,
-        private authenticationService: AuthenticationService
+        private accountService: AccountService
     ) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const currentUser = this.authenticationService.currentUserValue;
-        if (currentUser) {
-            // logged in so return true
+        this.accountService.getTokens().subscribe(data => this.currentUser = data);
+        if (this.currentUser) {
             return true;
         }
 
-        // not logged in so redirect to login page with the return url
-        this.router.navigate(['/SignUp'], { queryParams: { returnUrl: state.url } });
+        this.router.navigate(['Account/SignIn'], { queryParams: { returnUrl: state.url } });
         return false;
     }
 }

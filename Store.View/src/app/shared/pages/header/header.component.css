@@ -23,8 +23,15 @@ button {
     top:0;
 }
 
-.btn-sign-up {
+.btn-sign-up  {
+    padding: 0px;
+    background-color: #FFFFFF;
+    margin-right:0;
+}
+
+.btn-sign-out {
     padding: 0;
+    margin-top:8px;
     background-color: #FFFFFF;
     margin-right:0;
 }
