@@ -1,4 +1,3 @@
-import { AuthorModelItem } from '../author/author.model.item';
 
 export class PrintingEditionModelItem {
     constructor(

@@ -1,0 +1,47 @@
+table {
+    width: 100%;
+}
+
+td,
+th {
+    width: 25%;
+}
+
+/* SIDEBAR */
+
+mat-sidenav {
+    width: 200px;
+    padding: 10px 20px;
+    font-size: 12pt;
+}
+
+.sidenav-filter-categories .mat-checkbox {
+    margin-left: 12px;
+}
+
+/* CONTENT*/
+
+app-card {
+    width: 19%;
+    float: left;
+    margin-right: 8%;
+    margin-bottom: 40px;
+}
+
+app-card:nth-child(4n) {
+    margin-right: 0;
+}
+
+mat-form-field {
+    display: inline-block;
+    margin-right: 12px;
+    width: 90px;
+}
+
+.search-input-field {
+    width: 400px;
+}
+
+.search-input-field fa-icon {
+    color: #5a5a5a;
+}

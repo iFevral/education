@@ -10,12 +10,10 @@ import { Observable } from 'rxjs';
 export class PrintingEditionService {
 
     private url = 'https://localhost:44312/PrintingEditions';
-    private filters = new PrintingEditionFilterModel();
 
-    constructor(private http: HttpClient) {
-        this.filters.types = [1, 2, 3];
-    }
-    public getAll(): Observable<PrintingEditionModel> {
-        return this.http.post<PrintingEditionModel>(this.url, this.filters);
+    constructor(private http: HttpClient) {}
+
+    public getAll(filterModel: PrintingEditionFilterModel): Observable<PrintingEditionModel> {
+        return this.http.post<PrintingEditionModel>(this.url, filterModel);
     }
 }

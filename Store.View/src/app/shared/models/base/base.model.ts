@@ -1,5 +1,3 @@
 export class BaseModel {
-    constructor(
-        public errors: Array<string>
-    ) {}
+    public errors: Array<string>;
 }

@@ -1,20 +1,16 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { MaterialElementsModule } from '../../shared/modules/material-elements/material-elements.module';
+
+import { MaterialElementsModule } from '../../shared/modules';
 import { PrintingEditionRoutingModule } from './printing-edition-routing.module';
-
-import { PrintingEditionService } from '../../shared/services/printing-edition.service';
-
-import { ListComponent } from './pages/list/list.component';
-import { CardComponent } from './pages/list/card/card.component';
+import { ListComponent, CardComponent } from '.';
 
 @NgModule({
     declarations: [ListComponent, CardComponent],
     imports: [
         BrowserModule,
         MaterialElementsModule,
-        PrintingEditionRoutingModule
+        PrintingEditionRoutingModule,
     ],
-    providers: [PrintingEditionService]
 })
 export class PrintingEditionModule { }
