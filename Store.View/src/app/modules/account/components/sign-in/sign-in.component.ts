@@ -7,8 +7,7 @@ import { MatSnackBar } from '@angular/material';
 @Component({
     selector: 'app-sign-in',
     templateUrl: './sign-in.component.html',
-    styleUrls: ['./sign-in.component.scss'],
-    providers: [AccountService]
+    styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent {
     private signInForm: FormGroup;
@@ -28,13 +27,14 @@ export class SignInComponent {
     public signIn() {
         this.accountService.signIn(this.signInForm.value.email, this.signInForm.value.password)
             .subscribe(result => {
-                if (result) {
+                if (result.errors.length > 0) {
+                    this.errorContainer.open(result.errors.toString(), 'X', {
+                        duration: 3000,
+                        verticalPosition: 'top',
+                    });
+                } else {
                     this.router.navigate(['/']);
                 }
-                this.errorContainer.open('Wrong email or password', 'X', {
-                    duration: 3000,
-                    verticalPosition: 'top',
-                });
             });
     }
 }

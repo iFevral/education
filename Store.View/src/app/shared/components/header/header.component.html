@@ -1,7 +1,7 @@
 <header class="mat-elevation-z6">
     <div class="wrap">
         <button mat-flat-button color="primary" routerLink="/" (click)="log()">Home</button>
-        <button mat-flat-button color="primary" routerLink="/List" routerLinkActive="mat-button--active"> Books</button>
+        <button mat-flat-button color="primary" routerLink="/List" routerLinkActive="mat-button--active">Books</button>
         <div class="nav-btns-auth">
             <button mat-flat-button color="primary" routerLink="/Account/SignIn" *ngIf="!isAuthorized">Sign In</button>
             <button class="btn-sign-up" mat-stroked-button color="primary" routerLink="/Account/SignUp" *ngIf="!isAuthorized">Sign Up</button>

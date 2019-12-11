@@ -36,8 +36,12 @@
                 <input type="password" placeholder="Password" name="passwordInput" matInput formControlName="password">
             </mat-form-field>
             <div class="alert alert-danger"
-                *ngIf="signUpForm.controls['password'].invalid && signUpForm.controls['password'].touched">
+                *ngIf="!signUpForm.controls['password'].value && signUpForm.controls['password'].touched">
                 Password can`t be empty
+            </div>
+            <div class="alert alert-danger"
+                *ngIf="signUpForm.controls['password'].value && signUpForm.controls['password'].invalid && signUpForm.controls['password'].touched">
+                Minimum password size is 6  
             </div>
         </div>
 
@@ -49,7 +53,8 @@
             <div class="alert alert-danger" *ngIf="signUpForm.controls['confirmPassword'].invalid && signUpForm.controls['confirmPassword'].touched">
                 Password can`t be empty
             </div>
-            <div class="alert alert-danger" *ngIf=" signUpForm.controls['confirmPassword'].touched && 
+            <div class="alert alert-danger" *ngIf=" signUpForm.controls['confirmPassword'].touched &&
+                signUpForm.controls['confirmPassword'].value && 
                 signUpForm.controls['confirmPassword'].value != signUpForm.controls['password'].value">
                 Passwords must be the same
             </div>

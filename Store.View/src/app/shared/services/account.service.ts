@@ -10,44 +10,47 @@ import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
-    private tokenSubject: BehaviorSubject<TokenModel>;
+
+    public tokenSubject: BehaviorSubject<TokenModel>;
 
     constructor(private http: HttpClient, private router: Router) {
-        this.tokenSubject = new BehaviorSubject<TokenModel>(JSON.parse(localStorage.getItem('tokens')));
-
+        let model: TokenModel = JSON.parse(localStorage.getItem('tokens'));
+        if (!model) {
+            model = new TokenModel();
+        }
+        this.tokenSubject = new BehaviorSubject<TokenModel>(model);
     }
 
-    public getTokens() {
-        return this.tokenSubject;
-    }
-
-    public signIn(email: string, password: string): Observable<boolean> {
+    public signIn(email: string, password: string): Observable<TokenModel> {
 
         const result = this.http.post<TokenModel>(`${environment.apiUrl}/Account/SignIn`, { email, password })
             .pipe(map(data => {
+
                 if (data && data.accessToken && data.refreshToken) {
-
                     localStorage.setItem('tokens', JSON.stringify(data));
-
-                    this.tokenSubject.next(data);
-
-                    return true;
+                    console.log(this.tokenSubject);
                 }
-                return false;
+                return data;
             }));
 
+        result.subscribe(data => {
+            this.tokenSubject.next(data);
+        });
         return result;
     }
 
     public signUp(credentials: UserModelItem): Observable<RegistrationResultModel> {
         const result = this.http.post<RegistrationResultModel>(`${environment.apiUrl}/Account/SignUp`, credentials);
-
         return result;
     }
 
     public signOut() {
+        const model: TokenModel = new TokenModel();
+
         localStorage.removeItem('tokens');
-        this.tokenSubject.next(null);
+
+        this.tokenSubject.next(model);
+
         this.router.navigate(['/']);
     }
 

@@ -16,6 +16,7 @@ import { PrintingEditionModule } from './modules/printing-edition/printing-editi
 
 import { AppComponent } from './app.component';
 import { HeaderComponent, FooterComponent, HomeComponent } from './shared/components/';
+import { AccountService } from './shared/services';
 
 @NgModule({
     declarations: [
@@ -37,6 +38,7 @@ import { HeaderComponent, FooterComponent, HomeComponent } from './shared/compon
         PrintingEditionModule,
     ],
     providers: [
+        AccountService,
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
     ],
     bootstrap: [AppComponent]

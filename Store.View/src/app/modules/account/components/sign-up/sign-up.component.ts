@@ -8,8 +8,7 @@ import { MatSnackBar } from '@angular/material';
 @Component({
     selector: 'app-sign-up',
     templateUrl: './sign-up.component.html',
-    styleUrls: ['./sign-up.component.scss'],
-    providers: [AccountService]
+    styleUrls: ['./sign-up.component.scss']
 })
 export class SignUpComponent {
 
@@ -41,8 +40,6 @@ export class SignUpComponent {
                 Validators.required
             ]),
             confirmPassword: new FormControl('', [
-                Validators.minLength(6),
-                Validators.maxLength(40),
                 Validators.required
             ])
         });

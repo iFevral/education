@@ -12,7 +12,7 @@ export class JwtInterceptor implements HttpInterceptor {
     private tokenModel: BehaviorSubject<TokenModel>;
 
     constructor(private accountService: AccountService) {
-        this.tokenModel = this.accountService.getTokens();
+        this.tokenModel = this.accountService.tokenSubject;
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

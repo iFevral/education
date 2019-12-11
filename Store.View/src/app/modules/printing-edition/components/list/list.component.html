@@ -3,24 +3,25 @@
         <br>
         <div class="sidenav-filter-categories">
             <h4>Categories</h4>
-            <mat-checkbox color="primary">Book</mat-checkbox>
-            <mat-checkbox color="primary">Newspaper</mat-checkbox>
-            <mat-checkbox color="primary">Magazine</mat-checkbox>
+            <mat-checkbox [checked]="true" color="primary" *ngFor="let type of types;let i = index" [checked]="type.isChecked"
+                (change)="onCheckboxChecked($event, i+1)">
+                {{type}}
+            </mat-checkbox>
         </div>
         <hr>
         <div class="sidenav-filter-price">
             <h4>Price</h4>
             <mat-form-field class="price-form">
                 <input matInput type="number" placeholder="Min value">
-                <span matPrefix>$&nbsp;</span>
+                <span matPrefix>$</span>
             </mat-form-field>
             <mat-form-field class="price-form">
                 <input matInput type="number" placeholder="Max value">
-                <span matPrefix>$&nbsp;</span>
+                <span matPrefix>$</span>
             </mat-form-field>
         </div>
         <div class="btn-apply">
-            <button mat-flat-button color="primary" (click)="sidenav.toggle()">Apply</button>
+            <button mat-flat-button color="primary" (click)="sidenav.toggle(); applyFilters()">Apply</button>
         </div>
     </mat-sidenav>
     <mat-sidenav-content>

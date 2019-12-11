@@ -7,6 +7,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AccountRoutingModule } from './account-routing.module';
 
 import { SignInComponent, SignUpComponent } from '.';
+import { AccountService } from '../../shared/services';
 
 
 @NgModule({
@@ -29,5 +30,6 @@ import { SignInComponent, SignUpComponent } from '.';
     SignUpComponent,
     SignInComponent
   ],
+  providers: [AccountService]
 })
 export class AccountModule { }
