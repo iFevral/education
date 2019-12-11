@@ -10,6 +10,7 @@ using Store.BusinessLogic.Common.Mappers.Order;
 using Store.BusinessLogic.Common.Mappers.Filter;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
+using Store.DataAccess.Entities.Enums;
 
 namespace Store.BusinessLogic.Services
 {
@@ -43,12 +44,15 @@ namespace Store.BusinessLogic.Services
             return orderModel;
         }
 
-        public async Task<OrderModel> GetAllAsync(OrderFilterModel orderFilter)
+        public async Task<OrderModel> GetAllAsync(OrderFilterModel orderFilterModel)
         {
             IEnumerable<Order> orders;
             var orderModel = new OrderModel();
-            var EFfilter = orderFilter.MapToEFFilterModel();
-            orders = await _orderRepository.GetAllAsync(EFfilter);
+            var filterModel = orderFilterModel.MapToEFFilterModel();
+
+            orders = filterModel.SortProperty == Enums.Filter.SortProperties.Amount
+                ? await _orderRepository.GetAllSortedByAmount(filterModel)
+                : await _orderRepository.GetAllAsync(filterModel);
 
             if (orders == null)
             {
@@ -103,7 +107,7 @@ namespace Store.BusinessLogic.Services
         }
 
 
-        public async Task<BaseModel> UpdateAsync(PaymentModelItem modelItem) //todo rename updateOrder
+        public async Task<BaseModel> UpdateAsync(PaymentModelItem modelItem)
         {
             var order = await _orderRepository.FindByIdAsync(modelItem.OrderId);
             var orderModel = new OrderModelItem();
@@ -116,14 +120,14 @@ namespace Store.BusinessLogic.Services
             var payment = new Payment();
             payment.TransactionId = modelItem.TransactionId;
 
-            var result = await _paymentsRepository.CreateAsync(payment); //todo optimize
+            var result = await _paymentsRepository.CreateAsync(payment);
             if (!result)
             {
                 orderModel.Errors.Add(Constants.Errors.CreatePaymentError);
                 return orderModel;
             }
         
-            payment = await _paymentsRepository.FindByAsync(p => p.TransactionId.Equals(modelItem.TransactionId));
+            payment = await _paymentsRepository.FindAsync(p => p.TransactionId.Equals(modelItem.TransactionId));
             order.PaymentId = payment.Id;
 
             result = await _orderRepository.UpdateAsync(order);

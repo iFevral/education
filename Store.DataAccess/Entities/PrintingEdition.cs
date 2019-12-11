@@ -15,7 +15,7 @@ namespace Store.DataAccess.Entities
         public Enums.Enums.PrintingEditions.Currencies? Currency { get; set; }
         public Enums.Enums.PrintingEditions.Types? Type { get; set; }
 
-        public virtual ICollection<AuthorInBooks> AuthorInBooks { get; set; }
+        public virtual ICollection<AuthorInPrintingEdition> AuthorInBooks { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
 }

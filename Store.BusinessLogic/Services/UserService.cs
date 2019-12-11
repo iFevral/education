@@ -7,6 +7,7 @@ using Store.BusinessLogic.Common.Mappers.User;
 using Store.DataAccess.Repositories.Interfaces;
 using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Common.Mappers.Filter;
+using Store.BusinessLogic.Common.Mappers.User.SignUp;
 
 namespace Store.BusinessLogic.Services
 {
@@ -24,20 +25,19 @@ namespace Store.BusinessLogic.Services
             return await _userRepository.GetNumberOfUsers();
         }
 
-        public async Task<UserModel> GetAllUsersAsync(UserFilterModel userFilter)
+        public async Task<UserModel> GetAllUsersAsync(UserFilterModel userFilterModel)
         {
-            UserModel userModel = new UserModel();
+            var userModel = new UserModel();
+            var filterModel = userFilterModel.MapToEFFilterModel();
+            var users = await _userRepository.GetAllAsync(filterModel);
 
-            var usersFromRepo = await _userRepository.GetAllAsync(userFilter.MapToEFFilterModel());
-
-            if (usersFromRepo == null)
+            if (users == null)
             {
                 userModel.Errors.Add(Constants.Errors.UsersNotExistError);
                 return userModel;
             }
 
-
-            foreach (var user in usersFromRepo)
+            foreach (var user in users)
             {
                 userModel.Items.Add(user.MapToModel());
             }
@@ -56,7 +56,7 @@ namespace Store.BusinessLogic.Services
             }
             userModel = user.MapToModel();
 
-            userModel.Roles = await _userRepository.GetUserRolesAsync(userModel.Email);
+            userModel.Roles = await _userRepository.GetUserRolesAsync(user.Id);
             return userModel;
         }
 
@@ -70,9 +70,7 @@ namespace Store.BusinessLogic.Services
                 return userModel;
             }
 
-            user.FirstName = signUpModel.FirstName;
-            user.LastName = signUpModel.LastName;
-            user.Email = signUpModel.Email;
+            user = signUpModel.MapToEntity(user);
 
             var result = await _userRepository.UpdateAsync(user, signUpModel.Password);
             if (!result)
@@ -83,7 +81,7 @@ namespace Store.BusinessLogic.Services
             return userModel;
         }
 
-        public async Task<BaseModel> DeleteUserAsync(string email) //todo use IsRemoved prop
+        public async Task<BaseModel> DeleteUserAsync(string email)
         {
             var user = await _userRepository.FindByEmailAsync(email);
             var userModel = new UserModelItem();
@@ -102,9 +100,12 @@ namespace Store.BusinessLogic.Services
             return userModel;
         }
 
-        public async Task<BaseModel> BlockUserAsync(string email, bool enabled) //todo update lockout
+        public async Task<BaseModel> SetLockingStatus(string email, bool enabled)
         {
-            var result = await _userRepository.LockOutAsync(email, enabled);
+            var result = enabled 
+                ? await _userRepository.LockAsync(email)
+                : await _userRepository.UnlockAsync(email);
+
             var userModel = new UserModelItem();
             if(!result)
             {

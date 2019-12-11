@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Store.DataAccess.Entities;
+﻿using Store.DataAccess.Entities;
 using Store.DataAccess.AppContext;
 using Store.DataAccess.Repositories.Base;
 using Store.DataAccess.Repositories.Interfaces;
@@ -11,13 +9,6 @@ namespace Store.DataAccess.Repositories.EFRepository
     {
         public AuthorRepository(ApplicationContext dbContext) : base(dbContext)
         {
-        }
-
-        public async Task<bool> RemovePrintingEditionsAsync(long authorId)
-        {
-            _dbContext.RemoveRange(_dbContext.AuthorInBooks.Where(aib => aib.AuthorId == authorId));
-            var result = await _dbContext.SaveChangesAsync();
-            return result > 0;
         }
     }
 }

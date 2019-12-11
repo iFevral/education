@@ -6,9 +6,9 @@ namespace Store.BusinessLogic.Common.Mappers.Filter
 {
     public static partial class FilterMapperExtension
     {
-        public static EFFilterModel<DataAccess.Entities.User> MapToEFFilterModel(this UserFilterModel filterBL)
+        public static FilterModel<DataAccess.Entities.User> MapToEFFilterModel(this UserFilterModel filterBL)
         {
-            var filterDAL = new EFFilterModel<DataAccess.Entities.User>();
+            var filterDAL = new FilterModel<DataAccess.Entities.User>();
             filterDAL.SortProperty = filterBL.SortProperty;
             filterDAL.IsAscending = filterBL.IsAscending;
             filterDAL.StartIndex = filterBL.StartIndex;

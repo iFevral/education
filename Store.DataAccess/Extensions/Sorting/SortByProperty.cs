@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-namespace Store.DataAccess.Common.Extensions.Sorting
+namespace Store.DataAccess.Extensions.Sorting
 {
     public static partial class SortingExtension
     {
-        public static IEnumerable<T> GetSortedEnumerable<T>(this IEnumerable<T> items, bool isAscending, string property) where T : class
+        public static IEnumerable<T> SortBy<T>(this IEnumerable<T> items, string property, bool isAscending) where T : class
         {
             if (!isAscending)
             {

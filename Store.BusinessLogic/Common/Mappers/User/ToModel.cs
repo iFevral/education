@@ -15,11 +15,6 @@ namespace Store.BusinessLogic.Common.Mappers.User
             model.IsLocked = entity.LockoutEnabled;
             model.Roles = new List<string>();
 
-            foreach (var role in entity.UserInRoles)
-            {
-                model.Roles.Add(role.Role.Name);
-            }
-
             return model;
         }
     }

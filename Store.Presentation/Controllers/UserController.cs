@@ -29,48 +29,48 @@ namespace Store.Presentation.Controllers
             return Ok(userModel);
         }
 
-        [Route("~/[controller]s/Count")]
+        [Route("~/[controller]s/[action]")]
         [HttpPost]
-        public async Task<IActionResult> GetNumberAsync()
+        public async Task<IActionResult> Count()
         {
             int counter = await _userService.GetNumberOfUsers();
 
             return Ok(counter);
         }
 
-        [Route("~/[controller]s/[controller]")]
+        [Route("~/[controller]s/[action]")]
         [HttpPost]
-        public async Task<IActionResult> GetProfileAsync([FromBody]UserModelItem userModel)
+        public async Task<IActionResult> Profile([FromBody]UserModelItem userModel)
         {
             userModel = await _userService.GetUserByEmailAsync(userModel.Email);
- 
+
             return Ok(userModel);
         }
 
-        [Route("~/[controller]s/Block")]
+        [Route("~/[controller]s/[action]")]
         [HttpPost]
-        public async Task<IActionResult> BlockAsync([FromBody]UserModelItem userModel)
+        public async Task<IActionResult> Blocking([FromBody]UserModelItem userModel)
         {
-            var model = await _userService.BlockUserAsync(userModel.Email, userModel.IsLocked);
+            var model = await _userService.SetLockingStatus(userModel.Email, userModel.IsLocked);
 
             return Ok(model);
         }
 
-        [Route("~/[controller]s/Update")]
+        [Route("~/[controller]s/[action]")]
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody]SignUpModel signUpData)
+        public async Task<IActionResult> Update([FromBody]SignUpModel signUpData)
         {
             var userModel = await _userService.UpdateUserAsync(signUpData);
 
             return Ok(userModel);
         }
 
-        [Route("~/[controller]s/Delete")]
+        [Route("~/[controller]s/[action]")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteAsync([FromBody]UserModelItem userModel)
+        public async Task<IActionResult> Delete([FromBody]UserModelItem userModel)
         {
             var model = await _userService.DeleteUserAsync(userModel.Email);
- 
+
             return Ok(model);
         }
     }

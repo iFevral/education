@@ -21,55 +21,55 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]s")]
         [HttpPost]
-        public async Task<IActionResult> GetAllAsync([FromBody]PrintingEditionFilterModel printingEditionFilter)
+        public async Task<IActionResult> GetAll([FromBody]PrintingEditionFilterModel printingEditionFilter)
         {
             var printingEditionModel = await _printingEditionService.GetAll(printingEditionFilter);
 
             return Ok(printingEditionModel);
         }
 
-        [Route("~/[controller]s/Count")]
+        [Route("~/[controller]s/[action]")]
         [HttpPost]
-        public async Task<IActionResult> GetNumberAsync()
+        public async Task<IActionResult> Count()
         {
             int counter = await _printingEditionService.GetNumberOfPrintingEditions();
 
             return Ok(counter);
         }
 
-        [Route("~/[controller]s/[controller]/{id}")]
+        [Route("~/[controller]s/[action]/{id}")]
         [HttpPost]
-        public async Task<IActionResult> GetAsync(int id)
+        public async Task<IActionResult> Get(int id)
         {
             var printingEditionModel = await _printingEditionService.FindByIdAsync(id);
 
             return Ok(printingEditionModel);
         }
 
-        [Route("~/[controller]s/Create")]
+        [Route("~/[controller]s/[action]")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPut]
-        public async Task<IActionResult> CreateAsync([FromBody]PrintingEditionModelItem printingEditionItem)
+        public async Task<IActionResult> Create([FromBody]PrintingEditionModelItem printingEditionItem)
         {
             var printingEditionModel = await _printingEditionService.CreateAsync(printingEditionItem);
 
             return Ok(printingEditionModel);
         }
 
-        [Route("~/[controller]s/Update")]
+        [Route("~/[controller]s/[action]")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody]PrintingEditionModelItem printingEditionItem)
+        public async Task<IActionResult> Update([FromBody]PrintingEditionModelItem printingEditionItem)
         {
             var printingEditionModel = await _printingEditionService.UpdateAsync(printingEditionItem);
 
             return Ok(printingEditionModel);
         }
 
-        [Route("~/[controller]s/Delete/{id}")]
+        [Route("~/[controller]s/[action]/{id}")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var printingEditionModel = await _printingEditionService.DeleteAsync(id);
 

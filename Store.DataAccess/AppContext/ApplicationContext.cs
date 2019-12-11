@@ -6,33 +6,24 @@ using Store.DataAccess.Entities.Enums;
 
 namespace Store.DataAccess.AppContext
 {
-    public partial class ApplicationContext : IdentityDbContext<User,
-                                                                Role,
-                                                                long,
-                                                                IdentityUserClaim<long>,
-                                                                UserInRoles,
-                                                                IdentityUserLogin<long>,
-                                                                IdentityRoleClaim<long>,
-                                                                IdentityUserToken<long>>
+    public partial class ApplicationContext : IdentityDbContext<User, IdentityRole<long>, long>
+
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
         }
 
-        public virtual DbSet<AuthorInBooks> AuthorInBooks { get; set; }
+        public virtual DbSet<AuthorInPrintingEdition> AuthorInBooks { get; set; }
         public virtual DbSet<Author> Authors { get; set; }
         public virtual DbSet<OrderItem> OrderItems { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<PrintingEdition> PrintingEditions { get; set; }
-        public override DbSet<Role> Roles { get; set; }
-        public override DbSet<User> Users { get; set; }
-        public virtual DbSet<UserInRoles> UserInRoles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AuthorInBooks>(entity =>
+            modelBuilder.Entity<AuthorInPrintingEdition>(entity =>
             {
                 entity.HasKey(e => new { e.AuthorId, e.PrintingEditionId });
 
@@ -55,7 +46,7 @@ namespace Store.DataAccess.AppContext
                       .OnDelete(DeleteBehavior.Cascade);
 
                 entity.Property(e => e.Status)
-                    .HasConversion(x => (int) x, x => (Enums.Order.Statuses) x);
+                    .HasConversion(x => (int)x, x => (Enums.Order.Statuses)x);
             });
 
             modelBuilder.Entity<PrintingEdition>(entity =>
@@ -67,20 +58,12 @@ namespace Store.DataAccess.AppContext
                     .HasConversion(x => (int)x, x => (Enums.PrintingEditions.Types)x);
             });
 
-                modelBuilder.Entity<OrderItem>(entity =>
-            {
-                entity.HasIndex(e => e.OrderId);
+            modelBuilder.Entity<OrderItem>(entity =>
+        {
+            entity.HasIndex(e => e.OrderId);
 
-                entity.HasIndex(e => e.PrintingEditionId);
-            });
-
-            modelBuilder.Entity<Role>(entity =>
-            {
-                entity.HasIndex(e => e.NormalizedName)
-                    .HasName("RoleNameIndex")
-                    .IsUnique()
-                    .HasFilter("([NormalizedName] IS NOT NULL)");
-            });
+            entity.HasIndex(e => e.PrintingEditionId);
+        });
 
             modelBuilder.Entity<User>(entity =>
             {
@@ -91,17 +74,16 @@ namespace Store.DataAccess.AppContext
                     .HasName("UserNameIndex")
                     .IsUnique()
                     .HasFilter("([NormalizedUserName] IS NOT NULL)");
-                
             });
 
-            modelBuilder.Entity<UserInRoles>(entity =>
+            modelBuilder.Entity<IdentityRole<long>>(entity =>
+            {
+                entity.HasKey(e => e.Id );
+            });
+
+            modelBuilder.Entity<IdentityUserRole<long>>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.RoleId });
-
-                entity.HasIndex(e => e.RoleId);
-                entity.HasOne(x => x.User)
-                      .WithMany(x => x.UserInRoles)
-                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<IdentityUserLogin<long>>().HasNoKey();

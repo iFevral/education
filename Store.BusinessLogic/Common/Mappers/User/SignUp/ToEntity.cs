@@ -6,7 +6,6 @@ namespace Store.BusinessLogic.Common.Mappers.User.SignUp
     {
         public static DataAccess.Entities.User MapToEntity(this SignUpModel model)
         {
-            //todo new User
             var entity = new DataAccess.Entities.User();
             entity.FirstName = model.FirstName;
             entity.LastName = model.LastName;

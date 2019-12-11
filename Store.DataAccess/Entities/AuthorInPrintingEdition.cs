@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess.Entities
 {
-    [Table("AuthorInBooks")]
-    public partial class AuthorInBooks
+    [Table("AuthorInPrintingEdition")]
+    public partial class AuthorInPrintingEdition
     {
         [Key]
         public long AuthorId { get; set; }

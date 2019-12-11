@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Store.BusinessLogic.Initialization;
+using Store.DataAccess.Initialization;
+using Store.Presentation.Helpers.Interface;
+using Store.Presentation.Helpers;
 
 namespace Store.Presentation
 {
@@ -39,14 +42,16 @@ namespace Store.Presentation
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JwtKey"])),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("JWT").GetValue<string>("SecretKey"))),
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 ValidateLifetime = true,
-                ClockSkew = TimeSpan.FromMinutes(Convert.ToDouble(Configuration["AccessTokenExpireMinutes"]))
+                ClockSkew = TimeSpan.FromMinutes(Convert.ToDouble(Configuration.GetSection("JWT").GetValue<int>("AccessTokenExpireMinutes")))
             };
 
             services.AddSingleton(tokenValidationParameters);
+            
+            services.AddScoped<IJwtHelper, JwtHelper>();
 
             services.AddAuthentication(options =>
             {
@@ -64,11 +69,13 @@ namespace Store.Presentation
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app,
                               IWebHostEnvironment env,
+                              DataSeeder dataSeeder,
                               ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                dataSeeder.Seed();
             }
 
             loggerFactory.AddFile("Logs/EducationApp-{Date}.txt", LogLevel.Error, isJson:true);

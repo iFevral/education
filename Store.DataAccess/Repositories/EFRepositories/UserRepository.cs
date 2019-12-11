@@ -6,14 +6,15 @@ using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
 using Store.DataAccess.Models.EFFilters;
-using Store.DataAccess.Common.Extensions.Sorting;
+using Store.DataAccess.Extensions.Sorting;
+using System;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
     public class UserRepository : IUserRepository
     {
-        private UserManager<User> _userManager;
-        private SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
         public UserRepository(UserManager<User> userManager, SignInManager<User> signInManager)
         {
@@ -27,13 +28,12 @@ namespace Store.DataAccess.Repositories.EFRepository
             return counter;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync(EFFilterModel<User> filterModel)
+        public async Task<IEnumerable<User>> GetAllAsync(FilterModel<User> filterModel)
         {
             var items = _userManager.Users
                                     .Where(filterModel.Predicate)
                                     .AsEnumerable()
-                                    .GetSortedEnumerable(filterModel.IsAscending, 
-                                                         filterModel.SortProperty.ToString());
+                                    .SortBy(filterModel.SortProperty.ToString(), filterModel.IsAscending);
 
             if (filterModel.Quantity > 0)
             {
@@ -68,10 +68,17 @@ namespace Store.DataAccess.Repositories.EFRepository
             return result.Succeeded;
         }
 
-        public async Task<bool> LockOutAsync(string email, bool enabled)
+        public async Task<bool> LockAsync(string email)
         {
             var user = await FindByEmailAsync(email);
-            var result = await _userManager.SetLockoutEnabledAsync(user, enabled);
+            var result = await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+            return result.Succeeded;
+        }
+
+        public async Task<bool> UnlockAsync(string email)
+        {
+            var user = await FindByEmailAsync(email);
+            var result = await _userManager.SetLockoutEnabledAsync(user, false);
             return result.Succeeded;
         }
 
@@ -98,7 +105,11 @@ namespace Store.DataAccess.Repositories.EFRepository
         public async Task<bool> CheckSignInAsync(string email, string password)
         {
             var user = await FindByEmailAsync(email);
-            var result = await _signInManager.PasswordSignInAsync(user, password, false, true);
+            if (user == null)
+            {
+                return false;
+            }
+            var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
             return result.Succeeded;
         }
 
@@ -126,9 +137,9 @@ namespace Store.DataAccess.Repositories.EFRepository
             return user;
         }
 
-        public async Task<IList<string>> GetUserRolesAsync(string email)
+        public async Task<IList<string>> GetUserRolesAsync(long id)
         {
-            var user = await FindByEmailAsync(email);
+            var user = await FindByIdAsync(id);
             return await _userManager.GetRolesAsync(user);
         }
 

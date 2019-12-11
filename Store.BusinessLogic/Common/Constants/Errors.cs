@@ -4,7 +4,7 @@
     {
         public class Errors
         {
-            public const string UserLockError = "User has banned.";
+            public const string UserLockError = "User is banned.";
             public const string EditUserError = "Editing user has failed";
             public const string CreateUserError = "Creating user has failed";
             public const string DeleteUserError = "Deleting user has failed";
@@ -19,7 +19,7 @@
             public const string UserNotInRoleError = "User isn`t in role.";
             public const string UserNotInAnyRoleError = "User hasn`t any role.";
             public const string WrongCredentialsError = "Username or password is incorrect. Please check data.";
-            public const string EmailConfirmationError = "Email confirmation has failed";
+            public const string EmailConfirmationError = "Email isn`t confirmed";
 
             public const string CreateAuthorError = "Creating author has failed";
             public const string UpdateAuthorError = "Updating author has failed";

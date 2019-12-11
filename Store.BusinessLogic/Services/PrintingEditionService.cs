@@ -16,10 +16,13 @@ namespace Store.BusinessLogic.Services
     {
 
         private readonly IPrintingEditionRepository _printingEditionRepository;
+        private readonly IAuthorInPrintingEditionRepository _authorInPrintingEditionRepository;
 
-        public PrintingEditionService(IPrintingEditionRepository printingEditionRepository)
+        public PrintingEditionService(IPrintingEditionRepository printingEditionRepository,
+                             IAuthorInPrintingEditionRepository authorInPrintingEditionRepository)
         {
             _printingEditionRepository = printingEditionRepository;
+            _authorInPrintingEditionRepository = authorInPrintingEditionRepository;
         }
 
         public async Task<int> GetNumberOfPrintingEditions()
@@ -27,13 +30,13 @@ namespace Store.BusinessLogic.Services
             return await _printingEditionRepository.GetNumberOfItems();
         }
 
-        public async Task<PrintingEditionModel> GetAll(PrintingEditionFilterModel printingEditionFilter)
+        public async Task<PrintingEditionModel> GetAll(PrintingEditionFilterModel printingEditionFilterModel)
         {
             var printingEditionModel = new PrintingEditionModel();
 
             IEnumerable<PrintingEdition> printingEditions;
-            var EFFilter = printingEditionFilter.MapToEFFilterModel();
-            printingEditions = await _printingEditionRepository.GetAllAsync(EFFilter);
+            var filterModel = printingEditionFilterModel.MapToEFFilterModel();
+            printingEditions = await _printingEditionRepository.GetAllAsync(filterModel);
             
 
             if (printingEditions == null)
@@ -80,7 +83,7 @@ namespace Store.BusinessLogic.Services
             return printingEditionModel;
         }
 
-        public async Task<BaseModel> UpdateAsync(PrintingEditionModelItem printingEditionModel) //todo add authors
+        public async Task<BaseModel> UpdateAsync(PrintingEditionModelItem printingEditionModel)
         {
             var printingEdition = await _printingEditionRepository.FindByIdAsync(printingEditionModel.Id);
             if(printingEdition == null)
@@ -91,7 +94,7 @@ namespace Store.BusinessLogic.Services
 
             printingEdition = printingEditionModel.MapToEntity(printingEdition);
             
-            var result = await _printingEditionRepository.RemoveAuthors(printingEdition.Id);
+            var result = await _authorInPrintingEditionRepository.RemoveAuthorsInPrintingEditions(printingEdition.Id);
             if (!result)
             {
                 printingEditionModel.Errors.Add(Constants.Errors.DeleteAuthorError);

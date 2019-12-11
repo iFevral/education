@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.AppContext;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Models.EFFilters;
-using Store.DataAccess.Common.Extensions.Sorting;
+using Store.DataAccess.Extensions.Sorting;
 
 namespace Store.DataAccess.Repositories.Base
 {
@@ -29,14 +29,11 @@ namespace Store.DataAccess.Repositories.Base
             return counter;
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync(EFFilterModel<T> filterModel)
+        public virtual async Task<IEnumerable<T>> GetAllAsync(FilterModel<T> filterModel)
         {
-            var s = filterModel.SortProperty.ToString();
-            //todo use IQuer...
             var items = _dbSet.Where(filterModel.Predicate)
                                .AsEnumerable()
-                               .GetSortedEnumerable(filterModel.IsAscending,
-                                                    filterModel.SortProperty.ToString());
+                               .SortBy(filterModel.SortProperty.ToString(), filterModel.IsAscending);
 
             if(filterModel.Quantity > 0)
             {
@@ -46,7 +43,7 @@ namespace Store.DataAccess.Repositories.Base
             return items.ToList();
         }
 
-        public virtual async Task<T> FindByAsync(Expression<Func<T, bool>> predicate)
+        public virtual async Task<T> FindAsync(Expression<Func<T, bool>> predicate)
         {
             var item = await _dbSet.Where(predicate).FirstOrDefaultAsync();
             return item;

@@ -18,13 +18,13 @@ namespace Store.DataAccess.Repositories.Base
         /// Filter and get part of data
         /// </summary>
         /// <returns>Part of filtered instances</returns>
-        public Task<IEnumerable<T>> GetAllAsync(EFFilterModel<T> filterModel);
+        public Task<IEnumerable<T>> GetAllAsync(FilterModel<T> filterModel);
 
         /// <summary>
         /// Find instance by predicate
         /// </summary>
         /// <returns>First found instance</returns>
-        public Task<T> FindByAsync(Expression<Func<T, bool>> predicate);
+        public Task<T> FindAsync(Expression<Func<T, bool>> predicate);
 
         /// <summary>
         /// Find instance by id async

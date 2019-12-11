@@ -8,8 +8,8 @@ namespace Store.DataAccess.Initialization
     public class DataSeeder
     {
         private UserManager<User> _userManager;
-        private RoleManager<Role> _roleManager;
-        public DataSeeder(UserManager<User> userManager, RoleManager<Role> roleManager)
+        private RoleManager<IdentityRole<long>> _roleManager;
+        public DataSeeder(UserManager<User> userManager, RoleManager<IdentityRole<long>> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -21,7 +21,7 @@ namespace Store.DataAccess.Initialization
             var role = await _roleManager.FindByNameAsync(clientrole);
             if (role == null)
             {
-                var newRole = new Role();
+                var newRole = new IdentityRole<long>();
                 newRole.Name = clientrole;
 
                 await _roleManager.CreateAsync(newRole);
@@ -31,7 +31,7 @@ namespace Store.DataAccess.Initialization
             role = await _roleManager.FindByNameAsync(clientrole);
             if (role == null)
             {
-                var newRole = new Role();
+                var newRole = new IdentityRole<long>();
                 newRole.Name = clientrole;
 
                 await _roleManager.CreateAsync(newRole);
@@ -46,10 +46,9 @@ namespace Store.DataAccess.Initialization
                 newUser.LastName = "Admin";
                 newUser.Email = "admin@example.com";
                 newUser.EmailConfirmed = true;
-                newUser.LockoutEnabled = false;
 
                 await _userManager.CreateAsync(newUser, "4f1df324bfb6");
-                await _userManager.SetLockoutEnabledAsync(newUser,false);
+                await _userManager.SetLockoutEnabledAsync(newUser, false);
                 await _userManager.AddToRoleAsync(newUser, "Admin");
             };
 

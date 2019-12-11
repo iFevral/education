@@ -19,7 +19,7 @@ namespace Store.DataAccess.Initialization
                     assembly => assembly.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName));
             });
 
-            services.AddIdentity<User, Role>(options => {
+            services.AddIdentity<User, IdentityRole<long>>(options => {
                 options.Password.RequireDigit = false;
                 options.Password.RequiredLength = 6;
                 options.Password.RequireLowercase = false;

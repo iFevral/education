@@ -17,7 +17,7 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// Return all users
         /// </summary>
         /// <returns>User entity</returns>
-        public Task<IEnumerable<User>> GetAllAsync(EFFilterModel<User> filterModel);
+        public Task<IEnumerable<User>> GetAllAsync(FilterModel<User> filterModel);
 
         /// <summary>
         /// Create new user
@@ -38,12 +38,17 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// <summary>
         /// Lock user
         /// </summary>
-        public Task<bool> LockOutAsync(string email, bool enabled);
+        public Task<bool> LockAsync(string email);
+
+        /// <summary>
+        /// Unlock user
+        /// </summary>
+        public Task<bool> UnlockAsync(string email);
 
         /// <summary>
         /// Get all roles of user
         /// </summary>
-        public Task<IList<string>> GetUserRolesAsync(string email);
+        public Task<IList<string>> GetUserRolesAsync(long id);
 
         /// <summary>
         /// Find user by id

@@ -7,6 +7,8 @@ using Store.BusinessLogic.Common.Mappers.User;
 using Store.BusinessLogic.Common.Mappers.User.SignUp;
 using Store.DataAccess.Entities.Enums;
 using Store.DataAccess.Repositories.Interfaces;
+using System.Linq;
+using System;
 
 namespace Store.BusinessLogic.Services
 {
@@ -23,7 +25,7 @@ namespace Store.BusinessLogic.Services
         {
             var user = await _userRepository.FindByIdAsync(id);
 
-            var userModel = new UserModelItem(); //todo remove copypaste
+            var userModel = new UserModelItem();
 
             if (user == null)
             {
@@ -38,8 +40,7 @@ namespace Store.BusinessLogic.Services
             }
 
             userModel = user.MapToModel();
-
-            userModel.Roles = await _userRepository.GetUserRolesAsync(user.Email);
+            userModel.Roles = await _userRepository.GetUserRolesAsync(user.Id);
 
             if (userModel.Roles == null)
             {
@@ -61,6 +62,13 @@ namespace Store.BusinessLogic.Services
                 return userModel;
             }
 
+            if (!user.EmailConfirmed)
+            {
+                userModel.Errors.Add(Constants.Errors.EmailConfirmationError);
+                return userModel;
+            }
+
+
             if (user.LockoutEnabled)
             {
                 userModel.Errors.Add(Constants.Errors.UserLockError);
@@ -69,7 +77,7 @@ namespace Store.BusinessLogic.Services
 
             userModel = user.MapToModel();
 
-            userModel.Roles = await _userRepository.GetUserRolesAsync(signInModel.Email);
+            userModel.Roles = await _userRepository.GetUserRolesAsync(user.Id);
             
             var result = await _userRepository.CheckSignInAsync(signInModel.Email, signInModel.Password);
             if(!result)
@@ -107,17 +115,10 @@ namespace Store.BusinessLogic.Services
                 return resultModel;
             }
 
-            result = await _userRepository.AddToRoleAsync(user.Id, Enums.Role.RoleNames.Client.ToString()); //todo use const or enum
+            result = await _userRepository.AddToRoleAsync(user.Id, Enums.Role.RoleNames.Client.ToString()); 
             if(!result)
             {
                 resultModel.Errors.Add(Constants.Errors.RoleNotExistsError);
-                return resultModel;
-            }
-
-            result = await _userRepository.LockOutAsync(user.Email, false);
-            if (!result)
-            {
-                resultModel.Errors.Add(Constants.Errors.UserLockError);
                 return resultModel;
             }
 
@@ -144,30 +145,22 @@ namespace Store.BusinessLogic.Services
                 emailModel.Errors.Add(Constants.Errors.EmailConfirmationError);
             }
 
+            result = await _userRepository.UnlockAsync(user.Email);
+            if (!result)
+            {
+                emailModel.Errors.Add(Constants.Errors.UserLockError);
+                return emailModel;
+            }
+
             return emailModel;
         }
 
-        public async Task<ResetPasswordModel> GeneratePasswordResetTokenAsync(string email) //todo rename
-        {
-            var user = await _userRepository.FindByEmailAsync(email);            
-            var resetPasswordModel = new ResetPasswordModel();
-            if(user == null)
-            {
-                resetPasswordModel.Errors.Add(Constants.Errors.UserNotExistsError);
-                return resetPasswordModel;
-            }
-
-            resetPasswordModel.Email = email;
-            resetPasswordModel.Token = await _userRepository.GeneratePasswordResetTokenAsync(user.Email);
-
-            return resetPasswordModel;
-        }
-
-        public async Task<ResetPasswordModel> ResetPasswordAsync(string email, string token, string newPassword) //todo rename
+        public async Task<ResetPasswordModel> ResetPasswordAsync(string email)
         {
             var user = await _userRepository.FindByEmailAsync(email);
 
             var resetPasswordModel = new ResetPasswordModel();
+            resetPasswordModel.Email = email;
 
             if (user == null)
             {
@@ -175,8 +168,16 @@ namespace Store.BusinessLogic.Services
                 return resetPasswordModel;
             }
 
-            var result = await _userRepository.ResetPasswordAsync(user.Email, token, newPassword);
+            Random random = new Random();
+            var newPassword = new string(Enumerable.Repeat(Constants.PasswordGeneratorSettings.chars,
+                                                                       Constants.PasswordGeneratorSettings.size)
+                                                               .Select(s => s[random.Next(s.Length)]).ToArray());
 
+            var resetToken = await _userRepository.GeneratePasswordResetTokenAsync(email);
+            
+            resetPasswordModel.Password = newPassword;
+            
+            var result = await _userRepository.ResetPasswordAsync(email, resetToken, newPassword);
             if (!result)
             {
                 resetPasswordModel.Errors.Add(Constants.Errors.UserNotExistsError);

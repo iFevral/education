@@ -30,15 +30,9 @@ namespace Store.BusinessLogic.Services.Interfaces
         public Task<BaseModel> ConfirmEmailAsync(string username, string token);
 
         /// <summary>
-        /// Check user from repository and create token for password reset
-        /// </summary>
-        /// <returns>Token for password reset</returns>
-        public Task<ResetPasswordModel> GeneratePasswordResetTokenAsync(string username);
-
-        /// <summary>
         /// Set new password 
         /// </summary>
-        public Task<ResetPasswordModel> ResetPasswordAsync(string email, string token, string newPassword);
+        public Task<ResetPasswordModel> ResetPasswordAsync(string email);
 
         /// <summary>
         /// Edit profile

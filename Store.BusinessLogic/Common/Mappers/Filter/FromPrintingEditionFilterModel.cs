@@ -6,9 +6,9 @@ namespace Store.BusinessLogic.Common.Mappers.Filter
 {
     public static partial class FilterMapperExtension
     {
-        public static EFFilterModel<DataAccess.Entities.PrintingEdition> MapToEFFilterModel(this PrintingEditionFilterModel filterBL)
+        public static FilterModel<DataAccess.Entities.PrintingEdition> MapToEFFilterModel(this PrintingEditionFilterModel filterBL)
         {
-            var filterDAL = new EFFilterModel<DataAccess.Entities.PrintingEdition>();
+            var filterDAL = new FilterModel<DataAccess.Entities.PrintingEdition>();
             filterDAL.SortProperty = filterBL.SortProperty;
             filterDAL.IsAscending = filterBL.IsAscending;
             filterDAL.StartIndex = filterBL.StartIndex;

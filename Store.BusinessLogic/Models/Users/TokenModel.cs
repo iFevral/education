@@ -2,7 +2,7 @@
 
 namespace Store.BusinessLogic.Models.Users
 {
-    public class AccessTokenModel : BaseModel
+    public class TokenModel : BaseModel
     {
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }

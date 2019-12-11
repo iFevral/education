@@ -7,7 +7,7 @@ using Store.BusinessLogic.Helpers.Interface;
 
 namespace Store.BusinessLogic.Helpers
 {
-    public class EmailHelper : IEmailHelper//todo add interface, use DI, use options
+    public class EmailHelper : IEmailHelper
     {
         private bool _smtpSsl;
         private int _smtpPort;
@@ -24,11 +24,10 @@ namespace Store.BusinessLogic.Helpers
             _smtpPassword = smtpConfig.GetValue<string>("SmtpPassword");
         }
 
-        public async Task Send(string recipients, //todo async
+        public async Task Send(string recipients, 
                                 string subject,
                                 string body)
         {
-            //todo using
             using (SmtpClient client = new SmtpClient(_smtpServer, _smtpPort))
             {
                 client.UseDefaultCredentials = false;

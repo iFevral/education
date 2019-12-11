@@ -25,11 +25,11 @@ namespace Store.BusinessLogic
             return await _authorRepository.GetNumberOfItems();
         }
 
-        public async Task<AuthorModel> GetAll(AuthorFilterModel authorFilter)
+        public async Task<AuthorModel> GetAllAsync(AuthorFilterModel authorFilterModel)
         {
             var authorModel = new AuthorModel();
-            var DALfilter = authorFilter.MapToEFFilterModel();
-            var authors = await _authorRepository.GetAllAsync(DALfilter);
+            var filterModel = authorFilterModel.MapToEFFilterModel();
+            var authors = await _authorRepository.GetAllAsync(filterModel);
 
             if (authors == null)
             {
@@ -74,7 +74,7 @@ namespace Store.BusinessLogic
             return authorModel;
         }
 
-        public async Task<BaseModel> UpdateAsync(AuthorModelItem authorModel) //todo remove id
+        public async Task<BaseModel> UpdateAsync(AuthorModelItem authorModel)
         {
             var author = await _authorRepository.FindByIdAsync(authorModel.Id);
             if (author == null)

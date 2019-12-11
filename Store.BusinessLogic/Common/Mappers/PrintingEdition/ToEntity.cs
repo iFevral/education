@@ -15,11 +15,11 @@ namespace Store.BusinessLogic.Common.Mappers.PrintingEdition
             entity.Price = model.Price;
             entity.Currency = model.Currency;
             entity.Type =  model.Type;
-            entity.AuthorInBooks = new List<AuthorInBooks>();
+            entity.AuthorInBooks = new List<AuthorInPrintingEdition>();
             foreach(var author in model.Authors)
             {
                 var authorId = author.Id;
-                var authorInBooks = new AuthorInBooks();
+                var authorInBooks = new AuthorInPrintingEdition();
                 authorInBooks.AuthorId = authorId;
                 entity.AuthorInBooks.Add(authorInBooks);
             }

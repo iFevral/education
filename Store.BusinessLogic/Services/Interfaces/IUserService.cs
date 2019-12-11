@@ -38,6 +38,6 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// <summary>
         /// Block user
         /// </summary>
-        public Task<BaseModel> BlockUserAsync(string email, bool enabled);
+        public Task<BaseModel> SetLockingStatus(string email, bool enabled);
     }
 }

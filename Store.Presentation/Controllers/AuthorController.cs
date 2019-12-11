@@ -21,55 +21,55 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]s")]
         [HttpPost]
-        public async Task<IActionResult> GetAllAsync([FromBody]AuthorFilterModel authorFilter)
+        public async Task<IActionResult> GetAll([FromBody]AuthorFilterModel authorFilter)
         {
-            var authorModel = await _authorService.GetAll(authorFilter);
+            var authorModel = await _authorService.GetAllAsync(authorFilter);
 
             return Ok(authorModel);
         }
 
-        [Route("~/[controller]s/Count")]
+        [Route("~/[controller]s/[action]")]
         [HttpPost]
-        public async Task<IActionResult> GetNumberAsync()
+        public async Task<IActionResult> Count()
         {
             int counter = await _authorService.GetNumberOfAuthors();
 
             return Ok(counter);
         }
 
-        [Route("~/[controller]s/[controller]/{id}")]
+        [Route("~/[controller]s/[action]/{id}")]
         [HttpPost]
-        public async Task<IActionResult> GetAsync(int id)
+        public async Task<IActionResult> Get(int id)
         {
             var authorModel = await _authorService.FindByIdAsync(id);
 
             return Ok(authorModel);
         }
 
-        [Route("~/[controller]s/Create")]
+        [Route("~/[controller]s/[action]")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPut]
-        public async Task<IActionResult> CreateAsync([FromBody]AuthorModelItem authorItem)
+        public async Task<IActionResult> Create([FromBody]AuthorModelItem authorItem)
         {
             var authorModel = await _authorService.CreateAsync(authorItem);
 
             return Ok(authorModel);
         }
 
-        [Route("~/[controller]s/Update/")]
+        [Route("~/[controller]s/[action]")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody]AuthorModelItem authorItem)
+        public async Task<IActionResult> Update([FromBody]AuthorModelItem authorItem)
         {
             var authorModel = await _authorService.UpdateAsync(authorItem);
 
             return Ok(authorModel);
         }
 
-        [Route("~/[controller]s/Delete/{id}")]
+        [Route("~/[controller]s/[action]/{id}")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var authorModel = await _authorService.DeleteAsync(id);
 

@@ -6,7 +6,7 @@ using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Models.Orders;
 using Store.BusinessLogic.Models.Payments;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.Presentation.Helpers;
+using Store.Presentation.Helpers.Interface;
 
 namespace Store.Presentation.Controllers
 {
@@ -14,69 +14,72 @@ namespace Store.Presentation.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private IOrderService _orderService;
+        private readonly IOrderService _orderService;
+        private readonly IJwtHelper _jwtHelper;
 
-        public OrderController(IOrderService orderService)
+        public OrderController(IOrderService orderService,
+                               IJwtHelper jwtHelper)
         {
             _orderService = orderService;
+            _jwtHelper = jwtHelper;
         }
 
         [Route("~/[controller]s")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPost]
-        public async Task<IActionResult> GetAllAsync([FromBody]OrderFilterModel orderFilter)
+        public async Task<IActionResult> GetAll([FromBody]OrderFilterModel orderFilter)
         {
             var orderModel = await _orderService.GetAllAsync(orderFilter);
 
             return Ok(orderModel);
         }
 
-        [Route("~/[controller]s/Count")]
+        [Route("~/[controller]s/[action]")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPost]
-        public async Task<IActionResult> GetNumberAsync()
+        public async Task<IActionResult> Count()
         {
             int counter = await _orderService.GetNumberOfOrders();
 
             return Ok(counter);
         }
 
-        [Route("~/[controller]s/[controller]/{id}")]
+        [Route("~/[controller]s/[action]/{id}")]
         [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPost]
-        public async Task<IActionResult> GetByIdAsync(int id)
+        public async Task<IActionResult> Get(int id)
         {
             var orderModel = await _orderService.FindByIdAsync(id);
 
             return Ok(orderModel);
         }
 
-        [Route("~/[controller]s/Create")]
+        [Route("~/[controller]s/[action]")]
         [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPut]
-        public async Task<IActionResult> CreateAsync([FromHeader]string Authorization, [FromBody]OrderModelItem orderModelItem)
+        public async Task<IActionResult> Create([FromHeader]string authorization, [FromBody]OrderModelItem orderModelItem)
         {
-            var token = Authorization.Substring(7);
-            orderModelItem.User.Id = JwtHelper.GetUserIdFromToken(token);
+            var token = authorization.Substring(7);
+            orderModelItem.User.Id = _jwtHelper.GetUserIdFromToken(token);
             var orderModel = await _orderService.CreateAsync(orderModelItem);
 
             return Ok(orderModel);
         }
 
-        [Route("~/[controller]s/Update/")]
+        [Route("~/[controller]s/[action]")]
         [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody]PaymentModelItem paymentModelItem)
+        public async Task<IActionResult> Update([FromBody]PaymentModelItem paymentModelItem)
         {
             var orderModel = await _orderService.UpdateAsync(paymentModelItem);
 
             return Ok(orderModel);
         }
 
-        [Route("~/[controller]s/Delete/{id}")]
+        [Route("~/[controller]s/[action]/{id}")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var orderModel = await _orderService.DeleteAsync(id);
 
