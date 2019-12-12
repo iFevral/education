@@ -15,7 +15,7 @@ namespace Store.BusinessLogic.Common.Mappers.Filter
             filterDAL.Quantity = filterBL.Quantity;
 
             filterDAL.Predicate = user => (string.IsNullOrWhiteSpace(filterBL.SearchQuery) || user.FirstName.ToLower().Contains(filterBL.SearchQuery.ToLower())) &&
-                               (filterBL.Statuses != null && filterBL.Statuses.Count > 0 && filterBL.Statuses.Any(s => s == user.LockoutEnabled)) &&
+                               (filterBL.LockOutStatuses != null && filterBL.LockOutStatuses.Count > 0 && filterBL.LockOutStatuses.Any(s => s == user.LockoutEnabled)) &&
                                (!user.isRemoved);
 
             return filterDAL;

@@ -20,16 +20,12 @@ namespace Store.BusinessLogic.Services
             _userRepository = userRepository;
         }
 
-        public async Task<int> GetNumberOfUsers()
-        {
-            return await _userRepository.GetNumberOfUsers();
-        }
-
         public async Task<UserModel> GetAllUsersAsync(UserFilterModel userFilterModel)
         {
             var userModel = new UserModel();
             var filterModel = userFilterModel.MapToEFFilterModel();
-            var users = await _userRepository.GetAllAsync(filterModel);
+            int counter = 0;
+            var users = _userRepository.GetAll(filterModel, out counter);
 
             if (users == null)
             {
@@ -37,6 +33,7 @@ namespace Store.BusinessLogic.Services
                 return userModel;
             }
 
+            userModel.Counter = counter;
             foreach (var user in users)
             {
                 userModel.Items.Add(user.MapToModel());
@@ -72,7 +69,7 @@ namespace Store.BusinessLogic.Services
 
             user = signUpModel.MapToEntity(user);
 
-            var result = await _userRepository.UpdateAsync(user, signUpModel.Password);
+            var result = await _userRepository.UpdateAsync(user, signUpModel.Password, signUpModel.NewPassword);
             if (!result)
             {
                 userModel.Errors.Add(Constants.Errors.EditUserError);
@@ -91,7 +88,7 @@ namespace Store.BusinessLogic.Services
                 return userModel;
             }
             user.isRemoved = true;
-            var result = await _userRepository.UpdateAsync(user, null);
+            var result = await _userRepository.UpdateAsync(user, null, null);
             if (!result)
             {
                 userModel.Errors.Add(Constants.Errors.DeleteUserError);

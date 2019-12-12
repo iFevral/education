@@ -20,16 +20,12 @@ namespace Store.BusinessLogic
             _authorRepository = authorRepository;
         }
 
-        public async Task<int> GetNumberOfAuthors()
-        {
-            return await _authorRepository.GetNumberOfItems();
-        }
-
         public async Task<AuthorModel> GetAllAsync(AuthorFilterModel authorFilterModel)
         {
             var authorModel = new AuthorModel();
             var filterModel = authorFilterModel.MapToEFFilterModel();
-            var authors = await _authorRepository.GetAllAsync(filterModel);
+
+            var authors = _authorRepository.GetAll(filterModel, out int counter);
 
             if (authors == null)
             {
@@ -37,6 +33,7 @@ namespace Store.BusinessLogic
                 return authorModel;
             }
 
+            authorModel.Counter = counter;
             foreach (var author in authors)
             {
                 var authorModelItem = new AuthorModelItem();

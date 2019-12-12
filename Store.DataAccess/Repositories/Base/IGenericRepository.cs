@@ -9,16 +9,10 @@ namespace Store.DataAccess.Repositories.Base
     public interface IGenericRepository<T> where T : class
     {
         /// <summary>
-        /// Get number of not removed items 
-        /// </summary>
-        /// <returns></returns>
-        public Task<int> GetNumberOfItems();
-
-        /// <summary>
         /// Filter and get part of data
         /// </summary>
         /// <returns>Part of filtered instances</returns>
-        public Task<IEnumerable<T>> GetAllAsync(FilterModel<T> filterModel);
+        public IEnumerable<T> GetAll(FilterModel<T> filterModel, out int counter);
 
         /// <summary>
         /// Find instance by predicate

@@ -7,7 +7,6 @@ namespace Store.BusinessLogic.Services.Interfaces
 {
     public interface IAuthorService
     {
-        public Task<int> GetNumberOfAuthors();
         public Task<AuthorModel> GetAllAsync(AuthorFilterModel authorFilter);
         public Task<AuthorModelItem> FindByIdAsync(int id);
         public Task<BaseModel> CreateAsync(AuthorModelItem authorModelItem);

@@ -7,11 +7,6 @@ namespace Store.BusinessLogic.Services.Interfaces
 {
     public interface IUserService
     {
-        /// <summary>
-        /// Get number of users
-        /// </summary>
-        /// <returns></returns>
-        public Task<int> GetNumberOfUsers();
 
         /// <summary>
         /// Get all users

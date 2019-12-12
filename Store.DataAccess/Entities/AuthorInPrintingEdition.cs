@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Store.DataAccess.Entities
 {
     [Table("AuthorInPrintingEdition")]
-    public partial class AuthorInPrintingEdition
+    public partial class AuthorInPrintingEdition : BaseEntity
     {
         [Key]
         public long AuthorId { get; set; }

@@ -31,15 +31,6 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]s/[action]")]
         [HttpPost]
-        public async Task<IActionResult> Count()
-        {
-            int counter = await _userService.GetNumberOfUsers();
-
-            return Ok(counter);
-        }
-
-        [Route("~/[controller]s/[action]")]
-        [HttpPost]
         public async Task<IActionResult> Profile([FromBody]UserModelItem userModel)
         {
             userModel = await _userService.GetUserByEmailAsync(userModel.Email);

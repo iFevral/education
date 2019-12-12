@@ -34,16 +34,6 @@ namespace Store.Presentation.Controllers
             return Ok(orderModel);
         }
 
-        [Route("~/[controller]s/[action]")]
-        [Authorize(Roles = Constants.RoleNames.Admin)]
-        [HttpPost]
-        public async Task<IActionResult> Count()
-        {
-            int counter = await _orderService.GetNumberOfOrders();
-
-            return Ok(counter);
-        }
-
         [Route("~/[controller]s/[action]/{id}")]
         [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPost]

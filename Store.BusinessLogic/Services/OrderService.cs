@@ -25,11 +25,6 @@ namespace Store.BusinessLogic.Services
             _orderRepository = orderRepository;
         }
 
-        public async Task<int> GetNumberOfOrders()
-        {
-            return await _orderRepository.GetNumberOfItems();
-        }
-
         public async Task<OrderModelItem> FindByIdAsync(int id)
         {
             var orderModel = new OrderModelItem();
@@ -50,9 +45,11 @@ namespace Store.BusinessLogic.Services
             var orderModel = new OrderModel();
             var filterModel = orderFilterModel.MapToEFFilterModel();
 
+            int counter = 0;
+
             orders = filterModel.SortProperty == Enums.Filter.SortProperties.Amount
-                ? await _orderRepository.GetAllSortedByAmount(filterModel)
-                : await _orderRepository.GetAllAsync(filterModel);
+                ? _orderRepository.GetAllSortedByAmount(filterModel, out counter)
+                : _orderRepository.GetAll(filterModel, out counter);
 
             if (orders == null)
             {
@@ -60,6 +57,7 @@ namespace Store.BusinessLogic.Services
                 return orderModel;
             }
 
+            orderModel.Counter = counter;
             foreach (var item in orders)
             {
                 var orderItem = new OrderModelItem();

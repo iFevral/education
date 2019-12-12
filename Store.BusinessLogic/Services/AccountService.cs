@@ -196,11 +196,9 @@ namespace Store.BusinessLogic.Services
                 return userModel;
             }
 
-            user.FirstName = signUpModel.FirstName;
-            user.LastName = signUpModel.LastName;
-            user.Email = signUpModel.Email;
+            user = signUpModel.MapToEntity();
 
-            var result = await _userRepository.UpdateAsync(user, signUpModel.Password);
+            var result = await _userRepository.UpdateAsync(user, signUpModel.Password, signUpModel.NewPassword);
             if (!result)
             {
                 userModel.Errors.Add(Constants.Errors.EditUserError);

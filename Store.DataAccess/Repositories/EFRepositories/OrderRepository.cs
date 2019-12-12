@@ -1,12 +1,11 @@
-﻿using Store.DataAccess.Repositories.Base;
-using Store.DataAccess.Entities;
-using Store.DataAccess.Repositories.Interfaces;
-using Store.DataAccess.AppContext;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Collections.Generic;
+using Store.DataAccess.Entities;
+using Store.DataAccess.AppContext;
 using Store.DataAccess.Models.EFFilters;
-using System.Linq;
+using Store.DataAccess.Repositories.Base;
 using Store.DataAccess.Extensions.Sorting;
+using Store.DataAccess.Repositories.Interfaces;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
@@ -16,11 +15,13 @@ namespace Store.DataAccess.Repositories.EFRepository
         {
         }
 
-        public async Task<IEnumerable<Order>> GetAllSortedByAmount(FilterModel<Order> filterModel)
+        public IEnumerable<Order> GetAllSortedByAmount(FilterModel<Order> filterModel, out int counter)
         {
             var items = _dbSet.Where(filterModel.Predicate)
                                .AsEnumerable()
                                .SortByOrderAmount(filterModel.IsAscending);
+
+            counter = items.Count();
 
             if (filterModel.Quantity > 0)
             {

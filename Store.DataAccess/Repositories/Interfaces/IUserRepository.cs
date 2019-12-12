@@ -8,16 +8,10 @@ namespace Store.DataAccess.Repositories.Interfaces
     public interface IUserRepository
     {
         /// <summary>
-        /// Get number of users that is not removed
-        /// </summary>
-        /// <returns></returns>
-        public Task<int> GetNumberOfUsers();
-
-        /// <summary>
         /// Return all users
         /// </summary>
         /// <returns>User entity</returns>
-        public Task<IEnumerable<User>> GetAllAsync(FilterModel<User> filterModel);
+        public IEnumerable<User> GetAll(FilterModel<User> filterModel, out int counter);
 
         /// <summary>
         /// Create new user
@@ -28,7 +22,7 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// <summary>
         /// Edit user
         /// </summary>
-        public Task<bool> UpdateAsync(User user, string newPassword);
+        public Task<bool> UpdateAsync(User user, string currentPassword, string newPassword);
 
         /// <summary>
         /// Delete user

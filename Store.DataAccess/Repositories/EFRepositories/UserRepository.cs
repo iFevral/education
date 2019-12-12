@@ -22,18 +22,14 @@ namespace Store.DataAccess.Repositories.EFRepository
             _signInManager = signInManager;
         }
 
-        public async Task<int> GetNumberOfUsers()
-        {
-            int counter = await _userManager.Users.Where(x => !x.isRemoved).CountAsync();
-            return counter;
-        }
-
-        public async Task<IEnumerable<User>> GetAllAsync(FilterModel<User> filterModel)
+        public IEnumerable<User> GetAll(FilterModel<User> filterModel, out int counter)
         {
             var items = _userManager.Users
                                     .Where(filterModel.Predicate)
                                     .AsEnumerable()
                                     .SortBy(filterModel.SortProperty.ToString(), filterModel.IsAscending);
+
+            counter = items.Count();
 
             if (filterModel.Quantity > 0)
             {
@@ -49,13 +45,12 @@ namespace Store.DataAccess.Repositories.EFRepository
             return result.Succeeded;
         }
 
-        public async Task<bool> UpdateAsync(User user, string newPassword)
+        public async Task<bool> UpdateAsync(User user, string currentPassword, string newPassword)
         {
             var result = await _userManager.UpdateAsync(user);
             if (string.IsNullOrWhiteSpace(newPassword))
             {
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var result2 = await _userManager.ResetPasswordAsync(user, token, newPassword);
+                var result2 = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
                 return result.Succeeded && result2.Succeeded;
             }
 

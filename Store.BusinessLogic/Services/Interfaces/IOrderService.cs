@@ -8,12 +8,7 @@ namespace Store.BusinessLogic.Services.Interfaces
 {
     public interface IOrderService
     {
-        /// <summary>
-        /// Get number of orders
-        /// </summary>
-        /// <returns></returns>
-        public Task<int> GetNumberOfOrders();
-        
+     
         /// <summary>
         /// Get part orders or all orders with filtering
         /// </summary>

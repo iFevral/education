@@ -23,18 +23,9 @@ namespace Store.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> GetAll([FromBody]PrintingEditionFilterModel printingEditionFilter)
         {
-            var printingEditionModel = await _printingEditionService.GetAll(printingEditionFilter);
+            var printingEditionModel = await _printingEditionService.GetAllAsync(printingEditionFilter);
 
             return Ok(printingEditionModel);
-        }
-
-        [Route("~/[controller]s/[action]")]
-        [HttpPost]
-        public async Task<IActionResult> Count()
-        {
-            int counter = await _printingEditionService.GetNumberOfPrintingEditions();
-
-            return Ok(counter);
         }
 
         [Route("~/[controller]s/[action]/{id}")]

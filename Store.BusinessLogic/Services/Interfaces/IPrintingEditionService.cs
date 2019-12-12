@@ -7,8 +7,7 @@ namespace Store.BusinessLogic.Services.Interfaces
 {
     public interface IPrintingEditionService
     {
-        public Task<int> GetNumberOfPrintingEditions();
-        public Task<PrintingEditionModel> GetAll(PrintingEditionFilterModel peFilter);
+        public Task<PrintingEditionModel> GetAllAsync(PrintingEditionFilterModel peFilter);
         public Task<PrintingEditionModelItem> FindByIdAsync(int id);
         public Task<BaseModel> CreateAsync(PrintingEditionModelItem printingEditionItem);
         public Task<BaseModel> UpdateAsync(PrintingEditionModelItem printingEditionItem);

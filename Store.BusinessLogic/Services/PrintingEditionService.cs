@@ -19,24 +19,20 @@ namespace Store.BusinessLogic.Services
         private readonly IAuthorInPrintingEditionRepository _authorInPrintingEditionRepository;
 
         public PrintingEditionService(IPrintingEditionRepository printingEditionRepository,
-                             IAuthorInPrintingEditionRepository authorInPrintingEditionRepository)
+                                      IAuthorInPrintingEditionRepository authorInPrintingEditionRepository)
         {
             _printingEditionRepository = printingEditionRepository;
             _authorInPrintingEditionRepository = authorInPrintingEditionRepository;
         }
 
-        public async Task<int> GetNumberOfPrintingEditions()
-        {
-            return await _printingEditionRepository.GetNumberOfItems();
-        }
-
-        public async Task<PrintingEditionModel> GetAll(PrintingEditionFilterModel printingEditionFilterModel)
+        public async Task<PrintingEditionModel> GetAllAsync(PrintingEditionFilterModel printingEditionFilterModel)
         {
             var printingEditionModel = new PrintingEditionModel();
 
             IEnumerable<PrintingEdition> printingEditions;
             var filterModel = printingEditionFilterModel.MapToEFFilterModel();
-            printingEditions = await _printingEditionRepository.GetAllAsync(filterModel);
+            
+            printingEditions = _printingEditionRepository.GetAll(filterModel, out int counter);
             
 
             if (printingEditions == null)
@@ -45,10 +41,12 @@ namespace Store.BusinessLogic.Services
                 return printingEditionModel;
             }
 
+            printingEditionModel.Counter = counter;
+
             foreach( var printingEdition in printingEditions)
             {
-                var peModelItem = new PrintingEditionModelItem();
-                printingEditionModel.Items.Add(printingEdition.MapToModel());
+                var item = printingEdition.MapToModel();
+                printingEditionModel.Items.Add(item);
             }
 
             return printingEditionModel;

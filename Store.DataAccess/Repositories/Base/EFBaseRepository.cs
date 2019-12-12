@@ -23,19 +23,15 @@ namespace Store.DataAccess.Repositories.Base
             _dbSet = dbContext.Set<T>();
         }
 
-        public virtual async Task<int> GetNumberOfItems()
-        {
-            var counter = await _dbSet.Where(x => !x.isRemoved).CountAsync();
-            return counter;
-        }
-
-        public virtual async Task<IEnumerable<T>> GetAllAsync(FilterModel<T> filterModel)
+        public virtual IEnumerable<T> GetAll(FilterModel<T> filterModel, out int counter)
         {
             var items = _dbSet.Where(filterModel.Predicate)
                                .AsEnumerable()
                                .SortBy(filterModel.SortProperty.ToString(), filterModel.IsAscending);
 
-            if(filterModel.Quantity > 0)
+            counter = items.Count();
+
+            if (filterModel.Quantity > 0)
             {
                 items =  items.Skip(filterModel.StartIndex).Take(filterModel.Quantity);
             }
