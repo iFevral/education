@@ -1,5 +1,5 @@
 export enum PrintingEditionType {
     Books = 1,
-    Journals = 2,
+    Magazines = 2,
     Newspapers = 3
 }

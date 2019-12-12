@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+
 import { PrintingEditionService } from '../../../../shared/services';
 import { PrintingEditionModel, PrintingEditionFilterModel } from '../../../../shared/models';
-import { PrintingEditionType, SortProperty } from '../../../../shared/enums';
+import { PrintingEditionType, SortProperty, PrintingEditionCurrency } from '../../../../shared/enums';
 
+import { faSortAmountUpAlt, faSortAmountDownAlt, faFilter } from '@fortawesome/free-solid-svg-icons';
 @Component({
     selector: 'app-list',
     templateUrl: './list.component.html',
@@ -11,43 +13,72 @@ import { PrintingEditionType, SortProperty } from '../../../../shared/enums';
 })
 export class ListComponent {
 
-    private types = [
-        PrintingEditionType[1],
-        PrintingEditionType[2],
-        PrintingEditionType[3]
-    ];
-
     private isSidebarOpened: boolean;
-    private printingEditionModel: PrintingEditionModel;
-    private filterModel: PrintingEditionFilterModel;
+    private sortIcon = faSortAmountUpAlt;
+    private settingsIcon = faFilter;
 
-    constructor(private pringtingEditionService: PrintingEditionService) {
+    private types: Array<string>;
+    private currencies: Array<string>;
+    private currency: string;
+    private sortProperties: Array<string>;
+
+
+    private filterModel: PrintingEditionFilterModel;
+    private printingEditionModel: PrintingEditionModel;
+
+
+    constructor(private printingEditionService: PrintingEditionService) {
+
+        this.currencies = new Array<string>();
+        // tslint:disable-next-line: forin
+        for (const enumMember in PrintingEditionCurrency) {
+            const currencyIndex = parseInt(enumMember, 10);
+            if (currencyIndex >= 0) {
+                this.currencies.push(PrintingEditionCurrency[enumMember]);
+            }
+        }
+        this.currency = this.currencies[0];
+        this.types = new Array<string>();
 
         this.filterModel = new PrintingEditionFilterModel();
-        this.filterModel.types = [1,2,3];
+        this.filterModel.types = new Array<PrintingEditionType>();
+        // tslint:disable-next-line: forin
+        for (const enumMember in PrintingEditionType) {
+            const typeIndex = parseInt(enumMember, 10);
+            if (typeIndex >= 0) {
+                this.types.push(PrintingEditionType[enumMember]);
+                this.filterModel.types.push(typeIndex);
+            }
+        }
+        this.filterModel.currency = PrintingEditionCurrency.USD;
         this.filterModel.IsAscending = true;
         this.filterModel.sortProperty = SortProperty.Id;
-        console.log(this.types);
-        this.pringtingEditionService.getAll(this.filterModel).subscribe((data) => {
+        this.printingEditionService.getAll(this.filterModel).subscribe((data) => {
             this.printingEditionModel = data;
         });
     }
-    arr2: any = [];
 
     public onCheckboxChecked(event, element) {
         if (event.checked) {
             this.filterModel.types.push(element);
         } else {
-            let index = this.filterModel.types.indexOf(element);
+            const index = this.filterModel.types.indexOf(element);
             if (index > -1) {
                 this.filterModel.types.splice(index, 1);
             }
         }
-        console.log(JSON.stringify(this.filterModel.types));
+    }
+
+    public toggleSorting() {
+
+        this.filterModel.IsAscending = !this.filterModel.IsAscending;
+
+        this.sortIcon = this.sortIcon === faSortAmountUpAlt ? faSortAmountDownAlt : faSortAmountUpAlt;
     }
 
     public applyFilters() {
-        this.pringtingEditionService.getAll(this.filterModel).subscribe((data) => {
+        console.log(this.filterModel)
+        this.printingEditionService.getAll(this.filterModel).subscribe((data) => {
             this.printingEditionModel = data;
         });
     }

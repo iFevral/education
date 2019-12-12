@@ -1,11 +1,13 @@
 import { BaseFilterModel } from '../base/base-filter.model';
-import { PrintingEditionType } from '../../enums';
+import { PrintingEditionType, PrintingEditionCurrency } from '../../enums';
 
 export class PrintingEditionFilterModel extends BaseFilterModel {
     constructor(
-        public title?: string,
-        public description?: string,
-        public types?: Array<PrintingEditionType>
+        public searchQuery?: string,
+        public types?: Array<PrintingEditionType>,
+        public minPrice?: number,
+        public maxPrice?: number,
+        public currency?: PrintingEditionCurrency
     ) {
         super();
     }

@@ -1,8 +1,11 @@
 <mat-card class="pe-card">
-
+    <mat-card-header>
+        <p>{{cardHeader}}</p>
+    </mat-card-header>
     <img mat-card-image src="https://dummyimage.com/350x230/3f51b5/fff" alt="Photo of Printing Edition">
     <mat-card-content>
-        <p>{{printingEdition.title}}</p>
+        <a [routerLink]="['/Details/',printingEdition.id]">{{printingEdition.title}}</a>
+        <p *ngFor="let author of printingEdition.authors">{{author.name}}</p>
         <p>${{printingEdition.price.toFixed(2)}}</p>
     </mat-card-content>
 </mat-card>

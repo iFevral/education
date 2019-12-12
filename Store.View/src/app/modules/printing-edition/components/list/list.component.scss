@@ -9,14 +9,21 @@ th {
 
 /* SIDEBAR */
 
-mat-sidenav {
+.mat-sidenav {
     width: 200px;
     padding: 10px 20px;
     font-size: 12pt;
+    
+    .sidenav-wrap {
+        position: fixed;
+        width: 160px;
+    }
 }
 
-.sidenav-filter-categories .mat-checkbox {
-    margin-left: 12px;
+.sidenav-filter-categories {
+    .mat-checkbox {
+        margin-left: 12px;
+    }
 }
 
 /* CONTENT*/
@@ -42,6 +49,19 @@ mat-form-field {
     width: 400px;
 }
 
-.search-input-field fa-icon {
-    color: #5a5a5a;
+.btn-filter {
+    top: 65px;
+    z-index: 99999;
+    padding-right: 0;
+    border-radius: 0px 5px 5px 0px;
+    transform: translateX(-40%);
+    transition: .3s;
+
+    &:hover {
+        transform: translateX(-20%);
+    }
+}
+
+.cards {
+    min-height: 1000px;
 }
