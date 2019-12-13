@@ -1,4 +1,4 @@
-<section class="sign-in-container">
+<section class="sign-in-section">
     <h1>Sign In</h1>
     <form [formGroup]="signInForm" novalidate>
         <div class="input-form-group">
@@ -23,9 +23,15 @@
                 Password can`t be empty
             </div>
         </div>
-
+        <div class="input-form-group">
+            <p><a [routerLink]="['/Account/ResetPassword']">Forgot your password?</a></p>
+        </div>
         <div class="input-form-group">
             <button mat-flat-button color="primary" [disabled]="signInForm.invalid" (click)="signIn()">Sign In</button>
+        </div>
+        <br>
+        <div class="input-form-group">
+            <p>Need an account? <a [routerLink]="['/Account/SignUp']">Sign up!</a></p>
         </div>
     </form>
 </section>

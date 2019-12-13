@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './shared/components';
 
 const routes: Routes = [
-    { path: '', component: HomeComponent, data: { animation: 'Home' } }
+    { path: '', component: HomeComponent }
 ];
 
 @NgModule({

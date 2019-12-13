@@ -1,4 +1,5 @@
 export * from './base/base.model';
+export * from './author/author.filter.model';
 export * from './author/author.model';
 export * from './author/author.model.item';
 export * from './order/order.model';

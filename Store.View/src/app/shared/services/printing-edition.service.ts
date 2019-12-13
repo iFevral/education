@@ -13,10 +13,19 @@ export class PrintingEditionService {
     constructor(private http: HttpClient) { }
 
     public getAll(filterModel: PrintingEditionFilterModel): Observable<PrintingEditionModel> {
+        filterModel = this.validateFilterData(filterModel);
+
         return this.http.post<PrintingEditionModel>(this.url, filterModel);
     }
 
     public getById(id: number): Observable<PrintingEditionModelItem> {
         return this.http.post<PrintingEditionModelItem>(this.url2 + id, {});
+    }
+
+    private validateFilterData(filterModel: PrintingEditionFilterModel) {
+        if (filterModel.searchQuery) {
+            filterModel.searchQuery = filterModel.searchQuery.trim();
+        }
+        return filterModel;
     }
 }

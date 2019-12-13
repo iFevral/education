@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Authors</h1>
+<div mat-dialog-content>
+  <p>Enter name</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="authorName">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="authorName" cdkFocusInitial>Ok</button>
+</div>

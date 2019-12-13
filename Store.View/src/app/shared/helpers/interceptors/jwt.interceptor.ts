@@ -10,7 +10,7 @@ import { AccountService } from '../../services';
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
     private tokenModel: BehaviorSubject<TokenModel>;
-
+    private isAccessExpired: boolean = false;
     constructor(private accountService: AccountService) {
         this.tokenModel = this.accountService.tokenSubject;
     }
@@ -32,25 +32,25 @@ export class JwtInterceptor implements HttpInterceptor {
                                     localStorage.setItem('tokens', JSON.stringify(data));
                                     this.tokenModel.next(data.body);
                                 }
-                            }));
+                            })).toPromise()
+                            .then(() => {
+                                const requestWithNewToken = this.getRequestWithToken(request, this.tokenModel.value.accessToken);
+                                const result = next.handle(requestWithNewToken).toPromise().then(data => {
+                                    return data;
+                                });
+
+                                return result;
+                            })
+                            .catch(err => {
+                                throw throwError(err);
+                            });
                         return refreshEvent;
                     }
 
                     throw throwError(accessError);
 
-                }))
-                .toPromise()
-                .then(() => {
-                    const requestWithNewToken = this.getRequestWithToken(request, this.tokenModel.value.accessToken);
-                    const result = next.handle(requestWithNewToken).toPromise().then(data => {
-                        return data;
-                    });
+                }));
 
-                    return result;
-                })
-                .catch(err => {
-                    throw throwError(err);
-                });
 
             return from(event);
         }

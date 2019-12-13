@@ -1,10 +1,6 @@
-table {
-    width: 100%;
-}
-
-td,
-th {
-    width: 25%;
+.printing-edition-section {
+    padding: 20px 0;
+    position: relative;
 }
 
 /* SIDEBAR */
@@ -13,7 +9,7 @@ th {
     width: 200px;
     padding: 10px 20px;
     font-size: 12pt;
-    
+
     .sidenav-wrap {
         position: fixed;
         width: 160px;
@@ -28,17 +24,6 @@ th {
 
 /* CONTENT*/
 
-app-card {
-    width: 19%;
-    float: left;
-    margin-right: 8%;
-    margin-bottom: 40px;
-}
-
-app-card:nth-child(4n) {
-    margin-right: 0;
-}
-
 mat-form-field {
     display: inline-block;
     margin-right: 12px;
@@ -49,19 +34,39 @@ mat-form-field {
     width: 400px;
 }
 
-.btn-filter {
-    top: 65px;
-    z-index: 99999;
-    padding-right: 0;
-    border-radius: 0px 5px 5px 0px;
-    transform: translateX(-40%);
-    transition: .3s;
-
-    &:hover {
-        transform: translateX(-20%);
+.main-container {
+    padding: 0 40px;
+    
+    .cards-container {
+        height: 400px;
+        padding: 20px 40px;
+        app-card {
+            position: relative;
+            width: 19%;
+            min-height: 100%;
+            float: left;
+            margin: 20px 8% 20px 0;
+        
+            &:nth-child(4n) {
+                margin-right: 0;
+            }
+        }
     }
 }
 
-.cards {
-    min-height: 1000px;
+.btn-filter-container {
+    position: fixed;
+    top: 190px;
+    z-index: 99999;
+    transform: translateX(-40%);
+
+    &:hover {
+        transform: translateX(0%);
+        transition: 0.3s;
+    }
+
+    .btn-filter {
+        padding-right: 0;
+        border-radius: 0px 5px 5px 0px;
+    }
 }

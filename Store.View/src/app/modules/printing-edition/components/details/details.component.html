@@ -1,3 +1,13 @@
 <section>
+    <h1>Type</h1>
+    <p>{{types[printingEditionModel.type]}}</p>
+    <h1>Title</h1>
     <p>{{printingEditionModel.title}}</p>
+    <h1>Description</h1>
+    <p>{{printingEditionModel.description}}</p>
+    <h1>Price</h1>
+    <p>{{printingEditionModel.price}}</p>
+    <h1>Authors</h1>
+    <p><span *ngFor="let author of printingEditionModel.authors">{{author.name}} </span></p>
+    
 </section>

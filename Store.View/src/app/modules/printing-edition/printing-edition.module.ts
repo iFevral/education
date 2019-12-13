@@ -3,13 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { MaterialElementsModule } from '../../shared/modules';
 import { PrintingEditionRoutingModule } from './printing-edition-routing.module';
-import { ListComponent, CardComponent } from '.';
+import { PrintingEditionListComponent, CardComponent } from '.';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DetailsComponent } from './components/details/details.component';
 
 @NgModule({
-    declarations: [ListComponent, CardComponent, DetailsComponent],
+    declarations: [PrintingEditionListComponent, CardComponent, DetailsComponent],
     imports: [
         BrowserModule,
         MaterialElementsModule,

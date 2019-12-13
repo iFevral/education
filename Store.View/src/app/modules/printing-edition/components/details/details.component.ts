@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PrintingEditionService } from '../../../../shared/services';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PrintingEditionModelItem } from '../../../../shared/models';
+import { Constants } from '../../../../shared/constants/constants';
 
 @Component({
     selector: 'app-details',
@@ -9,13 +10,13 @@ import { PrintingEditionModelItem } from '../../../../shared/models';
     styleUrls: ['./details.component.scss']
 })
 export class DetailsComponent implements OnInit {
-    private printingEditionModel: PrintingEditionModelItem ;
-    constructor(
-        private route: ActivatedRoute,
-        private router: Router,
-        private printingEditionService: PrintingEditionService) {
-            this.printingEditionModel = new PrintingEditionModelItem();
-         }
+    private printingEditionModel: PrintingEditionModelItem;
+    private types: Array<string>;
+
+    constructor(private route: ActivatedRoute, private router: Router, private printingEditionService: PrintingEditionService) {
+        this.printingEditionModel = new PrintingEditionModelItem();
+        this.types = Constants.enumsAttributes.printingEditionTypes;
+    }
 
     ngOnInit() {
         const id = this.route.snapshot.paramMap.get('id');
@@ -24,8 +25,6 @@ export class DetailsComponent implements OnInit {
             .subscribe(data => {
                 this.printingEditionModel = data;
             });
-
-        console.log(this.printingEditionModel)
     }
 
 }

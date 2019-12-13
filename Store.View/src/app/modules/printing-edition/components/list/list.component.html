@@ -1,67 +1,69 @@
-<mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav mode="side" [(opened)]="isSidebarOpened">
-        <div class="sidenav-wrap">
-            <br>
-            <div class="sidenav-filter-categories">
-                <h4>Categories</h4>
-                <mat-checkbox [checked]="true" color="primary" *ngFor="let type of types;let i = index"
-                    [checked]="type.isChecked" (change)="onCheckboxChecked($event, i+1);applyFilters()">
-                    {{type}}
-                </mat-checkbox>
+<section class="printing-edition-section">
+    <mat-sidenav-container class="mat-sidenav-container">
+        <mat-sidenav #sidenav mode="side" [(opened)]="isSidebarOpened">
+            <div class="sidenav-wrap">
+                <div class="sidenav-filter-categories">
+                    <h4>Categories</h4>
+                    <mat-checkbox [checked]="true" color="primary" *ngFor="let type of types;let i = index"
+                        [checked]="type.isChecked" (change)="onCheckboxChecked($event, i+1);applyFilters()">
+                        {{type}}
+                    </mat-checkbox>
+                </div>
+                <hr>
+                <div class="sidenav-filter-price">
+                    <h4>Price</h4>
+                    <mat-form-field class="price-form">
+                        <input matInput type="number" placeholder="Min value" [(ngModel)]="this.filterModel.minPrice"
+                            (focusout)="applyFilters()">
+                        <span matPrefix>$</span>
+                    </mat-form-field>
+                    <mat-form-field class="price-form">
+                        <input matInput type="number" placeholder="Max value" [(ngModel)]="this.filterModel.maxPrice"
+                            (focusout)="applyFilters()">
+                        <span matPrefix>$</span>
+                    </mat-form-field>
+                </div>
             </div>
-            <hr>
-            <div class="sidenav-filter-price">
-                <h4>Price</h4>
-                <mat-form-field class="price-form">
-                    <input matInput type="number" placeholder="Min value" [(ngModel)]="this.filterModel.minPrice"
-                        (focusout)="applyFilters()">
-                    <span matPrefix>$</span>
-                </mat-form-field>
-                <mat-form-field class="price-form">
-                    <input matInput type="number" placeholder="Max value" [(ngModel)]="this.filterModel.maxPrice"
-                        (focusout)="applyFilters()">
-                    <span matPrefix>$</span>
-                </mat-form-field>
-            </div>
-        </div>
-    </mat-sidenav>
-
-    <mat-sidenav-content>
-        <button class="btn-filter" mat-raised-button color="primary" (click)="sidenav.toggle()"><fa-icon [icon]="settingsIcon"></fa-icon></button>
-        <section class="printing-edition-container">
-            <h1>Printing editions</h1>
-            <div class="form-fields">
-                <mat-form-field class="search-input-field">
-                    <input matInput placeholder="Search" [(ngModel)]="this.filterModel.searchQuery"
-                        (input)="applyFilters()">
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-select placeholder="Currency" [(ngModel)]="this.filterModel.currency"
-                        (focusout)="applyFilters()">
-                        <mat-option value="option" *ngFor="let currency of currencies" [value]="currency">{{currency}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-select placeholder="Sort by" [(ngModel)]="this.filterModel.sortProperty"
-                        (focusout)="applyFilters()">
-                        <mat-option [value]="6">Date</mat-option>
-                        <mat-option [value]="5">Price</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <button mat-raised-button color="primary" (click)="toggleSorting();applyFilters()">
-                    <fa-icon [icon]="sortIcon"></fa-icon>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <div class="btn-filter-container">
+                <button class="btn-filter" mat-raised-button color="primary" (click)="sidenav.toggle()">
+                    <fa-icon [icon]="filterIcon"></fa-icon>
                 </button>
             </div>
-            <hr>
-            <div class="cards">
-                <app-card class="app-card-container" *ngFor="let printingEdition of printingEditionModel?.items"
-                    [printingEdition]="printingEdition"></app-card>
-                <app-card class="app-card-container" *ngFor="let printingEdition of printingEditionModel?.items"
-                    [printingEdition]="printingEdition"></app-card>
-                <app-card class="app-card-container" *ngFor="let printingEdition of printingEditionModel?.items"
-                    [printingEdition]="printingEdition"></app-card>
+            <div class="main-container">
+                <h1>Printing editions</h1>
+                <div class="form-fields">
+                    <mat-form-field class="search-input-field">
+                        <input matInput placeholder="Search" [(ngModel)]="this.filterModel.searchQuery"
+                            (input)="applyFilters()">
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-select placeholder="Currency" [(ngModel)]="this.filterModel.currency"
+                            (focusout)="applyFilters()">
+                            <mat-option *ngFor="let currency of currencies" [value]="currency">{{currency}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-select placeholder="Sort by" [(ngModel)]="this.filterModel.sortProperty"
+                            (focusout)="applyFilters()">
+                            <mat-option *ngFor="let prop of sortProperties" [value]="prop">{{allSortProperties[prop-1]}}</mat-option>
+
+                        </mat-select>
+                    </mat-form-field>
+                    <button mat-raised-button color="primary" (click)="toggleDataOrder(); applyFilters()">
+                        <fa-icon [icon]="sortIcon"></fa-icon>
+                    </button>
+                </div>
+                <hr>
+                <div class="cards-container">
+                    <app-card class="app-card-container" *ngFor="let printingEdition of printingEditionModel?.items"
+                        [printingEdition]="printingEdition"></app-card>
+                </div>
+                <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+                    (page)="setAmountOfPrintingEdition(); applyFilters()">
+                </mat-paginator>
             </div>
-        </section>
-    </mat-sidenav-content>
-</mat-sidenav-container>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</section>

@@ -8,6 +8,7 @@ import { AccountRoutingModule } from './account-routing.module';
 
 import { SignInComponent, SignUpComponent } from '.';
 import { AccountService } from '../../shared/services';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { AccountService } from '../../shared/services';
   ],
   declarations: [
     SignUpComponent,
-    SignInComponent
+    SignInComponent,
+    ResetPasswordComponent
   ],
   bootstrap: [
     SignInComponent

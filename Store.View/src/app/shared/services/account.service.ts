@@ -54,6 +54,11 @@ export class AccountService {
         this.router.navigate(['/']);
     }
 
+    public resetPassword(email: string) {
+        const result = this.http.post<RegistrationResultModel>(`${environment.apiUrl}/Account/ForgotPassword`, { email });
+        return result;
+    }
+
     public log() {
         console.log(localStorage.getItem('tokens'));
         console.log(this.tokenSubject);

@@ -1,4 +1,4 @@
-<section class="sign-up-container">
+<section class="sign-up-section">
     <h1>Sign Up</h1>
     <form [formGroup]="signUpForm" novalidate>
         <div class="input-form-group">
@@ -62,6 +62,10 @@
 
         <div class="input-form-group">
             <button mat-flat-button color="primary" [disabled]="signUpForm.invalid" (click)="signUp()">Sign Up</button>
+        </div>
+        <br>
+        <div class="input-form-group">
+            <p>Already have an account <a [routerLink]="['/Account/SignIn']">Sign in!</a></p>
         </div>
     </form>
 </section>

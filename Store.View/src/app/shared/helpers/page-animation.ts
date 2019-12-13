@@ -7,7 +7,7 @@ import {
     group,
     stagger
 } from '@angular/animations';
-export const slideInAnimation =
+export const PageAnimation =
     trigger('routeAnimations', [
         transition('* => Home', [
             query(':enter, :leave',
@@ -42,9 +42,14 @@ export const slideInAnimation =
                         style({ transform: 'translateX(-100%)' }))
                 ], { optional: true }),
                 query(':enter .cards', stagger(1400, [
-                    style({ transform: 'translateY(100%)' }),
+                    style({ transform: 'translateY(100%)', opacity: 0 }),
                     animate('1s ease-in-out',
-                        style({ transform: 'translateY(0%)' }))
+                        style({ transform: 'translateY(0%)', opacity: 1 }))
+                ]), { optional: true }),
+                query(':enter .btn-filter', stagger(400, [
+                    style({ transform: 'translateX(-120%)' }),
+                    animate('1s ease-in-out',
+                        style({ transform: 'translateX(-40%)' }))
                 ]), { optional: true })
             ])
         ]),
@@ -63,10 +68,15 @@ export const slideInAnimation =
                     animate('0.5s ease-in-out',
                         style({ transform: 'translateX(100%)' }))
                 ], { optional: true }),
-                query(':enter .cards', stagger(1400, [
-                    style({ transform: 'translateY(100%)' }),
+                query(':enter .cards', stagger(400, [
+                    style({ transform: 'translateY(100%)', opacity: 0 }),
                     animate('1s ease-in-out',
-                        style({ transform: 'translateY(0%)' }))
+                        style({ transform: 'translateY(0%)', opacity: 1 }))
+                ]), { optional: true }),
+                query(':enter .btn-filter', stagger(5400, [
+                    style({ transform: 'translateX(-120%)' }),
+                    animate('1s ease-in-out',
+                        style({ transform: 'translateX(-40%)' }))
                 ]), { optional: true })
             ])
         ]),
@@ -110,14 +120,14 @@ export const slideInAnimation =
                 { optional: true }),
             group([
                 query(':enter', [
-                    style({ transform: 'rotate(180deg)', opacity: 0 }),
-                    animate('0.5s ease-in-out',
-                        style({ transform: 'rotate(0)', opacity: 1 }))
+                    style({ transform: 'scale(0)' }),
+                    animate('1s ease-in-out',
+                        style({ transform: 'scale(1)' }))
                 ], { optional: true }),
                 query(':leave', [
-                    style({ transform: 'rotate(0)', opacity: 1 }),
+                    style({ transform: 'scale(1)', opacity: 1 }),
                     animate('0.5s ease-in-out',
-                        style({ transform: 'rotate(180deg)', opacity: 0 }))
+                        style({ transform: 'scale(0)', opacity: 0}))
                 ], { optional: true }),
             ])
         ])
