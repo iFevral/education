@@ -8,7 +8,7 @@ using Store.BusinessLogic.Models.Filters;
 
 namespace Store.Presentation.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]s")]
     [ApiController]
     public class PrintingEditionController : ControllerBase
     {
@@ -19,7 +19,6 @@ namespace Store.Presentation.Controllers
             _printingEditionService = printingEditionService;
         }
 
-        [Route("~/[controller]s")]
         [HttpPost]
         public async Task<IActionResult> GetAll([FromBody]PrintingEditionFilterModel printingEditionFilter)
         {
@@ -28,7 +27,7 @@ namespace Store.Presentation.Controllers
             return Ok(printingEditionModel);
         }
 
-        [Route("~/[controller]s/[action]/{id}")]
+        [Route("~/[controller]s/{id}")]
         [HttpPost]
         public async Task<IActionResult> Get(int id)
         {
@@ -37,7 +36,6 @@ namespace Store.Presentation.Controllers
             return Ok(printingEditionModel);
         }
 
-        [Route("~/[controller]s/[action]")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPut]
         public async Task<IActionResult> Create([FromBody]PrintingEditionModelItem printingEditionItem)
@@ -47,9 +45,8 @@ namespace Store.Presentation.Controllers
             return Ok(printingEditionModel);
         }
 
-        [Route("~/[controller]s/[action]")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
-        [HttpPut]
+        [HttpPatch]
         public async Task<IActionResult> Update([FromBody]PrintingEditionModelItem printingEditionItem)
         {
             var printingEditionModel = await _printingEditionService.UpdateAsync(printingEditionItem);
@@ -57,7 +54,7 @@ namespace Store.Presentation.Controllers
             return Ok(printingEditionModel);
         }
 
-        [Route("~/[controller]s/[action]/{id}")]
+        [Route("~/[controller]s/{id}")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Store.BusinessLogic.Models.Base;
+using Store.DataAccess.Entities.Enums;
 
 namespace Store.BusinessLogic.Models.Filters
 {
@@ -9,5 +10,6 @@ namespace Store.BusinessLogic.Models.Filters
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
         public IList<int> Types { get; set; }
+        public Enums.PrintingEditions.Currencies Currency { get; set; } = Enums.PrintingEditions.Currencies.USD;
     }
 }

@@ -11,6 +11,7 @@ using Store.Presentation.Helpers.Interface;
 namespace Store.Presentation.Controllers
 {
     [Route("[controller]s")]
+    [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
     [ApiController]
     public class OrderController : ControllerBase
     {
@@ -24,7 +25,6 @@ namespace Store.Presentation.Controllers
             _jwtHelper = jwtHelper;
         }
 
-        [Route("~/[controller]s")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPost]
         public async Task<IActionResult> GetAll([FromBody]OrderFilterModel orderFilter)
@@ -34,8 +34,7 @@ namespace Store.Presentation.Controllers
             return Ok(orderModel);
         }
 
-        [Route("~/[controller]s/[action]/{id}")]
-        [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
+        [Route("~/[controller]s/{id}")]
         [HttpPost]
         public async Task<IActionResult> Get(int id)
         {
@@ -44,8 +43,6 @@ namespace Store.Presentation.Controllers
             return Ok(orderModel);
         }
 
-        [Route("~/[controller]s/[action]")]
-        [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPut]
         public async Task<IActionResult> Create([FromHeader]string authorization, [FromBody]OrderModelItem orderModelItem)
         {
@@ -56,9 +53,8 @@ namespace Store.Presentation.Controllers
             return Ok(orderModel);
         }
 
-        [Route("~/[controller]s/[action]")]
-        [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
-        [HttpPut]
+
+        [HttpPatch]
         public async Task<IActionResult> Update([FromBody]PaymentModelItem paymentModelItem)
         {
             var orderModel = await _orderService.UpdateAsync(paymentModelItem);
@@ -66,7 +62,7 @@ namespace Store.Presentation.Controllers
             return Ok(orderModel);
         }
 
-        [Route("~/[controller]s/[action]/{id}")]
+        [Route("~/[controller]s/{id}")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)

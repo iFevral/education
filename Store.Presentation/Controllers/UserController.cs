@@ -8,7 +8,7 @@ using Store.BusinessLogic.Models.Filters;
 
 namespace Store.Presentation.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]s")]
     [Authorize(Roles = Constants.RoleNames.Admin)]
     [ApiController]
     public class UserController : ControllerBase
@@ -20,7 +20,7 @@ namespace Store.Presentation.Controllers
             _userService = userService;
         }
 
-        [Route("~/[controller]s/")]
+
         [HttpPost]
         public async Task<IActionResult> GetAllAsync([FromBody]UserFilterModel userFilter)
         {
@@ -29,9 +29,9 @@ namespace Store.Presentation.Controllers
             return Ok(userModel);
         }
 
-        [Route("~/[controller]s/[action]")]
+        [Route("~/[controller]s/{id}")]
         [HttpPost]
-        public async Task<IActionResult> Profile([FromBody]UserModelItem userModel)
+        public async Task<IActionResult> Profile(int id, [FromBody]UserModelItem userModel)
         {
             userModel = await _userService.GetUserByEmailAsync(userModel.Email);
 
@@ -40,15 +40,14 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]s/[action]")]
         [HttpPost]
-        public async Task<IActionResult> Blocking([FromBody]UserModelItem userModel)
+        public async Task<IActionResult> Block([FromBody]UserModelItem userModel)
         {
             var model = await _userService.SetLockingStatus(userModel.Email, userModel.IsLocked);
 
             return Ok(model);
         }
 
-        [Route("~/[controller]s/[action]")]
-        [HttpPut]
+        [HttpPatch]
         public async Task<IActionResult> Update([FromBody]SignUpModel signUpData)
         {
             var userModel = await _userService.UpdateUserAsync(signUpData);
@@ -56,9 +55,9 @@ namespace Store.Presentation.Controllers
             return Ok(userModel);
         }
 
-        [Route("~/[controller]s/[action]")]
+        [Route("~/[controller]s/{id}")]
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromBody]UserModelItem userModel)
+        public async Task<IActionResult> Delete(int id, [FromBody]UserModelItem userModel)
         {
             var model = await _userService.DeleteUserAsync(userModel.Email);
 

@@ -11,8 +11,12 @@
                 Type = 3,
                 Amount = 4,
                 Price = 5,
-                Date = 6,
-                Status = 7
+                CreationDate = 6,
+                Status = 7,
+                Title = 8,
+                FirstName = 9,
+                LastName = 10,
+                Email = 11
             }
         }
     }

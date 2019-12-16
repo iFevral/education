@@ -196,7 +196,7 @@ namespace Store.BusinessLogic.Services
                 return userModel;
             }
 
-            user = signUpModel.MapToEntity();
+            user = signUpModel.MapToEntity(user);
 
             var result = await _userRepository.UpdateAsync(user, signUpModel.Password, signUpModel.NewPassword);
             if (!result)

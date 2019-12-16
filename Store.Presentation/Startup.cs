@@ -46,7 +46,7 @@ namespace Store.Presentation
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 ValidateLifetime = true,
-                ClockSkew = TimeSpan.FromMinutes(Convert.ToDouble(Configuration.GetSection("JWT").GetValue<int>("AccessTokenExpireMinutes")))
+                ClockSkew = TimeSpan.FromSeconds(Convert.ToDouble(Configuration.GetSection("JWT").GetValue<int>("AccessTokenExpireMinutes")))
             };
 
             services.AddSingleton(tokenValidationParameters);

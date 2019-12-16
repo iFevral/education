@@ -12,7 +12,8 @@ namespace Store.BusinessLogic.Common.Mappers.Filter
             filterDAL.IsAscending = filterBL.IsAscending;
             filterDAL.StartIndex = filterBL.StartIndex;
             filterDAL.Quantity = filterBL.Quantity;
-            filterDAL.Predicate = author => (string.IsNullOrWhiteSpace(filterBL.Name) || author.Name.ToLower().Contains(filterBL.Name.ToLower()));
+            filterDAL.Predicate = author => (string.IsNullOrWhiteSpace(filterBL.Name) || author.Name.ToLower().Contains(filterBL.Name.ToLower())) &&
+                                            (!author.isRemoved);
             return filterDAL;
         }
     }

@@ -48,7 +48,7 @@ namespace Store.DataAccess.Repositories.EFRepository
         public async Task<bool> UpdateAsync(User user, string currentPassword, string newPassword)
         {
             var result = await _userManager.UpdateAsync(user);
-            if (string.IsNullOrWhiteSpace(newPassword))
+            if (!string.IsNullOrWhiteSpace(newPassword))
             {
                 var result2 = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
                 return result.Succeeded && result2.Succeeded;

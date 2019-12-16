@@ -9,6 +9,7 @@ using Store.BusinessLogic.Services.Interfaces;
 namespace Store.Presentation.Controllers
 {
     [Route("[controller]s")]
+    [Authorize(Roles = Constants.RoleNames.Admin)]
     [ApiController]
     public class AuthorController : ControllerBase
     {
@@ -19,16 +20,16 @@ namespace Store.Presentation.Controllers
             _authorService = authorService;
         }
 
-        [Route("~/[controller]s")]
+        [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPost]
-        public async Task<IActionResult> GetAll([FromBody]AuthorFilterModel authorFilter)
+        public async Task<IActionResult> GetAll([FromHeader]string Authorization, [FromBody]AuthorFilterModel authorFilter)
         {
             var authorModel = await _authorService.GetAllAsync(authorFilter);
 
             return Ok(authorModel);
         }
 
-        [Route("~/[controller]s/[action]/{id}")]
+        [Route("~/[controller]s/{id}")]
         [HttpPost]
         public async Task<IActionResult> Get(int id)
         {
@@ -37,7 +38,6 @@ namespace Store.Presentation.Controllers
             return Ok(authorModel);
         }
 
-        [Route("~/[controller]s/[action]")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPut]
         public async Task<IActionResult> Create([FromBody]AuthorModelItem authorItem)
@@ -47,9 +47,8 @@ namespace Store.Presentation.Controllers
             return Ok(authorModel);
         }
 
-        [Route("~/[controller]s/[action]")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
-        [HttpPut]
+        [HttpPatch]
         public async Task<IActionResult> Update([FromBody]AuthorModelItem authorItem)
         {
             var authorModel = await _authorService.UpdateAsync(authorItem);
@@ -57,7 +56,7 @@ namespace Store.Presentation.Controllers
             return Ok(authorModel);
         }
 
-        [Route("~/[controller]s/[action]/{id}")]
+        [Route("~/[controller]s/{id}")]
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)

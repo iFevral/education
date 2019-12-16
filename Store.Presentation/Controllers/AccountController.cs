@@ -1,14 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
-using Store.Presentation.Helpers;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Common;
 using Store.BusinessLogic.Helpers.Interface;
 using Store.Presentation.Helpers.Interface;
-using System.Linq;
 
 namespace Store.Presentation.Controllers
 {
@@ -34,7 +33,6 @@ namespace Store.Presentation.Controllers
             _jwtConfig = _configuration.GetSection("JWT");
         }
 
-        [Route("~/[controller]/[action]")]
         [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPost]
         public async Task<IActionResult> Profile([FromHeader]string authorization)
@@ -93,11 +91,11 @@ namespace Store.Presentation.Controllers
             return Ok(emailConfirmationModel);
         }
 
-        [Route("~/[controller]/[action]")]
-        [HttpPost]
-        public async Task<IActionResult> Edit([FromHeader]string authorization, [FromBody] SignUpModel signUpModel)
+        [HttpPatch]
+        [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
+        public async Task<IActionResult> Edit([FromHeader]string Authorization, [FromBody] SignUpModel signUpModel)
         {
-            var token = authorization.Substring(7);
+            var token = Authorization.Substring(7);
             signUpModel.Id = _jwtHelper.GetUserIdFromToken(token);
             var model = await _accountService.UpdateProfile(signUpModel);
 

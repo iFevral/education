@@ -12,10 +12,6 @@ namespace Store.Presentation.Helpers
 {
     public class JwtHelper : IJwtHelper
     {
-        public JwtHelper()
-        {
-        }
-
         public string GenerateToken(UserModelItem userModel, double expirationTime, string secretKey, bool isAccess)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -27,7 +23,7 @@ namespace Store.Presentation.Helpers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddSeconds(expirationTime),
+                Expires = DateTime.UtcNow.AddMinutes(expirationTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
                                                             SecurityAlgorithms.HmacSha256)
             };
