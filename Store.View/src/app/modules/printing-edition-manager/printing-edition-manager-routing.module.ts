@@ -1,16 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { PrintingEditionManagerListComponent } from '.';
 
-import {
-    PrintingEditionListComponent,
-    DetailsComponent
-} from '.';
 
 const printingEditionRoutes: Routes = [{
-    path: '',
+    path: 'PrintingEditions',
     children: [
-        { path: '', component: PrintingEditionListComponent },
-        { path: 'Details/:id', component: DetailsComponent },
+        { path: '', component: PrintingEditionManagerListComponent }
     ]
 }];
 
@@ -24,4 +20,4 @@ export const printingEditionRouting = RouterModule.forChild(printingEditionRoute
         RouterModule
     ]
 })
-export class PrintingEditionRoutingModule { }
+export class PrintingEditionManagerRoutingModule { }

@@ -3,16 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { AuthorModel, AuthorFilterModel, AuthorModelItem, BaseModel } from '../models';
+import { Constants } from '../constants/constants';
+import { map } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthorService {
 
-    private url = 'https://localhost:44312/Authors';
-    private url2 = 'https://localhost:44312/Authors/Get/';
-    private url3 = 'https://localhost:44312/Authors/Create';
-    private url4 = 'https://localhost:44312/Authors/Update';
+    private url = Constants.apiUrls.authorControllerUrl;
+
     constructor(private http: HttpClient) { }
 
     public getAll(filterModel: AuthorFilterModel): Observable<AuthorModel> {
@@ -20,10 +20,14 @@ export class AuthorService {
     }
 
     public create(authorModel: AuthorModelItem): Observable<BaseModel> {
-        return this.http.put<BaseModel>(this.url3, authorModel);
+        return this.http.put<BaseModel>(this.url, authorModel);
     }
 
     public update(authorModel: AuthorModelItem): Observable<BaseModel> {
-        return this.http.put<BaseModel>(this.url4, authorModel);
+        return this.http.patch<BaseModel>(this.url, authorModel);
+    }
+
+    public delete(authorModel: AuthorModelItem): Observable<BaseModel> {
+        return this.http.delete<BaseModel>(this.url + authorModel.id);
     }
 }

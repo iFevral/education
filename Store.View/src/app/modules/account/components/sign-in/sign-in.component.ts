@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material';
 export class SignInComponent {
     private signInForm: FormGroup;
 
-    constructor(private accountService: AccountService, private router: Router, private errorContainer: MatSnackBar) {
+    constructor(private accountService: AccountService, private router: Router, private messageContainer: MatSnackBar) {
         this.signInForm = new FormGroup({
             'email': new FormControl('', [
                 Validators.required,
@@ -28,13 +28,21 @@ export class SignInComponent {
         this.accountService.signIn(this.signInForm.value.email, this.signInForm.value.password)
             .subscribe(result => {
                 if (result.errors.length > 0) {
-                    this.errorContainer.open(result.errors.toString(), 'X', {
-                        duration: 3000,
-                        verticalPosition: 'top',
-                    });
+                    this.showDialogMessage(result.errors.toString());
                 } else {
                     this.router.navigate(['/']);
                 }
             });
+    }
+
+    public showDialogMessage(message: string) {
+        if (message === '') {
+            return;
+        }
+
+        this.messageContainer.open(message, 'X', {
+            duration: 5000,
+            verticalPosition: 'top'
+        });
     }
 }

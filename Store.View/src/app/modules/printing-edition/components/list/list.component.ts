@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material';
 
 import { PrintingEditionService } from '../../../../shared/services';
-import { PrintingEditionModel, PrintingEditionFilterModel, PrintingEditionModelItem } from '../../../../shared/models';
+import { PrintingEditionModel, PrintingEditionFilterModel } from '../../../../shared/models';
 import { PrintingEditionType, SortProperty, PrintingEditionCurrency } from '../../../../shared/enums';
 
 import { faSortAmountUpAlt, faSortAmountDownAlt, faFilter } from '@fortawesome/free-solid-svg-icons';

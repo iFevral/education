@@ -9,7 +9,7 @@ import { AccountService } from '../../services/account.service';
 export class HeaderComponent {
     private isAuthorized: boolean;
     constructor(private accountService: AccountService) {
-        this.accountService.tokenSubject.subscribe(data => {
+        this.accountService.getTokens().subscribe(data => {
             this.isAuthorized = data.refreshToken != null;
         });
     }

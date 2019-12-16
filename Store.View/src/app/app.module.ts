@@ -8,10 +8,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialElementsModule } from './shared/modules';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { AuthorModule } from './modules/author/author.module';
+import { AuthorManagerModule } from './modules/author-manager/author-manager.module';
 import { AccountModule } from './modules/account/account.module';
 import { OrderModule } from './modules/order/order.module';
 import { PrintingEditionModule } from './modules/printing-edition/printing-edition.module';
+import { PrintingEditionManagerModule } from './modules/printing-edition-manager/printing-edition-manager.module';
 
 
 import { AppComponent } from './app.component';
@@ -33,9 +34,10 @@ import { AccountService } from './shared/services';
         BrowserAnimationsModule,
         MaterialElementsModule,
         AccountModule,
-        AuthorModule,
+        AuthorManagerModule,
         OrderModule,
         PrintingEditionModule,
+        PrintingEditionManagerModule
     ],
     providers: [
         AccountService,

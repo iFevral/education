@@ -1,0 +1,42 @@
+<h1 mat-dialog-title>{{title}}</h1>
+<div mat-dialog-content *ngIf="isFormVisible">
+    <mat-grid-list cols="2">
+        <mat-grid-tile>
+            <div class="form-container">
+                <mat-form-field>
+                    <input placeholder="Title" matInput [(ngModel)]="data.model.title">
+                </mat-form-field>
+                <mat-form-field>
+                    <textarea matInput placeholder="Description" rows="10"
+                        [(ngModel)]="data.model.description"></textarea>
+                </mat-form-field>
+            </div>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <div class="form-container">
+                <mat-form-field>
+                    <mat-select placeholder="Category" [(ngModel)]="data.model.type">
+                        <mat-option *ngFor="let type of types" [value]="type">{{allTypes[type - 1]}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-select placeholder="Authors" (selectionChange)="changeAuthors($event)" [(ngModel)]="authors" multiple>
+                        <mat-option *ngFor="let author of allAuthors" [value]="author.id">{{author.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field>
+                    <input placeholder="Price" matInput [(ngModel)]="data.model.price">
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-select placeholder="Currency" [(ngModel)]="data.model.currency">
+                        <mat-option *ngFor="let currency of currencies" [value]="currency">{{allCurrencies[currency - 1]}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>
+<div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="data.model" cdkFocusInitial>Ok</button>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+</div>

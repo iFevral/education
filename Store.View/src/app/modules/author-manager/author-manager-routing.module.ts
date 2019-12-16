@@ -3,9 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthorListComponent, } from '.';
 
 const authorRoutes: Routes = [{
-    path: 'Author',
+    path: 'Authors',
     children: [
-        { path: 'List', component: AuthorListComponent }
+        { path: '', component: AuthorListComponent }
     ]
 }];
 

@@ -28,17 +28,22 @@ export class ResetPasswordComponent {
         this.accountService.resetPassword(email)
             .subscribe(result => {
                 if (result.errors.length > 0) {
-                    this.messageContainer.open(result.errors.toString(), 'X', {
-                        duration: 3000,
-                        verticalPosition: 'top',
-                    });
+                    this.showDialogMessage(result.errors.toString());
                 } else {
-                    this.messageContainer.open('We have sent instructions to ' + email, 'X', {
-                        duration: 3000,
-                        verticalPosition: 'top',
-                    });
+                    this.showDialogMessage('We have sent instructions to ' + email);
                     this.router.navigate(['/']);
                 }
             });
+    }
+
+    public showDialogMessage(message: string) {
+        if (message === '') {
+            return;
+        }
+
+        this.messageContainer.open(message, 'X', {
+            duration: 5000,
+            verticalPosition: 'top'
+        });
     }
 }

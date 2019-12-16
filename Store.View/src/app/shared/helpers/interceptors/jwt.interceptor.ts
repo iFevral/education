@@ -12,11 +12,10 @@ export class JwtInterceptor implements HttpInterceptor {
     private tokenModel: BehaviorSubject<TokenModel>;
     private isAccessExpired: boolean = false;
     constructor(private accountService: AccountService) {
-        this.tokenModel = this.accountService.tokenSubject;
+        this.tokenModel = this.accountService.getTokens();
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
         if (this.tokenModel.value && this.tokenModel.value.accessToken) {
             request = this.getRequestWithToken(request, this.tokenModel.value.accessToken);
 
@@ -29,21 +28,25 @@ export class JwtInterceptor implements HttpInterceptor {
                         const refreshEvent = next.handle(refreshRequest)
                             .pipe(tap(data => {
                                 if (data instanceof HttpResponse) {
-                                    localStorage.setItem('tokens', JSON.stringify(data));
+                                    localStorage.setItem('tokens', JSON.stringify(data.body));
                                     this.tokenModel.next(data.body);
                                 }
-                            })).toPromise()
+                            }),
+                                catchError(err => {
+                                    if (err.status === 401) {
+                                        this.accountService.signOut();
+                                    }
+                                    throw throwError(err);
+                                }))
+                            .toPromise()
                             .then(() => {
                                 const requestWithNewToken = this.getRequestWithToken(request, this.tokenModel.value.accessToken);
-                                const result = next.handle(requestWithNewToken).toPromise().then(data => {
+                                const retryEvent = next.handle(requestWithNewToken).toPromise().then(data => {
                                     return data;
                                 });
 
-                                return result;
+                                return retryEvent;
                             })
-                            .catch(err => {
-                                throw throwError(err);
-                            });
                         return refreshEvent;
                     }
 
@@ -67,17 +70,20 @@ export class JwtInterceptor implements HttpInterceptor {
     }
 
     getRequestWithToken(request: HttpRequest<any>, token: string, isRefresh: boolean = false) {
-        let url = request.url;
+        let url: string = request.url;
+        let method: string = request.method;
         if (!token) {
             return request;
         }
 
         if (isRefresh) {
             url = 'https://localhost:44312/RefreshToken';
+            method = 'POST';
         }
 
         return request.clone({
             url,
+            method,
             setHeaders: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'

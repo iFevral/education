@@ -1,12 +1,17 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
-import { MaterialElementsModule } from '../../shared/modules';
+import { PrintingEditionService } from '../../shared/services';
 import { PrintingEditionRoutingModule } from './printing-edition-routing.module';
-import { PrintingEditionListComponent, CardComponent } from '.';
+
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { DetailsComponent } from './components/details/details.component';
+import { MaterialElementsModule } from '../../shared/modules';
+
+import {
+    PrintingEditionListComponent,
+    CardComponent,
+    DetailsComponent
+} from '.';
 
 @NgModule({
     declarations: [PrintingEditionListComponent, CardComponent, DetailsComponent],
@@ -17,5 +22,6 @@ import { DetailsComponent } from './components/details/details.component';
         FormsModule,
         FontAwesomeModule
     ],
+    providers: [PrintingEditionService]
 })
 export class PrintingEditionModule { }

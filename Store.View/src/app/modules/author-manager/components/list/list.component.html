@@ -2,7 +2,7 @@
     <h1 (click)="applyFilter()">Authors</h1>
     <hr>
     <div class="wrap">
-        <button mat-raised-button color="primary" (click)="create()">Add</button>
+        <button mat-raised-button color="primary" (click)="create()">Create</button>
     </div>
     <br>
     <div class="mat-elevation-z8">
@@ -36,7 +36,7 @@
                     </span>
 
                     <span> 
-                        <button mat-raised-button color="primary">Delete</button>
+                        <button mat-raised-button color="primary" (click)="delete(row)">Delete</button>
                     </span>
                 </td>
             </ng-container>

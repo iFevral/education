@@ -2,7 +2,11 @@ import { NgModule } from '@angular/core';
 
 import { Routes, RouterModule } from '@angular/router';
 
-import { SignInComponent, SignUpComponent, ResetPasswordComponent } from '.';
+import {
+    SignInComponent,
+    SignUpComponent,
+    ResetPasswordComponent
+} from '.';
 
 const accountRoutes: Routes = [
     {

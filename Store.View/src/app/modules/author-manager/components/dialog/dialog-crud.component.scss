@@ -1,0 +1,19 @@
+h1,
+p {
+    text-align: center;
+}
+
+.mat-form-field {
+        width: 100%;
+    
+}
+
+.mat-dialog-actions {
+    .mat-button {
+        &:first-child {
+            margin-left: 47%;
+            margin-right: 3%;
+        }
+        transform: translateX(-100%);
+    }
+}

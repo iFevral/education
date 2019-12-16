@@ -16,7 +16,7 @@ export class SignUpComponent {
 
     private signUpForm: FormGroup;
 
-    constructor(private accountService: AccountService, private router: Router, private errorContainer: MatSnackBar) {
+    constructor(private accountService: AccountService, private router: Router, private messageContainer: MatSnackBar) {
         this.signUpForm = new FormGroup({
             firstName: new FormControl('', [
                 Validators.minLength(3),
@@ -65,8 +65,12 @@ export class SignUpComponent {
         }
     }
 
-    private showDialogMessage(message: string) {
-        this.errorContainer.open(message, 'X', {
+    public showDialogMessage(message: string) {
+        if (message === '') {
+            return;
+        }
+
+        this.messageContainer.open(message, 'X', {
             duration: 5000,
             verticalPosition: 'top'
         });

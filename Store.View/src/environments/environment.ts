@@ -4,13 +4,7 @@
 
 export const environment = {
     production: false,
-    apiUrl: 'https://localhost:44312',
-
-    userControllerUrl: '/User',
-    orderControllerUrl: '/Order',
-    authorControllerUrl: '/Author',
-    accountControllerUrl: '/Account',
-    printingEditionControllerUrl: '/PrintingEdition',
+    apiUrl: 'https://localhost:44312'
 };
 
 /*
