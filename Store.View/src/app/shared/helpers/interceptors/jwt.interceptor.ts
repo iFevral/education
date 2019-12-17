@@ -46,7 +46,7 @@ export class JwtInterceptor implements HttpInterceptor {
                                 });
 
                                 return retryEvent;
-                            })
+                            });
                         return refreshEvent;
                     }
 

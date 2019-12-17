@@ -9,8 +9,8 @@ import {
 const printingEditionRoutes: Routes = [{
     path: '',
     children: [
-        { path: '', component: PrintingEditionListComponent },
-        { path: 'Details/:id', component: DetailsComponent },
+        { path: '', component: PrintingEditionListComponent, data: { animation: 'Home' } },
+        { path: 'Details/:id', component: DetailsComponent, data: { animation: 'PrintingEditionDetails' } },
     ]
 }];
 

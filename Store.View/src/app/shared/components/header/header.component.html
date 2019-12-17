@@ -1,12 +1,21 @@
 <header class="mat-elevation-z6">
     <div class="wrap">
         <button mat-flat-button color="primary" routerLink="/" (click)="log()">Home</button>
-        <button mat-flat-button color="primary" routerLink="/PrintingEditions" routerLinkActive="mat-button--active">Books</button>
-        <button mat-flat-button color="primary" routerLink="/Authors" routerLinkActive="mat-button--active">Authors</button>
+        <button mat-flat-button color="primary" routerLink="/PrintingEditions" routerLinkActive="mat-button--active"
+            *ngIf="isAuthorized">Books</button>
+        <button mat-flat-button color="primary" routerLink="/Authors" routerLinkActive="mat-button--active"
+            *ngIf="isAuthorized">Authors</button>
+        <button mat-flat-button color="primary" routerLink="/Orders" routerLinkActive="mat-button--active"
+            *ngIf="isAuthorized">Orders</button>
+        <button mat-flat-button color="primary" routerLink="/Users" routerLinkActive="mat-button--active"
+            *ngIf="isAuthorized">Users</button>
         <div class="nav-btns-auth">
-            <button mat-flat-button color="primary" routerLink="/Account/SignIn" *ngIf="!isAuthorized">Sign In</button>
-            <button class="btn-sign-up" mat-stroked-button color="primary" routerLink="/Account/SignUp" *ngIf="!isAuthorized">Sign Up</button>
-            <button class="btn-sign-out" mat-stroked-button color="primary" (click)="signOut()" *ngIf="isAuthorized">Sign Out</button>
+            <button class="btn-sign-in" mat-flat-button color="primary" routerLink="/Account/SignIn"
+                *ngIf="!isAuthorized">Sign In</button>
+            <button class="btn-sign-up" mat-stroked-button color="primary" routerLink="/Account/SignUp"
+                *ngIf="!isAuthorized">Sign Up</button>
+            <button class="btn-sign-out" mat-stroked-button color="primary" (click)="signOut()"
+                *ngIf="isAuthorized">Sign Out</button>
         </div>
     </div>
 </header>

@@ -20,8 +20,9 @@ export class PrintingEditionListComponent implements OnInit {
     private isSidebarOpened: boolean;
     private sortIcon = faSortAmountUpAlt;
     private filterIcon = faFilter;
-    private pageSize = 2;
-    private pageSizeOptions = [2, 3, 5, 10];
+
+    private pageSizeOptions = [5, 10, 15, 20];
+    private pageSize = this.pageSizeOptions[0];
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 

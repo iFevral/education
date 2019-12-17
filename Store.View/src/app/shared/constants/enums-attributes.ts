@@ -1,10 +1,11 @@
-import { SortProperty, OrderStatus, PrintingEditionType, PrintingEditionCurrency } from '../enums';
+import { SortProperty, OrderStatus, PrintingEditionType, PrintingEditionCurrency, UserLockStatus } from '../enums';
 
 export class EnumsAttributes {
     public sortProperties: Array<string>;
     public orderStatuses: Array<string>;
     public printingEditionTypes: Array<string>;
     public printingEditionCurrencies: Array<string>;
+    public userLockStatuses: Array<string>;
 
     constructor() {
         this.sortProperties = new Array<string>();
@@ -39,6 +40,15 @@ export class EnumsAttributes {
             const currencyIndex = parseInt(enumMember, 10);
             if (currencyIndex >= 0) {
                 this.printingEditionCurrencies.push(PrintingEditionCurrency[enumMember]);
+            }
+        }
+
+        this.userLockStatuses = new Array<string>();
+        // tslint:disable-next-line: forin
+        for (const enumMember in UserLockStatus) {
+            const currencyIndex = parseInt(enumMember, 10);
+            if (currencyIndex >= 0) {
+                this.userLockStatuses.push(UserLockStatus[enumMember]);
             }
         }
     }

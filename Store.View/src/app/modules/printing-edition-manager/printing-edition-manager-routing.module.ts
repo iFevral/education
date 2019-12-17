@@ -6,7 +6,7 @@ import { PrintingEditionManagerListComponent } from '.';
 const printingEditionRoutes: Routes = [{
     path: 'PrintingEditions',
     children: [
-        { path: '', component: PrintingEditionManagerListComponent }
+        { path: '', component: PrintingEditionManagerListComponent, data: { animation: 'PringtingEditions' } }
     ]
 }];
 

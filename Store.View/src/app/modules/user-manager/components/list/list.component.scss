@@ -9,9 +9,8 @@ table {
 
 td,
 th {
-    width: 25%;
+    max-width: 15%;
 
-    
     &:first-child {
         width: 4%;
     }

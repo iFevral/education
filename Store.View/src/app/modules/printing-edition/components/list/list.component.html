@@ -40,13 +40,13 @@
                     </mat-form-field>
                     <mat-form-field>
                         <mat-select placeholder="Currency" [(ngModel)]="this.filterModel.currency"
-                            (focusout)="applyFilters()">
+                            (selectionChange)="applyFilters()">
                             <mat-option *ngFor="let currency of currencies" [value]="currency">{{currency}}</mat-option>
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field>
                         <mat-select placeholder="Sort by" [(ngModel)]="this.filterModel.sortProperty"
-                            (focusout)="applyFilters()">
+                            (selectionChange)="applyFilters()">
                             <mat-option *ngFor="let prop of sortProperties" [value]="prop">{{allSortProperties[prop-1]}}</mat-option>
 
                         </mat-select>
@@ -56,10 +56,10 @@
                     </button>
                 </div>
                 <hr>
-                <div class="cards-container">
+                <section class="cards-container">
                     <app-card class="app-card-container" *ngFor="let printingEdition of printingEditionModel?.items"
                         [printingEdition]="printingEdition"></app-card>
-                </div>
+                </section>
                 <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
                     (page)="setAmountOfPrintingEdition(); applyFilters()">
                 </mat-paginator>

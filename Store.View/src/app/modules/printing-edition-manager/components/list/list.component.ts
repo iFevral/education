@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSort, MatPaginator, MatTableDataSource, MatDialog, MatSnackBar } from '@angular/material';
+import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { PrintingEditionModel, PrintingEditionModelItem, PrintingEditionFilterModel } from '../../../../shared/models';
 import { PrintingEditionService } from '../../../../shared/services';
 import { CRUDOperations, SortProperty, PrintingEditionCurrency, PrintingEditionType } from '../../../../shared/enums';
@@ -15,8 +15,8 @@ export class PrintingEditionManagerListComponent implements OnInit {
 
     private allTypes: Array<string>;
     private types: Array<PrintingEditionType>;
-    private pageSize = 2;
-    private pageSizeOptions = [2, 3, 5, 10];
+    private pageSizeOptions = [5, 10, 15, 20];
+    private pageSize = this.pageSizeOptions[0];
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -37,8 +37,7 @@ export class PrintingEditionManagerListComponent implements OnInit {
 
     constructor(
         private printingEditionService: PrintingEditionService,
-        private dialog: MatDialog,
-        private messageContainer: MatSnackBar
+        private dialog: MatDialog
     ) {
         this.allTypes = Constants.enumsAttributes.printingEditionTypes;
         this.types = [
@@ -46,7 +45,6 @@ export class PrintingEditionManagerListComponent implements OnInit {
             PrintingEditionType.Magazines,
             PrintingEditionType.Newspapers
         ];
-        console.log(this.allTypes[0]);
     }
 
     public ngOnInit() {
@@ -82,11 +80,11 @@ export class PrintingEditionManagerListComponent implements OnInit {
         });
 
         dialogRef.afterClosed()
-            .subscribe(resultModel => {
+            .subscribe((resultModel: PrintingEditionModelItem) => {
                 if (resultModel) {
                     this.printingEditionService.create(resultModel)
                         .subscribe(messageModel => {
-                            this.showDialogMessage(messageModel.errors.toString());
+                            this.printingEditionService.showDialogMessage(messageModel.errors.toString());
                             this.applyFilters();
                         });
                 }
@@ -103,11 +101,11 @@ export class PrintingEditionManagerListComponent implements OnInit {
         });
 
         dialogRef.afterClosed()
-            .subscribe(resultModel => {
+            .subscribe((resultModel: PrintingEditionModelItem) => {
                 if (resultModel) {
                     this.printingEditionService.update(resultModel)
                         .subscribe(messageModel => {
-                            this.showDialogMessage(messageModel.errors.toString());
+                            this.printingEditionService.showDialogMessage(messageModel.errors.toString());
                             this.applyFilters();
                         });
                 }
@@ -124,11 +122,11 @@ export class PrintingEditionManagerListComponent implements OnInit {
         });
 
         dialogRef.afterClosed()
-            .subscribe(resultModel => {
+            .subscribe((resultModel: PrintingEditionModelItem) => {
                 if (resultModel) {
-                    this.printingEditionService.delete(resultModel)
+                    this.printingEditionService.delete(resultModel.id)
                         .subscribe(messageModel => {
-                            this.showDialogMessage(messageModel.errors.toString());
+                            this.printingEditionService.showDialogMessage(messageModel.errors.toString());
                             this.applyFilters();
                         });
                 }
@@ -155,16 +153,4 @@ export class PrintingEditionManagerListComponent implements OnInit {
             this.paginator.length = data.counter;
         });
     }
-
-    public showDialogMessage(message: string) {
-        if (message === '') {
-            return;
-        }
-
-        this.messageContainer.open(message, 'X', {
-            duration: 5000,
-            verticalPosition: 'top'
-        });
-    }
-
 }

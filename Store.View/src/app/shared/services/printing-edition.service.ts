@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { PrintingEditionModelItem, PrintingEditionFilterModel, PrintingEditionModel, BaseModel } from '../models';
+import { PrintingEditionModelItem, PrintingEditionFilterModel, PrintingEditionModel } from '../models';
 import { Constants } from '../constants/constants';
-import { map } from 'rxjs/operators';
+import { BaseService } from './base/base.service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class PrintingEditionService {
+export class PrintingEditionService extends BaseService{
 
-    private url = Constants.apiUrls.printingEditionControllerUrl;
-    constructor(private http: HttpClient) { }
+    constructor(protected http: HttpClient) {
+        super(http, Constants.apiUrls.printingEditionControllerUrl);
+    }
 
     public getAll(filterModel: PrintingEditionFilterModel): Observable<PrintingEditionModel> {
         filterModel = this.validateFilterData(filterModel);
@@ -20,18 +21,6 @@ export class PrintingEditionService {
 
     public getById(id: number): Observable<PrintingEditionModelItem> {
         return this.http.post<PrintingEditionModelItem>(this.url + id, {});
-    }
-
-    public create(printingEditionModel: PrintingEditionModelItem): Observable<BaseModel> {
-        return this.http.put<BaseModel>(this.url, printingEditionModel);
-    }
-
-    public update(printingEditionModel: PrintingEditionModelItem): Observable<BaseModel> {
-        return this.http.patch<BaseModel>(this.url, printingEditionModel);
-    }
-
-    public delete(printingEditionModel: PrintingEditionModelItem): Observable<BaseModel> {
-        return this.http.delete<BaseModel>(this.url + printingEditionModel.id);
     }
 
     private validateFilterData(filterModel: PrintingEditionFilterModel) {

@@ -10,10 +10,10 @@ export class ApiUrls {
     accountControllerUrl = `${this.apiUrl}/Account/`;
     printingEditionControllerUrl = `${this.apiUrl}/PrintingEditions/`;
 
-    authenticationUrl = `${this.accountControllerUrl}/SignIn/`;
-    authorizationUrl = `${this.accountControllerUrl}/SignUp/`;
-    passwordResetingUrl = `${this.accountControllerUrl}/ForgotPassword/`;
-    emailConfirmingUrl = `${this.accountControllerUrl}/ConfirlEmail/`;
+    authenticationUrl = `${this.accountControllerUrl}SignIn/`;
+    authorizationUrl = `${this.accountControllerUrl}SignUp/`;
+    passwordResetingUrl = `${this.accountControllerUrl}ForgotPassword/`;
+    emailConfirmingUrl = `${this.accountControllerUrl}ConfirlEmail/`;
 
-    userBlockingUrl = `${this.userControllerUrl}/Block/`;
+    userBlockingUrl = `${this.userControllerUrl}Block/`;
 }

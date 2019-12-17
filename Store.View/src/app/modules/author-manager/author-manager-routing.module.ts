@@ -5,7 +5,7 @@ import { AuthorListComponent, } from '.';
 const authorRoutes: Routes = [{
     path: 'Authors',
     children: [
-        { path: '', component: AuthorListComponent }
+        { path: '', component: AuthorListComponent, data: { animation: 'Authors' } }
     ]
 }];
 

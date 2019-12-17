@@ -10,15 +10,14 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AuthorManagerModule } from './modules/author-manager/author-manager.module';
 import { AccountModule } from './modules/account/account.module';
-import { OrderModule } from './modules/order/order.module';
+import { OrderManagerModule } from './modules/order/order-manager.module';
 import { PrintingEditionModule } from './modules/printing-edition/printing-edition.module';
 import { PrintingEditionManagerModule } from './modules/printing-edition-manager/printing-edition-manager.module';
-
+import { UserManagerModule } from './modules/user-manager/user-manager.module';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent, FooterComponent, HomeComponent } from './shared/components/';
 import { AccountService } from './shared/services';
-
 @NgModule({
     declarations: [
         AppComponent,
@@ -35,9 +34,10 @@ import { AccountService } from './shared/services';
         MaterialElementsModule,
         AccountModule,
         AuthorManagerModule,
-        OrderModule,
+        OrderManagerModule,
         PrintingEditionModule,
-        PrintingEditionManagerModule
+        PrintingEditionManagerModule,
+        UserManagerModule
     ],
     providers: [
         AccountService,

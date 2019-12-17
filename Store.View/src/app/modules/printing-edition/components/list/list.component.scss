@@ -2,7 +2,6 @@
     padding: 20px 0;
     position: relative;
 }
-
 /* SIDEBAR */
 
 .mat-sidenav {
@@ -13,6 +12,7 @@
     .sidenav-wrap {
         position: fixed;
         width: 160px;
+        transition: 1s;
     }
 }
 

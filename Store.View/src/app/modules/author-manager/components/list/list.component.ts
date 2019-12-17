@@ -6,7 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { AuthorService } from '../../../../shared/services';
 import { AuthorFilterModel, AuthorModel, AuthorModelItem } from '../../../../shared/models';
 import { SortProperty, CRUDOperations } from '../../../../shared/enums';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { DialogCrudComponent } from '../dialog/dialog-crud.component';
 
 @Component({
@@ -16,8 +16,8 @@ import { DialogCrudComponent } from '../dialog/dialog-crud.component';
 })
 export class AuthorListComponent implements OnInit {
 
-    private pageSize = 2;
-    private pageSizeOptions = [2, 3, 5, 10];
+    private pageSizeOptions = [5, 10, 15, 20];
+    private pageSize = this.pageSizeOptions[0];
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -31,8 +31,7 @@ export class AuthorListComponent implements OnInit {
 
     constructor(
         private authorService: AuthorService,
-        private dialog: MatDialog,
-        private messageContainer: MatSnackBar
+        private dialog: MatDialog
     ) {
     }
 
@@ -63,13 +62,13 @@ export class AuthorListComponent implements OnInit {
         });
 
         dialogRef.afterClosed()
-            .subscribe(resultModel => {
+            .subscribe((resultModel: AuthorModelItem) => {
                 if (resultModel) {
-                this.authorService.create(resultModel)
-                    .subscribe(messageModel => {
-                        this.showDialogMessage(messageModel.errors.toString());
-                        this.applyFilters();
-                    });
+                    this.authorService.create(resultModel)
+                        .subscribe(messageModel => {
+                            this.authorService.showDialogMessage(messageModel.errors.toString());
+                            this.applyFilters();
+                        });
                 }
             });
     }
@@ -84,11 +83,11 @@ export class AuthorListComponent implements OnInit {
         });
 
         dialogRef.afterClosed()
-            .subscribe(resultModel => {
+            .subscribe((resultModel: AuthorModelItem) => {
                 if (resultModel) {
                     this.authorService.update(resultModel)
                         .subscribe(messageModel => {
-                            this.showDialogMessage(messageModel.errors.toString());
+                            this.authorService.showDialogMessage(messageModel.errors.toString());
                             this.applyFilters();
                         });
                 }
@@ -105,13 +104,13 @@ export class AuthorListComponent implements OnInit {
         });
 
         dialogRef.afterClosed()
-            .subscribe(resultModel => {
+            .subscribe((resultModel: AuthorModelItem) => {
                 if (resultModel) {
-                this.authorService.delete(resultModel)
-                    .subscribe(messageModel => {
-                        this.showDialogMessage(messageModel.errors.toString());
-                        this.applyFilters();
-                    });
+                    this.authorService.delete(resultModel.id)
+                        .subscribe(messageModel => {
+                            this.authorService.showDialogMessage(messageModel.errors.toString());
+                            this.applyFilters();
+                        });
                 }
             });
     }
@@ -132,17 +131,6 @@ export class AuthorListComponent implements OnInit {
 
             this.authorModel = data;
             this.paginator.length = data.counter;
-        });
-    }
-
-    public showDialogMessage(message: string) {
-        if (message === '') {
-            return;
-        }
-
-        this.messageContainer.open(message, 'X', {
-            duration: 5000,
-            verticalPosition: 'top'
         });
     }
 }
