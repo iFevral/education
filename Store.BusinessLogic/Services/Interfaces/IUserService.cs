@@ -18,7 +18,7 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Get user by name
         /// </summary>
         /// <returns>User model</returns>
-        public Task<UserModelItem> GetUserByEmailAsync(string email);
+        public Task<UserModelItem> GetUserAsync(long id);
 
         /// <summary>
         /// Edit user
@@ -28,7 +28,7 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// <summary>
         /// Delete user
         /// </summary>
-        public Task<BaseModel> DeleteUserAsync(string email);
+        public Task<BaseModel> DeleteUserAsync(long id);
 
         /// <summary>
         /// Block user

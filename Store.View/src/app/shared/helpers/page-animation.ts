@@ -4,8 +4,7 @@ import {
     query,
     style,
     animate,
-    group,
-    stagger
+    group
 } from '@angular/animations';
 export const PageAnimation =
 

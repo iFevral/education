@@ -6,7 +6,7 @@ using Store.DataAccess.Entities.Enums;
 
 namespace Store.DataAccess.AppContext
 {
-    public partial class ApplicationContext : IdentityDbContext<User, IdentityRole<long>, long>
+    public class ApplicationContext : IdentityDbContext<User, IdentityRole<long>, long>
 
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
@@ -46,16 +46,16 @@ namespace Store.DataAccess.AppContext
                       .OnDelete(DeleteBehavior.Cascade);
 
                 entity.Property(e => e.Status)
-                    .HasConversion(x => (int)x, x => (Enums.Order.Statuses)x);
+                    .HasConversion(x => (int)x, x => (Enums.Order.OrderStatus)x);
             });
 
             modelBuilder.Entity<PrintingEdition>(entity =>
             {
                 entity.Property(e => e.Currency)
-                    .HasConversion(x => (int)x, x => (Enums.PrintingEditions.Currencies)x);
+                    .HasConversion(x => (int)x, x => (Enums.PrintingEditions.Currency)x);
 
                 entity.Property(e => e.Type)
-                    .HasConversion(x => (int)x, x => (Enums.PrintingEditions.Types)x);
+                    .HasConversion(x => (int)x, x => (Enums.PrintingEditions.PrintingEditionType)x);
             });
 
             modelBuilder.Entity<OrderItem>(entity =>

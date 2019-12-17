@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Store.DataAccess.Entities
 {
     [Table("Authors")]
-    public partial class Author : BaseEntity
+    public class Author : BaseEntity
     {
         public string Name { get; set; }
 

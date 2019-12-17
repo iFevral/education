@@ -4,7 +4,7 @@
     {
         public static class Role
         {
-            public enum RoleNames
+            public enum RoleName
             {
                 Admin = 1,
                 Client = 2

@@ -17,7 +17,7 @@ namespace Store.DataAccess.Initialization
 
         public async Task Seed()
         {
-            string clientrole = Enums.Role.RoleNames.Admin.ToString();
+            string clientrole = Enums.Role.RoleName.Admin.ToString();
             var role = await _roleManager.FindByNameAsync(clientrole);
             if (role == null)
             {
@@ -27,7 +27,7 @@ namespace Store.DataAccess.Initialization
                 await _roleManager.CreateAsync(newRole);
             }
 
-            clientrole = Enums.Role.RoleNames.Client.ToString();
+            clientrole = Enums.Role.RoleName.Client.ToString();
             role = await _roleManager.FindByNameAsync(clientrole);
             if (role == null)
             {

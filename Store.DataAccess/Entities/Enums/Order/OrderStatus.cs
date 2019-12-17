@@ -4,7 +4,7 @@
     {
         public static class Order
         {
-            public enum Statuses
+            public enum OrderStatus
             {
                 None = 0,
                 Paid = 1,

@@ -47,7 +47,7 @@ namespace Store.BusinessLogic.Services
 
             int counter = 0;
 
-            orders = filterModel.SortProperty == Enums.Filter.SortProperties.Amount
+            orders = filterModel.SortProperty == Enums.Filter.SortProperty.Amount
                 ? _orderRepository.GetAllSortedByAmount(filterModel, out counter)
                 : _orderRepository.GetAll(filterModel, out counter);
 

@@ -11,7 +11,7 @@ namespace Store.BusinessLogic.Models.Orders
     {
         public long Id { get; set; }
         public string Description { get; set; }
-        public Enums.Order.Statuses Status { get; set; } = Enums.Order.Statuses.Unpaid;
+        public Enums.Order.OrderStatus Status { get; set; } = Enums.Order.OrderStatus.Unpaid;
         public DateTime? Date { get; set; } = DateTime.Now;
         public decimal OrderPrice { get; set; }
         public UserModelItem User { get; set; } = new UserModelItem();

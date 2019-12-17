@@ -8,14 +8,14 @@ namespace Store.BusinessLogic.Common.Mappers.Filter
     {
         public static FilterModel<DataAccess.Entities.User> MapToEFFilterModel(this UserFilterModel filterBL)
         {
-            var filterDAL = new FilterModel<DataAccess.Entities.User>();
+            var filterDAL = new FilterModel<DataAccess.Entities.User>(); 
             filterDAL.SortProperty = filterBL.SortProperty;
             filterDAL.IsAscending = filterBL.IsAscending;
             filterDAL.StartIndex = filterBL.StartIndex;
             filterDAL.Quantity = filterBL.Quantity;
 
-            filterDAL.Predicate = user => (string.IsNullOrWhiteSpace(filterBL.SearchQuery) || user.FirstName.ToLower().Contains(filterBL.SearchQuery.ToLower())) &&
-                               (filterBL.LockOutStatuses != null && filterBL.LockOutStatuses.Count > 0 && filterBL.LockOutStatuses.Any(s => s == user.LockoutEnabled)) &&
+            filterDAL.Predicate = user => (string.IsNullOrWhiteSpace(filterBL.SearchQuery) || (user.FirstName + " " + user.LastName).ToLower().Contains(filterBL.SearchQuery.ToLower())) &&
+                               (filterBL.LockStatuses != null && filterBL.LockStatuses.Count > 0 && filterBL.LockStatuses.Any(s => s == user.LockoutEnabled)) &&
                                (!user.isRemoved);
 
             return filterDAL;

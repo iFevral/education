@@ -7,6 +7,6 @@ namespace Store.BusinessLogic.Models.Filters
     {
         public string SearchQuery { get; set; }
 
-        public IList<bool> LockOutStatuses { get; set; }
+        public IList<bool> LockStatuses { get; set; }
     }
 }

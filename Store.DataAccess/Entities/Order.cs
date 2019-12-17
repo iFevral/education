@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Store.DataAccess.Entities
 {
     [Table("Orders")]
-    public partial class Order : BaseEntity
+    public class Order : BaseEntity
     {
         public string Description { get; set; }
-        public Enums.Enums.Order.Statuses Status { get; set; }
+        public Enums.Enums.Order.OrderStatus Status { get; set; }
         public long UserId { get; set; }
         public long? PaymentId { get; set; }
 

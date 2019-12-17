@@ -18,6 +18,9 @@ namespace Store.BusinessLogic.Common.Mappers.Order
             
             model.User = new UserModelItem();
             model.User.Id = entity.UserId;
+            model.User.FirstName = entity.User.FirstName;
+            model.User.LastName = entity.User.LastName;
+            model.User.Email = entity.User.Email;
 
             var query = entity.OrderItems
                 .GroupBy(item => item.OrderId)

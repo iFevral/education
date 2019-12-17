@@ -4,7 +4,7 @@
     {
         public static partial class Filter
         {
-            public enum SortProperties
+            public enum SortProperty
             {
                 Id = 1,
                 Name = 2,

@@ -115,7 +115,7 @@ namespace Store.BusinessLogic.Services
                 return resultModel;
             }
 
-            result = await _userRepository.AddToRoleAsync(user.Id, Enums.Role.RoleNames.Client.ToString()); 
+            result = await _userRepository.AddToRoleAsync(user.Id, Enums.Role.RoleName.Client.ToString()); 
             if(!result)
             {
                 resultModel.Errors.Add(Constants.Errors.RoleNotExistsError);

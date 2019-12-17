@@ -3,7 +3,7 @@
 namespace Store.DataAccess.Entities
 {
     [Table("OrderItems")]
-    public partial class OrderItem : BaseEntity
+    public class OrderItem : BaseEntity
     {
         public int Amount { get; set; } = 1;
         public long PrintingEditionId { get; set; }

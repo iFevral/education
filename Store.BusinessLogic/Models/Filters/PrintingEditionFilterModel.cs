@@ -10,6 +10,6 @@ namespace Store.BusinessLogic.Models.Filters
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
         public IList<int> Types { get; set; }
-        public Enums.PrintingEditions.Currencies Currency { get; set; } = Enums.PrintingEditions.Currencies.USD;
+        public Enums.PrintingEditions.Currency Currency { get; set; } = Enums.PrintingEditions.Currency.USD;
     }
 }

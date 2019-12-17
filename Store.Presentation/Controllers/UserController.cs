@@ -31,9 +31,9 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]s/{id}")]
         [HttpPost]
-        public async Task<IActionResult> Profile(int id, [FromBody]UserModelItem userModel)
+        public async Task<IActionResult> Profile(long id)
         {
-            userModel = await _userService.GetUserByEmailAsync(userModel.Email);
+            var userModel = await _userService.GetUserAsync(id);
 
             return Ok(userModel);
         }
@@ -57,9 +57,9 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]s/{id}")]
         [HttpDelete]
-        public async Task<IActionResult> Delete(int id, [FromBody]UserModelItem userModel)
+        public async Task<IActionResult> Delete(long id)
         {
-            var model = await _userService.DeleteUserAsync(userModel.Email);
+            var model = await _userService.DeleteUserAsync(id);
 
             return Ok(model);
         }

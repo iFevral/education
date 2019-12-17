@@ -42,9 +42,9 @@ namespace Store.BusinessLogic.Services
             return userModel;
         }
 
-        public async Task<UserModelItem> GetUserByEmailAsync(string email)
+        public async Task<UserModelItem> GetUserAsync(long id)
         {
-            var user = await _userRepository.FindByEmailAsync(email);
+            var user = await _userRepository.FindByIdAsync(id);
             var userModel = new UserModelItem();
             if (user == null)
             {
@@ -78,9 +78,9 @@ namespace Store.BusinessLogic.Services
             return userModel;
         }
 
-        public async Task<BaseModel> DeleteUserAsync(string email)
+        public async Task<BaseModel> DeleteUserAsync(long id)
         {
-            var user = await _userRepository.FindByEmailAsync(email);
+            var user = await _userRepository.FindByIdAsync(id);
             var userModel = new UserModelItem();
             if (user == null)
             {
