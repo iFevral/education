@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Store.BusinessLogic.Common;
@@ -6,6 +8,7 @@ using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Models.Orders;
 using Store.BusinessLogic.Models.Payments;
 using Store.BusinessLogic.Services.Interfaces;
+using Store.DataAccess.Entities.Enums;
 using Store.Presentation.Helpers.Interface;
 
 namespace Store.Presentation.Controllers
@@ -25,12 +28,19 @@ namespace Store.Presentation.Controllers
             _jwtHelper = jwtHelper;
         }
 
-        [Authorize(Roles = Constants.RoleNames.Admin)]
+        [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPost]
-        public async Task<IActionResult> GetAll([FromBody]OrderFilterModel orderFilter)
+        public async Task<IActionResult> GetAll([FromHeader]string Authorization, [FromBody]OrderFilterModel orderFilter)
         {
-            var orderModel = await _orderService.GetAllAsync(orderFilter);
+            var token = Authorization.Substring(7);
+            
+            string userRole = _jwtHelper.GetUserRoleFromToken(token);
+            if (userRole.Equals(Enums.Role.RoleName.Client.ToString()))
+            {
+                orderFilter.UserId = _jwtHelper.GetUserIdFromToken(token);
+            }
 
+            var orderModel = await _orderService.GetAllAsync(orderFilter);
             return Ok(orderModel);
         }
 

@@ -34,9 +34,16 @@ namespace Store.Presentation.Helpers
 
         public long GetUserIdFromToken(string token)
         {
-            JwtSecurityToken refreshToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
-            long id = Convert.ToInt64(refreshToken.Payload.Where(x => x.Key == "nameid").FirstOrDefault().Value);
+            var tokenData = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            long id = Convert.ToInt64(tokenData.Payload.Where(x => x.Key == "nameid").FirstOrDefault().Value);
             return id;
+        }
+
+        public string GetUserRoleFromToken(string token)
+        {
+            JwtSecurityToken tokenData = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            string role = tokenData.Payload.Where(x => x.Key == "role").FirstOrDefault().Value.ToString();
+            return role;
         }
 
         private ICollection<Claim> GetRefreshClaims(UserModelItem userModel)

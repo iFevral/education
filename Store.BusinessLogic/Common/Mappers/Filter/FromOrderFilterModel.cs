@@ -14,8 +14,9 @@ namespace Store.BusinessLogic.Common.Mappers.Filter
             filterDAL.StartIndex = filterBL.StartIndex;
             filterDAL.Quantity = filterBL.Quantity;
             
-            filterDAL.Predicate = order => (filterBL.Statuses != null && filterBL.Statuses.Count > 0 && filterBL.Statuses.Any(s => s == (int)order.Status)) &&
-                            (!order.isRemoved);
+            filterDAL.Predicate = order => (filterBL.Statuses != null && filterBL.Statuses.Count > 0 && filterBL.Statuses.Any(status => status == (int)order.Status)) &&
+                                           (filterBL.UserId == null || filterBL.UserId == order.UserId) &&
+                                           (!order.isRemoved);
             
             return filterDAL;
         }

@@ -127,7 +127,7 @@ namespace Store.BusinessLogic.Services
         
             payment = await _paymentsRepository.FindAsync(p => p.TransactionId.Equals(modelItem.TransactionId));
             order.PaymentId = payment.Id;
-
+            order.Status = Enums.Order.OrderStatus.Paid;
             result = await _orderRepository.UpdateAsync(order);
             if (!result)
             {

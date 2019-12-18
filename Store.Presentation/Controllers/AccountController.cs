@@ -8,6 +8,8 @@ using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Common;
 using Store.BusinessLogic.Helpers.Interface;
 using Store.Presentation.Helpers.Interface;
+using Store.DataAccess.Entities.Enums;
+using System;
 
 namespace Store.Presentation.Controllers
 {
@@ -35,14 +37,13 @@ namespace Store.Presentation.Controllers
 
         [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPost]
-        public async Task<IActionResult> Profile([FromHeader]string authorization)
+        public async Task<IActionResult> Profile([FromHeader]string Authorization)
         {
-            string token = authorization.Substring(7);
+            string token = Authorization.Substring(7);
             long userId = _jwtHelper.GetUserIdFromToken(token);
             var userModel = await _accountService.GetUserByIdAsync(userId);
 
             return Ok(userModel);
-
         }
 
         [Route("~/[controller]/[action]")]
@@ -91,8 +92,8 @@ namespace Store.Presentation.Controllers
             return Ok(emailConfirmationModel);
         }
 
-        [HttpPatch]
         [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
+        [HttpPatch]
         public async Task<IActionResult> Edit([FromHeader]string Authorization, [FromBody] SignUpModel signUpModel)
         {
             var token = Authorization.Substring(7);
@@ -125,6 +126,18 @@ namespace Store.Presentation.Controllers
             await _emailHelper.Send(resetPasswordModel.Email, subject, body);
 
             return Ok(resetPasswordModel);
+        }
+
+        [Route("~/[controller]/[action]")]
+        [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
+        [HttpPost]
+        public async Task<IActionResult> GetRole([FromHeader] string Authorization)
+        {
+            string token = Authorization.Substring(7);
+            string roleName = _jwtHelper.GetUserRoleFromToken(token);
+            Enum.TryParse(roleName, out Enums.Role.RoleName role);
+
+            return Ok(role);
         }
 
         [Route("~/[action]")]
