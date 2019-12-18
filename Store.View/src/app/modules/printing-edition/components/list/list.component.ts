@@ -44,7 +44,8 @@ export class PrintingEditionListComponent implements OnInit {
         this.filterModel.quantity = this.pageSize;
         this.filterModel.currency = PrintingEditionCurrency.USD;
 
-        this.printingEditionService.getAll(this.filterModel).subscribe((data) => {
+        this.printingEditionService.getAll<PrintingEditionFilterModel>(this.filterModel)
+        .subscribe((data: PrintingEditionModel) => {
             this.printingEditionModel = data;
             this.paginator.length = data.counter;
         });
@@ -85,7 +86,7 @@ export class PrintingEditionListComponent implements OnInit {
     }
 
     public applyFilters() {
-        this.printingEditionService.getAll(this.filterModel).subscribe((data) => {
+        this.printingEditionService.getAll<PrintingEditionFilterModel>(this.filterModel).subscribe((data: PrintingEditionModel) => {
             this.printingEditionModel = data;
             this.paginator.length = data.counter;
         });

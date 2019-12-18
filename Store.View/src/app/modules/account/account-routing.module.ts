@@ -5,7 +5,8 @@ import { Routes, RouterModule } from '@angular/router';
 import {
     SignInComponent,
     SignUpComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    ProfileComponent
 } from '.';
 
 const accountRoutes: Routes = [
@@ -14,7 +15,8 @@ const accountRoutes: Routes = [
         children: [
             { path: 'SignIn', component: SignInComponent, data: { animation: 'SignIn' } },
             { path: 'SignUp', component: SignUpComponent, data: { animation: 'SignUp' } },
-            { path: 'ResetPassword', component: ResetPasswordComponent, data: { animation: 'ResetPassword' } }
+            { path: 'ResetPassword', component: ResetPasswordComponent, data: { animation: 'ResetPassword' } },
+            { path: 'Profile', component: ProfileComponent, data: { animation: 'Profile' } }
         ]
     }
 ];

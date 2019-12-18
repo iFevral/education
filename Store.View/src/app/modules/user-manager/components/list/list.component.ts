@@ -54,7 +54,7 @@ export class UserListComponent implements OnInit {
             UserLockStatus.Active,
             UserLockStatus.Blocked
         ];
-        this.userService.getAll(this.filterModel).subscribe(data => {
+        this.userService.getAll<UserFilterModel>(this.filterModel).subscribe((data: UserModel) => {
             this.userModel = data;
             this.dataSource = new MatTableDataSource(data.items);
             this.paginator.length = data.counter;
@@ -126,7 +126,7 @@ export class UserListComponent implements OnInit {
 
 
     public applyFilters() {
-        this.userService.getAll(this.filterModel).subscribe((data) => {
+        this.userService.getAll<UserFilterModel>(this.filterModel).subscribe((data: UserModel) => {
             this.dataSource = new MatTableDataSource(data.items);
             this.userModel = data;
             this.paginator.length = data.counter;

@@ -7,6 +7,7 @@ export class UserModelItem extends BaseModel {
         public lastName?: string,
         public email?: string,
         public password?: string,
+        public newPassword?: string,
         public isLocked?: boolean,
         public roles?: Array<string>
     ) { super(); }

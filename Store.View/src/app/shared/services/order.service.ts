@@ -3,26 +3,18 @@ import { BaseService } from './base/base.service';
 import { HttpClient } from '@angular/common/http';
 import { Constants } from '../constants/constants';
 import { Observable } from 'rxjs';
-import { OrderModel, OrderFilterModel, OrderModelItem } from '../models';
-import { map } from 'rxjs/operators';
+import { OrderModel, BaseModel, PaymentModel } from '../models';
 
 @Injectable({
     providedIn: 'root'
 })
-export class OrderService extends BaseService {
+export class OrderService extends BaseService<OrderModel> {
 
     constructor(protected http: HttpClient) {
         super(http, Constants.apiUrls.orderControllerUrl);
     }
 
-    public getAll(filterModel: OrderFilterModel): Observable<OrderModel> {
-        return this.http.post<OrderModel>(this.url, filterModel)
-            .pipe(map((resultModel: OrderModel) => {
-                resultModel.items.forEach((element: OrderModelItem) => {
-                    const date = new Date(element.date);
-                    element.date = date.toDateString();
-                });
-                return resultModel;
-            }));
+    public addPaymentTransaction(paymentModel: PaymentModel): Observable<BaseModel> {
+        return this.http.patch<PaymentModel>(Constants.apiUrls.orderControllerUrl, paymentModel);
     }
 }

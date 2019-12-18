@@ -25,7 +25,12 @@ export class AuthorListComponent implements OnInit {
     private authorModel: AuthorModel;
     private filterModel: AuthorFilterModel;
 
-    private displayedColumns: string[] = ['id', 'name', 'printingEdition', 'control'];
+    private displayedColumns: string[] = [
+        'id',
+        'name',
+        'printingEdition',
+        'control'
+    ];
     private dataSource: MatTableDataSource<AuthorModelItem>;
 
 
@@ -39,7 +44,7 @@ export class AuthorListComponent implements OnInit {
         this.filterModel = new AuthorFilterModel();
         this.filterModel.quantity = this.pageSize;
 
-        this.authorService.getAll(this.filterModel).subscribe(data => {
+        this.authorService.getAll<AuthorFilterModel>(this.filterModel).subscribe((data: AuthorModel) => {
             this.authorModel = data;
             this.dataSource = new MatTableDataSource(data.items);
             this.paginator.length = data.counter;
@@ -126,9 +131,8 @@ export class AuthorListComponent implements OnInit {
     }
 
     public applyFilters() {
-        this.authorService.getAll(this.filterModel).subscribe((data) => {
+        this.authorService.getAll<AuthorFilterModel>(this.filterModel).subscribe((data: AuthorModel) => {
             this.dataSource = new MatTableDataSource(data.items);
-
             this.authorModel = data;
             this.paginator.length = data.counter;
         });

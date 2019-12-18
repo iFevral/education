@@ -1,0 +1,71 @@
+<section class="author-section">
+    <h1 (click)="applyFilter()">Orders</h1>
+    <hr>
+    <div class="mat-elevation-z8">
+        <table (matSortChange)="setOrder($event); applyFilters()" mat-table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+                <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+                <td mat-cell *matCellDef="let row"> {{row.date}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="productType">
+                <th mat-header-cell *matHeaderCellDef> Category </th>
+                <td mat-cell *matCellDef="let row">
+                    <p *ngFor="let item of row.orderItems">{{allTypes[item.printingEdition.type-1]}}</p>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="title">
+                <th mat-header-cell *matHeaderCellDef> Title </th>
+                <td mat-cell *matCellDef="let row">
+                    <p *ngFor="let item of row.orderItems">{{item.printingEdition.title}}</p>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef> Amount </th>
+                <td mat-cell *matCellDef="let row">
+                    <p *ngFor="let item of row.orderItems">{{item.amount}}</p>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="amount">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Price </th>
+                <td mat-cell *matCellDef="let row"> {{row.orderPrice}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-form-field>
+                        <mat-select [(ngModel)]="this.filterModel.statuses" (selectionChange)="applyFilters()" multiple>
+                            <mat-select-trigger>Status</mat-select-trigger>
+                            <mat-option *ngFor="let status of statuses" [value]="status">
+                                {{allStatuses[status-1]}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <div class="status-value" *ngIf="row.status == 2 then UnpaidOrder else PaidOrder"></div>
+                    <ng-template #UnpaidOrder>
+                        <button mat-raised-button color="primary" (click)="pay(row)">Pay</button>
+                    </ng-template>
+                    <ng-template #PaidOrder>Paid</ng-template>
+                </td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+            </tr>
+        </table>
+
+        <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+            (page)="setAmountOfPrintingEdition(); applyFilters()"></mat-paginator>
+    </div>
+</section>

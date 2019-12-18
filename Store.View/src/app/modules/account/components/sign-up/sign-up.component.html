@@ -61,7 +61,7 @@
         </div>
 
         <div class="input-form-group">
-            <button mat-flat-button color="primary" [disabled]="signUpForm.invalid" (click)="signUp()">Sign Up</button>
+            <button mat-flat-button color="primary" [disabled]="signUpForm.invalid || signUpForm.controls['confirmPassword'].value != signUpForm.controls['password'].value" (click)="signUp()">Sign Up</button>
         </div>
         <br>
         <div class="input-form-group">

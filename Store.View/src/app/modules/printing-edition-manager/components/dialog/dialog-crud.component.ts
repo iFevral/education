@@ -4,7 +4,7 @@ import { DialogData } from './model/dialog-data.model';
 import { CRUDOperations, PrintingEditionType, SortProperty, PrintingEditionCurrency } from '../../../../shared/enums';
 import { Constants } from '../../../../shared/constants/constants';
 import { AuthorService } from '../../../../shared/services';
-import { AuthorFilterModel, AuthorModelItem } from '../../../../shared/models';
+import { AuthorFilterModel, AuthorModelItem, AuthorModel } from '../../../../shared/models';
 
 @Component({
     selector: 'app-dialog-update',
@@ -30,7 +30,7 @@ export class DialogCrudComponent {
 
         const authorFilterModel: AuthorFilterModel = new AuthorFilterModel();
 
-        authorService.getAll(authorFilterModel).subscribe(resultModel => {
+        authorService.getAll<AuthorFilterModel>(authorFilterModel).subscribe((resultModel: AuthorModel) => {
             this.allAuthors = resultModel.items;
         });
 

@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { OrderListComponent } from '.';
+import { OrderListComponent, OrderListByUserComponent } from '.';
 
 const orderRoutes: Routes = [{
     path: 'Orders',
     children: [
-        { path: '', component: OrderListComponent, data: { animation: 'Orders' } }
+        { path: '', component: OrderListComponent, data: { animation: 'Orders' } },
+        { path: 'MyOrders', component: OrderListByUserComponent, data: { animation: 'MyOrders' } }
     ]
 }];
 

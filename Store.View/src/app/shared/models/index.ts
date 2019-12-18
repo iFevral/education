@@ -1,3 +1,4 @@
+export * from './account/account.model';
 export * from './base/base.model';
 export * from './base/base-filter.model';
 export * from './author/author.filter.model';
@@ -8,7 +9,6 @@ export * from './order/order.model';
 export * from './order/order.model.item';
 export * from './order/order-item.model';
 export * from './payment/payment.model';
-export * from './payment/payment.model.item';
 export * from './printing-edition/printing-edition.filter.model';
 export * from './printing-edition/printing-edition.model';
 export * from './printing-edition/printing-edition.model.item';

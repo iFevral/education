@@ -36,7 +36,7 @@
                     </mat-form-field>
                 </th>
                 <td mat-cell *matCellDef="let row">
-                    <mat-slide-toggle class="example-margin" color="primary" [(ngModel)]="row.isLocked"
+                    <mat-slide-toggle class="example-margin" color="warn" [(ngModel)]="row.isLocked"
                         (change)="setLockout(row)"></mat-slide-toggle>
                 </td>
             </ng-container>

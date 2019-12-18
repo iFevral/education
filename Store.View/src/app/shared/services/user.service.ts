@@ -9,14 +9,10 @@ import { BaseService } from './base/base.service';
 @Injectable({
     providedIn: 'root'
 })
-export class UserService extends BaseService {
+export class UserService extends BaseService<UserModel> {
 
     constructor(protected http: HttpClient) {
         super(http, Constants.apiUrls.userControllerUrl);
-    }
-
-    public getAll(filterModel: UserFilterModel): Observable<UserModel> {
-        return this.http.post<UserModel>(this.url, filterModel);
     }
 
     public setLockout(email: string, isLocked: boolean): Observable<BaseModel> {

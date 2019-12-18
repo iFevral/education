@@ -13,6 +13,7 @@ import {
     SignUpComponent,
     ResetPasswordComponent
 } from '.';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
     imports: [
@@ -26,7 +27,8 @@ import {
     declarations: [
         SignUpComponent,
         SignInComponent,
-        ResetPasswordComponent
+        ResetPasswordComponent,
+        ProfileComponent
     ],
     bootstrap: [
         SignInComponent

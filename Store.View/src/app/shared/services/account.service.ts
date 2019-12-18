@@ -5,62 +5,100 @@ import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { TokenModel, UserModelItem, RegistrationResultModel } from '../models';
-import { environment } from '../../../environments/environment';
+import { TokenModel, UserModelItem, RegistrationResultModel, BaseModel } from '../models';
+import { Constants } from '../constants/constants';
+import { RoleName } from '../enums';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
 
     private tokenSubject: BehaviorSubject<TokenModel>;
+    private roleSubject: BehaviorSubject<RoleName>;
 
     constructor(private http: HttpClient, private router: Router) {
-        let model: TokenModel = JSON.parse(localStorage.getItem('tokens'));
-        if (!model) {
-            model = new TokenModel();
+
+        let tokenModel: TokenModel = JSON.parse(localStorage.getItem('tokens'));
+        if (!tokenModel) {
+            tokenModel = new TokenModel();
         }
-        this.tokenSubject = new BehaviorSubject<TokenModel>(model);
+        this.tokenSubject = new BehaviorSubject<TokenModel>(tokenModel);
+
+        let accountModel: RoleName = JSON.parse(localStorage.getItem('role'));
+        if (!accountModel) {
+            accountModel = RoleName.None;
+        }
+        this.roleSubject = new BehaviorSubject<RoleName>(accountModel);
     }
 
     public getTokens(): BehaviorSubject<TokenModel> {
         return this.tokenSubject;
     }
 
+    public setRole(): Observable<RoleName> {
+        return this.http.post<RoleName>(Constants.apiUrls.userRoleUrl, null);
+    }
+
+    public getRole(): BehaviorSubject<RoleName> {
+        return this.roleSubject;
+    }
+
+    public getProfile(): Observable<UserModelItem> {
+        const response = this.http.post<UserModelItem>(Constants.apiUrls.accountControllerUrl, null);
+        return response;
+    }
+
+    public editProfile(userModel: UserModelItem): Observable<BaseModel> {
+        const response = this.http.patch<BaseModel>(Constants.apiUrls.accountControllerUrl, userModel);
+        return response;
+    }
+
     public signIn(email: string, password: string): Observable<TokenModel> {
 
-        const result = this.http.post<TokenModel>(`${environment.apiUrl}/Account/SignIn`, { email, password })
+        const response = this.http.post<TokenModel>(Constants.apiUrls.authenticationUrl, { email, password })
             .pipe(map(data => {
 
                 if (data && data.accessToken && data.refreshToken) {
                     localStorage.setItem('tokens', JSON.stringify(data));
-                    console.log(this.tokenSubject);
                 }
                 return data;
             }));
 
-        result.subscribe(data => {
+        response.subscribe(data => {
+
+            this.setRole().subscribe((result: RoleName) => {
+                localStorage.setItem('role', result.toString());
+                this.roleSubject.next(result);
+            });
+
             this.tokenSubject.next(data);
         });
-        return result;
+        return response;
     }
 
     public signUp(credentials: UserModelItem): Observable<RegistrationResultModel> {
-        const result = this.http.post<RegistrationResultModel>(`${environment.apiUrl}/Account/SignUp`, credentials);
-        return result;
+        const response = this.http.post<RegistrationResultModel>(Constants.apiUrls.authorizationUrl, credentials);
+        return response;
     }
 
     public signOut() {
         const model: TokenModel = new TokenModel();
         localStorage.removeItem('tokens');
+        localStorage.removeItem('role');
         this.tokenSubject.next(model);
-        this.router.navigate(['/']);
+        this.redirectTo('/');
     }
 
     public resetPassword(email: string) {
-        const result = this.http.post<RegistrationResultModel>(`${environment.apiUrl}/Account/ForgotPassword`, { email });
-        return result;
+        const response = this.http.post<RegistrationResultModel>(Constants.apiUrls.passwordResetingUrl, { email });
+        return response;
+    }
+
+    public redirectTo(path: string) {
+        this.router.navigate([path]);
     }
 
     public log() {
+        console.log(localStorage.getItem('role'));
         console.log(localStorage.getItem('tokens'));
         console.log(this.tokenSubject);
     }

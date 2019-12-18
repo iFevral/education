@@ -14,11 +14,11 @@ export class SignInComponent {
 
     constructor(private accountService: AccountService, private router: Router, private messageContainer: MatSnackBar) {
         this.signInForm = new FormGroup({
-            'email': new FormControl('', [
+            email: new FormControl('', [
                 Validators.required,
                 Validators.email
             ]),
-            'password': new FormControl('', [
+            password: new FormControl('', [
                 Validators.required
             ])
         });
@@ -30,7 +30,7 @@ export class SignInComponent {
                 if (result.errors.length > 0) {
                     this.showDialogMessage(result.errors.toString());
                 } else {
-                    this.router.navigate(['/']);
+                    this.accountService.redirectTo('/');
                 }
             });
     }
