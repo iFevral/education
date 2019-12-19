@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { AccountService } from '../../services/account.service';
 import { RoleName } from '../../enums';
 import { TokenModel } from '../../models';
+import { CartComponent } from '../../../modules/order';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'app-header',
@@ -11,7 +13,10 @@ import { TokenModel } from '../../models';
 export class HeaderComponent {
     private isAuthorized: boolean;
     private isAdmin: boolean;
-    constructor(private accountService: AccountService) {
+    constructor(
+        private accountService: AccountService,
+        private dialog: MatDialog
+    ) {
         this.accountService.getTokens().subscribe((tokenModel: TokenModel) => {
             this.isAuthorized = tokenModel.refreshToken != null;
         });
@@ -23,6 +28,17 @@ export class HeaderComponent {
 
     public signOut() {
         this.accountService.signOut();
+    }
+
+    public openCart(): void {
+        const dialogRef = this.dialog.open(CartComponent, {
+            width: '800px'
+        });
+
+        dialogRef.afterClosed()
+            .subscribe((resultModel) => {
+                console.log(resultModel);
+            });
     }
 
     public log() {

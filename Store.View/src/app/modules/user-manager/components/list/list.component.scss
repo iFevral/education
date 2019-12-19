@@ -15,3 +15,12 @@ th {
         width: 4%;
     }
 }
+
+
+.mat-row {
+    &:hover{
+        background: #eee;
+        cursor: pointer;
+    }
+
+}

@@ -4,6 +4,8 @@ export * from './base/base-filter.model';
 export * from './author/author.filter.model';
 export * from './author/author.model';
 export * from './author/author.model.item';
+export * from './order/cart.model';
+export * from './order/cart.model.item';
 export * from './order/order.filter.model';
 export * from './order/order.model';
 export * from './order/order.model.item';

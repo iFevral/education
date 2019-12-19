@@ -69,7 +69,7 @@
             </tr>
         </table>
 
-        <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-            (page)="setAmountOfPrintingEdition(); applyFilters()"></mat-paginator>
+        <mat-paginator [pageSizeOptions]="pageSizeOptions"
+            (page)="setAmountOfOrders(); applyFilters($event)"></mat-paginator>
     </div>
 </section>

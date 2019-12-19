@@ -5,6 +5,7 @@ import { OrderService } from '../../../../shared/services';
 import { SortProperty, OrderStatus } from '../../../../shared/enums';
 import { Constants } from '../../../../shared/constants/constants';
 import { map } from 'rxjs/operators';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-list-by-user',
@@ -17,7 +18,6 @@ export class OrderListByUserComponent implements OnInit {
     private allTypes: Array<string>;
 
     private pageSizeOptions = [5, 10, 15, 20];
-    private pageSize = this.pageSizeOptions[0];
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -38,6 +38,8 @@ export class OrderListByUserComponent implements OnInit {
 
 
     constructor(
+        private route: ActivatedRoute,
+        private router: Router,
         private orderService: OrderService,
         private dialog: MatDialog
     ) {
@@ -51,15 +53,20 @@ export class OrderListByUserComponent implements OnInit {
     }
 
     public ngOnInit() {
+        this.paginator.pageSize = this.pageSizeOptions[0];
+        const userId = parseInt(this.route.snapshot.paramMap.get('id'), 10);
         this.filterModel = new OrderFilterModel();
-        this.filterModel.quantity = this.pageSize;
+        this.filterModel.quantity = this.paginator.pageSize;
+        this.filterModel.userId = isNaN(userId)
+            ? null
+            : userId;
+
         this.filterModel.statuses = [1, 2];
 
         this.applyFilters();
     }
 
-    public setAmountOfPrintingEdition() {
-        this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+    public setAmountOfOrders() {
         this.filterModel.quantity = this.paginator.pageSize;
     }
 
@@ -73,7 +80,14 @@ export class OrderListByUserComponent implements OnInit {
             : SortProperty.Id;
     }
 
-    public applyFilters() {
+    public applyFilters(event?) {
+
+        this.paginator.pageIndex = event
+            ? this.paginator.pageIndex
+            : 0;
+
+        this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+
         this.orderService.getAll<OrderFilterModel>(this.filterModel)
             .pipe(map((resultModel: OrderModel) => {
                 resultModel.items.forEach((element: OrderModelItem) => {
@@ -100,7 +114,7 @@ export class OrderListByUserComponent implements OnInit {
                 paymentModel.orderId = order.id;
                 paymentModel.transactionId = paymentLog.id;
                 this.orderService.addPaymentTransaction(paymentModel).subscribe(data => {
-                    if (data.errors.length == 0) {
+                    if (data.errors.length === 0) {
                         this.applyFilters();
                     }
                 });

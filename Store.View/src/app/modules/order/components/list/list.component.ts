@@ -17,7 +17,6 @@ export class OrderListComponent implements OnInit {
     private allTypes: Array<string>;
 
     private pageSizeOptions = [5, 10, 15, 20];
-    private pageSize = this.pageSizeOptions[0];
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -53,15 +52,15 @@ export class OrderListComponent implements OnInit {
     }
 
     public ngOnInit() {
+        this.paginator.pageSize = this.pageSizeOptions[0];
         this.filterModel = new OrderFilterModel();
-        this.filterModel.quantity = this.pageSize;
+        this.filterModel.quantity = this.paginator.pageSize;
         this.filterModel.statuses = [1, 2];
 
         this.applyFilters();
     }
 
-    public setAmountOfPrintingEdition() {
-        this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+    public setAmountOfOrders() {
         this.filterModel.quantity = this.paginator.pageSize;
     }
 
@@ -75,7 +74,13 @@ export class OrderListComponent implements OnInit {
             : SortProperty.Id;
     }
 
-    public applyFilters() {
+    public applyFilters(event?) {
+        this.paginator.pageIndex = event
+            ? this.paginator.pageIndex
+            : 0;
+
+        this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+
         this.orderService.getAll<OrderFilterModel>(this.filterModel)
             .pipe(map((resultModel: OrderModel) => {
                 resultModel.items.forEach((element: OrderModelItem) => {

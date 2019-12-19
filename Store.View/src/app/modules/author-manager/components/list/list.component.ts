@@ -51,8 +51,7 @@ export class AuthorListComponent implements OnInit {
         });
     }
 
-    public setAmountOfPrintingEdition() {
-        this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+    public setAmountOfAuthors() {
         this.filterModel.quantity = this.paginator.pageSize;
     }
 
@@ -130,7 +129,14 @@ export class AuthorListComponent implements OnInit {
             : SortProperty.Id;
     }
 
-    public applyFilters() {
+    public applyFilters(event?) {
+
+        this.paginator.pageIndex = event
+            ? this.paginator.pageIndex
+            : 0;
+
+        this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+
         this.authorService.getAll<AuthorFilterModel>(this.filterModel).subscribe((data: AuthorModel) => {
             this.dataSource = new MatTableDataSource(data.items);
             this.authorModel = data;

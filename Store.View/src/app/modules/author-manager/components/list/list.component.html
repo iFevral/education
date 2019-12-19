@@ -47,6 +47,6 @@
         </table>
 
         <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-            (page)="setAmountOfPrintingEdition(); applyFilters()"></mat-paginator>
+            (page)="setAmountOfAuthors(); applyFilters($event)"></mat-paginator>
     </div>
 </section>

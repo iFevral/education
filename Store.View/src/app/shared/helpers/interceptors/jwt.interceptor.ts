@@ -76,7 +76,9 @@ export class JwtInterceptor implements HttpInterceptor {
         }
 
         if (isRefresh) {
-            url = Constants.apiUrls.refreshTokenUrl;
+            const flag = localStorage.getItem('isRememberMeActivated');
+            const isRememberMeActivated: boolean = flag ? Boolean(flag) : false;
+            url = Constants.apiUrls.refreshTokenUrl + isRememberMeActivated;
             method = 'POST';
         }
 

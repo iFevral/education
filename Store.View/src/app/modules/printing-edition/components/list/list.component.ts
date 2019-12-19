@@ -27,14 +27,36 @@ export class PrintingEditionListComponent implements OnInit {
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
     private types: Array<string>;
-    private currencies: Array<string>;
+    private currencies: Array<PrintingEditionCurrency>;
+    private allCurrencies: Array<string>;
     private sortProperties: Array<SortProperty>;
     private allSortProperties: Array<string>;
 
     private filterModel: PrintingEditionFilterModel;
     private printingEditionModel: PrintingEditionModel;
 
+    constructor(private printingEditionService: PrintingEditionService) {
+    }
+
     public ngOnInit() {
+        this.types = Constants.enumsAttributes.printingEditionTypes;
+        this.allCurrencies = Constants.enumsAttributes.printingEditionCurrencies;
+        this.currencies = [
+            PrintingEditionCurrency.USD,
+            PrintingEditionCurrency.EUR,
+            PrintingEditionCurrency.GBP,
+            PrintingEditionCurrency.CHF,
+            PrintingEditionCurrency.JPY,
+            PrintingEditionCurrency.UAH
+        ];
+
+        this.sortProperties = [
+            SortProperty.Date,
+            SortProperty.Price
+        ];
+
+        this.allSortProperties = Constants.enumsAttributes.sortProperties;
+
         this.filterModel = new PrintingEditionFilterModel();
         this.filterModel.types = [
             PrintingEditionType.Books,
@@ -43,25 +65,14 @@ export class PrintingEditionListComponent implements OnInit {
         ];
         this.filterModel.quantity = this.pageSize;
         this.filterModel.currency = PrintingEditionCurrency.USD;
-
+        this.filterModel.sortProperty = SortProperty.Price;
         this.printingEditionService.getAll<PrintingEditionFilterModel>(this.filterModel)
-        .subscribe((data: PrintingEditionModel) => {
-            this.printingEditionModel = data;
-            this.paginator.length = data.counter;
-        });
+            .subscribe((data: PrintingEditionModel) => {
+                this.printingEditionModel = data;
+                this.paginator.length = data.counter;
+            });
 
 
-    }
-
-    constructor(private printingEditionService: PrintingEditionService) {
-
-        this.types = Constants.enumsAttributes.printingEditionTypes;
-        this.currencies = Constants.enumsAttributes.printingEditionCurrencies;
-        this.sortProperties = [
-            SortProperty.Date,
-            SortProperty.Price
-        ];
-        this.allSortProperties = Constants.enumsAttributes.sortProperties;
     }
 
     public onCheckboxChecked(event, element) {
@@ -81,11 +92,17 @@ export class PrintingEditionListComponent implements OnInit {
     }
 
     public setAmountOfPrintingEdition() {
-        this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
         this.filterModel.quantity = this.paginator.pageSize;
     }
 
-    public applyFilters() {
+    public applyFilters(event) {
+
+        this.paginator.pageIndex = event
+            ? this.paginator.pageIndex
+            : 0;
+
+        this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+
         this.printingEditionService.getAll<PrintingEditionFilterModel>(this.filterModel).subscribe((data: PrintingEditionModel) => {
             this.printingEditionModel = data;
             this.paginator.length = data.counter;

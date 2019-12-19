@@ -6,7 +6,7 @@ const orderRoutes: Routes = [{
     path: 'Orders',
     children: [
         { path: '', component: OrderListComponent, data: { animation: 'Orders' } },
-        { path: 'MyOrders', component: OrderListByUserComponent, data: { animation: 'MyOrders' } }
+        { path: ':id', component: OrderListByUserComponent, data: { animation: 'Orders' } }
     ]
 }];
 

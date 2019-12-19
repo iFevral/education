@@ -15,8 +15,7 @@ export class PrintingEditionManagerListComponent implements OnInit {
 
     private allTypes: Array<string>;
     private types: Array<PrintingEditionType>;
-    private pageSizeOptions = [5, 10, 15, 20];
-    private pageSize = this.pageSizeOptions[0];
+    private pageSizeOptions = [2, 10, 15, 20];
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -48,24 +47,20 @@ export class PrintingEditionManagerListComponent implements OnInit {
     }
 
     public ngOnInit() {
+        this.paginator.pageSize = this.pageSizeOptions[0];
         this.filterModel = new PrintingEditionFilterModel();
         this.filterModel.types = [
             PrintingEditionType.Books,
             PrintingEditionType.Magazines,
             PrintingEditionType.Newspapers
         ];
-        this.filterModel.quantity = this.pageSize;
+        this.filterModel.quantity = this.paginator.pageSize;
         this.filterModel.currency = PrintingEditionCurrency.USD;
 
-        this.printingEditionService.getAll<PrintingEditionFilterModel>(this.filterModel).subscribe((data: PrintingEditionModel) => {
-            this.printingEditionModel = data;
-            this.dataSource = new MatTableDataSource(data.items);
-            this.paginator.length = data.counter;
-        });
+        this.applyFilters();
     }
 
     public setAmountOfPrintingEdition() {
-        this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
         this.filterModel.quantity = this.paginator.pageSize;
     }
 
@@ -144,8 +139,14 @@ export class PrintingEditionManagerListComponent implements OnInit {
             : SortProperty.Id;
     }
 
-    public applyFilters() {
-        console.log(this.filterModel.types);
+    public applyFilters(event?) {
+
+        this.paginator.pageIndex = event
+            ? this.paginator.pageIndex
+            : 0;
+
+        this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+
         this.printingEditionService.getAll<PrintingEditionFilterModel>(this.filterModel).subscribe((data: PrintingEditionModel) => {
             this.dataSource = new MatTableDataSource(data.items);
 

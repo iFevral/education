@@ -52,9 +52,9 @@ export class AccountService {
         return response;
     }
 
-    public signIn(email: string, password: string): Observable<TokenModel> {
+    public signIn(email: string, password: string, isRememberMeActivated: boolean): Observable<TokenModel> {
 
-        const response = this.http.post<TokenModel>(Constants.apiUrls.authenticationUrl, { email, password })
+        const response = this.http.post<TokenModel>(Constants.apiUrls.authenticationUrl + isRememberMeActivated, { email, password })
             .pipe(map(data => {
 
                 if (data && data.accessToken && data.refreshToken) {
@@ -82,8 +82,7 @@ export class AccountService {
 
     public signOut() {
         const model: TokenModel = new TokenModel();
-        localStorage.removeItem('tokens');
-        localStorage.removeItem('role');
+        localStorage.clear();
         this.tokenSubject.next(model);
         this.redirectTo('/');
     }

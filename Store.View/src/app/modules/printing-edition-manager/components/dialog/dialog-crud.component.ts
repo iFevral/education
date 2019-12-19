@@ -45,12 +45,7 @@ export class DialogCrudComponent {
 
         this.allCurrencies = Constants.enumsAttributes.printingEditionCurrencies;
         this.currencies = [
-            PrintingEditionCurrency.USD,
-            PrintingEditionCurrency.EUR,
-            PrintingEditionCurrency.GBP,
-            PrintingEditionCurrency.CHF,
-            PrintingEditionCurrency.JPY,
-            PrintingEditionCurrency.UAH,
+            PrintingEditionCurrency.USD
         ];
 
         switch (data.type) {

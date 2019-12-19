@@ -2,7 +2,7 @@ import { environment } from '../../../environments/environment';
 
 export class ApiUrls {
     public apiUrl = environment.apiUrl;
-    public refreshTokenUrl = `${this.apiUrl}/RefreshToken`;
+    public refreshTokenUrl = `${this.apiUrl}/RefreshToken/?isRememberMeActivated=`;
  
     public userControllerUrl = `${this.apiUrl}/Users/`;
     public orderControllerUrl = `${this.apiUrl}/Orders/`;
@@ -10,7 +10,7 @@ export class ApiUrls {
     public accountControllerUrl = `${this.apiUrl}/Account/`;
     public printingEditionControllerUrl = `${this.apiUrl}/PrintingEditions/`;
 
-    public authenticationUrl = `${this.accountControllerUrl}SignIn/`;
+    public authenticationUrl = `${this.accountControllerUrl}SignIn/?isRememberMeActivated=`;
     public authorizationUrl = `${this.accountControllerUrl}SignUp/`;
     public passwordResetingUrl = `${this.accountControllerUrl}ForgotPassword/`;
     public emailConfirmingUrl = `${this.accountControllerUrl}ConfirmEmail/`;

@@ -18,6 +18,8 @@ import { UserManagerModule } from './modules/user-manager/user-manager.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent, FooterComponent, HomeComponent } from './shared/components/';
 import { AccountService } from './shared/services';
+import { CartComponent } from './modules/order';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -38,6 +40,9 @@ import { AccountService } from './shared/services';
         PrintingEditionModule,
         PrintingEditionManagerModule,
         UserManagerModule
+    ],
+    entryComponents: [
+        CartComponent
     ],
     providers: [
         AccountService,

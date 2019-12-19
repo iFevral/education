@@ -13,15 +13,15 @@
                 <div class="sidenav-filter-price">
                     <h4>Price</h4>
                     <mat-form-field class="price-form">
-                        <input matInput type="number" placeholder="Min value" [(ngModel)]="this.filterModel.minPrice"
-                            (focusout)="applyFilters()">
-                        <span matPrefix>$</span>
+                        <input matInput autocomplete="off" type="number" placeholder="Min value"
+                            [(ngModel)]="this.filterModel.minPrice" (input)="applyFilters()">
                     </mat-form-field>
+                    <span>{{allCurrencies[this.filterModel.currency - 1]}}</span>
                     <mat-form-field class="price-form">
-                        <input matInput type="number" placeholder="Max value" [(ngModel)]="this.filterModel.maxPrice"
-                            (focusout)="applyFilters()">
-                        <span matPrefix>$</span>
+                        <input matInput autocomplete="off" type="number" placeholder="Max value"
+                            [(ngModel)]="this.filterModel.maxPrice" (input)="applyFilters()">
                     </mat-form-field>
+                    <span>{{allCurrencies[this.filterModel.currency - 1]}}</span>
                 </div>
             </div>
         </mat-sidenav>
@@ -41,14 +41,15 @@
                     <mat-form-field>
                         <mat-select placeholder="Currency" [(ngModel)]="this.filterModel.currency"
                             (selectionChange)="applyFilters()">
-                            <mat-option *ngFor="let currency of currencies" [value]="currency">{{currency}}</mat-option>
+                            <mat-option *ngFor="let currency of currencies" [value]="currency">
+                                {{allCurrencies[currency - 1]}}</mat-option>
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field>
                         <mat-select placeholder="Sort by" [(ngModel)]="this.filterModel.sortProperty"
                             (selectionChange)="applyFilters()">
-                            <mat-option *ngFor="let prop of sortProperties" [value]="prop">{{allSortProperties[prop-1]}}</mat-option>
-
+                            <mat-option *ngFor="let prop of sortProperties" [value]="prop">{{allSortProperties[prop-1]}}
+                            </mat-option>
                         </mat-select>
                     </mat-form-field>
                     <button mat-raised-button color="primary" (click)="toggleDataOrder(); applyFilters()">
@@ -61,7 +62,7 @@
                         [printingEdition]="printingEdition"></app-card>
                 </section>
                 <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-                    (page)="setAmountOfPrintingEdition(); applyFilters()">
+                    (page)="setAmountOfPrintingEdition(); applyFilters($event)">
                 </mat-paginator>
             </div>
         </mat-sidenav-content>

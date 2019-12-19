@@ -13,6 +13,7 @@ export class SignInComponent {
     private signInForm: FormGroup;
 
     constructor(private accountService: AccountService, private router: Router, private messageContainer: MatSnackBar) {
+
         this.signInForm = new FormGroup({
             email: new FormControl('', [
                 Validators.required,
@@ -20,12 +21,18 @@ export class SignInComponent {
             ]),
             password: new FormControl('', [
                 Validators.required
-            ])
+            ]),
+            rememberMe: new FormControl('', [])
         });
     }
 
     public signIn() {
-        this.accountService.signIn(this.signInForm.value.email, this.signInForm.value.password)
+        this.signInForm.value.rememberMe = this.signInForm.value.rememberMe
+            ? this.signInForm.value.rememberMe
+            : false;
+        localStorage.setItem('isRemeberMeActivated', this.signInForm.value.rememberMe);
+        this.signInForm.value.rememberMe = false;
+        this.accountService.signIn(this.signInForm.value.email, this.signInForm.value.password, this.signInForm.value.rememberMe)
             .subscribe(result => {
                 if (result.errors.length > 0) {
                     this.showDialogMessage(result.errors.toString());

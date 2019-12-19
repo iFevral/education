@@ -6,6 +6,6 @@
     <mat-card-content>
         <p><span *ngFor="let author of printingEdition.authors">{{author.name}} </span></p>
         <p><a [routerLink]="['/Details/',printingEdition.id]">{{printingEdition.title}}</a></p>
-        <p>${{printingEdition.price.toFixed(2)}}</p>
+        <p>{{printingEdition.price.toFixed(2)}} {{allCurrencies[printingEdition.currency - 1]}}</p>
     </mat-card-content>
 </mat-card>

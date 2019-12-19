@@ -1,13 +1,22 @@
 <section>
-    <h1>Type</h1>
-    <p>{{types[printingEditionModel.type]}}</p>
-    <h1>Title</h1>
-    <p>{{printingEditionModel.title}}</p>
-    <h1>Description</h1>
+    <h1>{{printingEditionModel.title}}</h1>
+    <h3>Type</h3>
+    <p>{{types[printingEditionModel.type - 1]}}</p>
+    <h3>Description</h3>
     <p>{{printingEditionModel.description}}</p>
-    <h1>Price</h1>
-    <p>{{printingEditionModel.price}}</p>
-    <h1>Authors</h1>
+    <h3>Price</h3>
+    <p>${{printingEditionModel.price}}</p>
+    <h3>Authors</h3>
     <p><span *ngFor="let author of printingEditionModel.authors">{{author.name}} </span></p>
-    
+    <div class="cart" *ngIf="isClient">
+        <mat-form-field class="price-form">
+            <input autocomplete="off" matInput type="number" min="1" max="999" placeholder="Quantity"
+                [(ngModel)]="this.cartItem.quantity">
+        </mat-form-field>
+        <div class="btn-cart">
+            <button mat-raised-button color="primary" (click)="addProductToCart()">
+                Add to cart
+            </button>
+        </div>
+    </div>
 </section>

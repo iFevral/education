@@ -51,11 +51,11 @@
                     </mat-form-field>
                 </th>
                 <td mat-cell *matCellDef="let row">
-                    <div class="status-value" *ngIf="row.status == 2 then UnpaidOrder else PaidOrder"></div>
+                    <div class="status-value" *ngIf="(row.status == 2 && !filterModel.userId) then UnpaidOrder else PaidOrder"></div>
                     <ng-template #UnpaidOrder>
                         <button mat-raised-button color="primary" (click)="pay(row)">Pay</button>
                     </ng-template>
-                    <ng-template #PaidOrder>Paid</ng-template>
+                    <ng-template #PaidOrder>{{allStatuses[row.status - 1]}}</ng-template>
                 </td>
             </ng-container>
 
@@ -65,7 +65,7 @@
             </tr>
         </table>
 
-        <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-            (page)="setAmountOfPrintingEdition(); applyFilters()"></mat-paginator>
+        <mat-paginator [pageSizeOptions]="pageSizeOptions"
+            (page)="setAmountOfOrders(); applyFilters($event)"></mat-paginator>
     </div>
 </section>
