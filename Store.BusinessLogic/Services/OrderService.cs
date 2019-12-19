@@ -11,6 +11,7 @@ using Store.BusinessLogic.Common.Mappers.Filter;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
 using Store.DataAccess.Entities.Enums;
+using System.Linq;
 
 namespace Store.BusinessLogic.Services
 {
@@ -69,6 +70,11 @@ namespace Store.BusinessLogic.Services
 
         public async Task<BaseModel> CreateAsync(OrderModelItem modelItem)
         {
+            if(modelItem.OrderItems == null || !modelItem.OrderItems.Any())
+            {
+                modelItem.Errors.Add(Constants.Errors.CreateOrderError);
+                return modelItem;
+            }
             var order = new Order();
 
             order = modelItem.MapToEntity(order);

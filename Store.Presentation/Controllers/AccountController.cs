@@ -48,7 +48,7 @@ namespace Store.Presentation.Controllers
 
         [Route("~/[controller]/[action]")]
         [HttpPost]
-        public async Task<IActionResult> SignIn([FromBody] SignInModel loginData)
+        public async Task<IActionResult> SignIn(bool isRememberMeActivated, [FromBody] SignInModel loginData)
         {
             var userModel = await _accountService.SignInAsync(loginData);
 
@@ -59,14 +59,19 @@ namespace Store.Presentation.Controllers
 
             var tokenModel = new TokenModel();
 
-            tokenModel.AccessToken = _jwtHelper.GenerateToken(userModel,
-                                                                _jwtConfig.GetValue<double>("AccessTokenExpireMinutes"),
-                                                                _jwtConfig.GetValue<string>("SecretKey"),
-                                                                true);
-            tokenModel.RefreshToken = _jwtHelper.GenerateToken(userModel,
-                                                                _jwtConfig.GetValue<double>("RefreshTokenExpireMinutes"),
-                                                                _jwtConfig.GetValue<string>("SecretKey"),
-                                                                false);
+            double tokenLifeTime = _jwtConfig.GetValue<double>("AccessTokenLifeTime");
+            string secretKey = _jwtConfig.GetValue<string>("SecretKey");
+
+
+            tokenModel.AccessToken = _jwtHelper.GenerateToken(userModel, tokenLifeTime, secretKey, true);
+            
+
+            tokenLifeTime = isRememberMeActivated
+                ? _jwtConfig.GetValue<double>("RefreshTokenLifeTimeLong")
+                : _jwtConfig.GetValue<double>("RefreshTokenLifeTime");
+
+
+            tokenModel.RefreshToken = _jwtHelper.GenerateToken(userModel, tokenLifeTime, secretKey, false);
 
             return Ok(tokenModel);
         }
@@ -143,7 +148,7 @@ namespace Store.Presentation.Controllers
         [Route("~/[action]")]
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> RefreshToken([FromHeader]string authorization)
+        public async Task<IActionResult> RefreshToken(bool isRememberMeActivated, [FromHeader]string authorization)
         {
             string token = authorization.Substring(7);
             var userModel = await _accountService.GetUserByIdAsync(_jwtHelper.GetUserIdFromToken(token));
@@ -155,14 +160,16 @@ namespace Store.Presentation.Controllers
 
             var tokenModel = new TokenModel();
 
-            tokenModel.AccessToken = _jwtHelper.GenerateToken(userModel,
-                                                                _jwtConfig.GetValue<double>("AccessTokenExpireMinutes"),
-                                                                _jwtConfig.GetValue<string>("SecretKey"),
-                                                                true);
-            tokenModel.RefreshToken = _jwtHelper.GenerateToken(userModel,
-                                                                _jwtConfig.GetValue<double>("RefreshTokenExpireMinutes"),
-                                                                _jwtConfig.GetValue<string>("SecretKey"),
-                                                                false);
+            double tokenLifeTime = _jwtConfig.GetValue<double>("AccessTokenLifeTime");
+            string secretKey = _jwtConfig.GetValue<string>("SecretKey");
+
+            tokenModel.AccessToken = _jwtHelper.GenerateToken(userModel, tokenLifeTime, secretKey, true);
+
+            tokenLifeTime = isRememberMeActivated
+                ? _jwtConfig.GetValue<double>("RefreshTokenLifeTimeLong")
+                : _jwtConfig.GetValue<double>("RefreshTokenLifeTime");
+
+            tokenModel.RefreshToken = _jwtHelper.GenerateToken(userModel, tokenLifeTime, secretKey, false);
 
             return Ok(tokenModel);
         }

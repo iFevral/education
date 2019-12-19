@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Store.BusinessLogic.Models.Filters;
 using Store.DataAccess.Models.EFFilters;
+using Store.BusinessLogic.Extensions.Currency;
 
 namespace Store.BusinessLogic.Common.Mappers.Filter
 {
@@ -14,9 +15,21 @@ namespace Store.BusinessLogic.Common.Mappers.Filter
             filterDAL.StartIndex = filterBL.StartIndex;
             filterDAL.Quantity = filterBL.Quantity;
 
+            decimal minPriceInUSD = 0;
+            if(filterBL.MinPrice != null)
+            {
+                minPriceInUSD = filterBL.MinPrice.ConvertToUSD(filterBL.Currency);
+            }
+
+            decimal maxPriceInUSD = 0;
+            if (filterBL.MaxPrice != null)
+            {
+                maxPriceInUSD = filterBL.MaxPrice.ConvertToUSD(filterBL.Currency);
+            }
+
             filterDAL.Predicate = printingEdition => (filterBL.Types != null && filterBL.Types.Count > 0 && filterBL.Types.Any(t => t == (int)printingEdition.Type)) &&
-                                           (filterBL.MinPrice == null || printingEdition.Price >= filterBL.MinPrice) &&
-                                           (filterBL.MaxPrice == null || printingEdition.Price <= filterBL.MaxPrice) &&
+                                           (filterBL.MinPrice == null || printingEdition.Price >= minPriceInUSD) &&
+                                           (filterBL.MaxPrice == null || printingEdition.Price <= maxPriceInUSD) &&
                                            (!printingEdition.isRemoved) &&
                                            (string.IsNullOrWhiteSpace(filterBL.SearchQuery) ||
                                             printingEdition.Title.ToLower().Contains(filterBL.SearchQuery.ToLower()) ||

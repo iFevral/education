@@ -9,6 +9,8 @@ using Store.BusinessLogic.Models.PrintingEditions;
 using Store.BusinessLogic.Common.Mappers.PrintingEdition;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
+using Store.BusinessLogic.Helpers.Interface;
+using Store.BusinessLogic.Extensions.Currency;
 
 namespace Store.BusinessLogic.Services
 {
@@ -17,7 +19,6 @@ namespace Store.BusinessLogic.Services
 
         private readonly IPrintingEditionRepository _printingEditionRepository;
         private readonly IAuthorInPrintingEditionRepository _authorInPrintingEditionRepository;
-
         public PrintingEditionService(IPrintingEditionRepository printingEditionRepository,
                                       IAuthorInPrintingEditionRepository authorInPrintingEditionRepository)
         {
@@ -27,6 +28,8 @@ namespace Store.BusinessLogic.Services
 
         public async Task<PrintingEditionModel> GetAllAsync(PrintingEditionFilterModel printingEditionFilterModel)
         {
+
+
             var printingEditionModel = new PrintingEditionModel();
 
             IEnumerable<PrintingEdition> printingEditions;
@@ -46,6 +49,10 @@ namespace Store.BusinessLogic.Services
             foreach( var printingEdition in printingEditions)
             {
                 var item = printingEdition.MapToModel();
+                
+                item.Price = item.Price.ConvertFromUSD(printingEditionFilterModel.Currency);
+                item.Currency = printingEditionFilterModel.Currency;
+
                 printingEditionModel.Items.Add(item);
             }
 

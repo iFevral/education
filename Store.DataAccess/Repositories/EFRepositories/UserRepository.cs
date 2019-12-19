@@ -75,6 +75,7 @@ namespace Store.DataAccess.Repositories.EFRepository
         {
             var user = await FindByEmailAsync(email);
             var result = await _userManager.SetLockoutEnabledAsync(user, false);
+            result = await _userManager.SetLockoutEndDateAsync(user, null);
             return result.Succeeded;
         }
 
