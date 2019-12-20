@@ -5,63 +5,41 @@ import { PrintingEditionService } from '../../../../shared/services';
 import { CRUDOperations, SortProperty, PrintingEditionCurrency, PrintingEditionType } from '../../../../shared/enums';
 import { DialogCrudComponent } from '../dialog/dialog-crud.component';
 import { Constants } from '../../../../shared/constants/constants';
+import { ListComponent } from '../../../../shared/components/base';
 
 @Component({
     selector: 'app-list',
     templateUrl: './list.component.html',
     styleUrls: ['./list.component.scss']
 })
-export class PrintingEditionManagerListComponent implements OnInit {
+export class PrintingEditionManagerListComponent extends ListComponent<PrintingEditionModelItem, PrintingEditionModel, PrintingEditionFilterModel, PrintingEditionService> {
 
     private allTypes: Array<string>;
     private types: Array<PrintingEditionType>;
-    private pageSizeOptions = [2, 10, 15, 20];
-
-    @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-    @ViewChild(MatSort, { static: true }) sort: MatSort;
-
-    private printingEditionModel: PrintingEditionModel;
-    private filterModel: PrintingEditionFilterModel;
-
-    private displayedColumns: string[] = [
-        'id',
-        'title',
-        'description',
-        'type',
-        'authors',
-        'price',
-        'control'];
-    private dataSource: MatTableDataSource<PrintingEditionModelItem>;
-
 
     constructor(
-        private printingEditionService: PrintingEditionService,
+        printingEditionService: PrintingEditionService,
         private dialog: MatDialog
     ) {
+        super(new PrintingEditionFilterModel(), printingEditionService);
+        this.displayedColumns = [
+            'id',
+            'title',
+            'description',
+            'type',
+            'authors',
+            'price',
+            'control'
+        ];
         this.allTypes = Constants.enumsAttributes.printingEditionTypes;
         this.types = [
             PrintingEditionType.Books,
             PrintingEditionType.Magazines,
             PrintingEditionType.Newspapers
         ];
-    }
 
-    public ngOnInit() {
-        this.paginator.pageSize = this.pageSizeOptions[0];
-        this.filterModel = new PrintingEditionFilterModel();
-        this.filterModel.types = [
-            PrintingEditionType.Books,
-            PrintingEditionType.Magazines,
-            PrintingEditionType.Newspapers
-        ];
-        this.filterModel.quantity = this.paginator.pageSize;
+        this.filterModel.types = this.types;
         this.filterModel.currency = PrintingEditionCurrency.USD;
-
-        this.applyFilters();
-    }
-
-    public setAmountOfPrintingEdition() {
-        this.filterModel.quantity = this.paginator.pageSize;
     }
 
     public create(): void {
@@ -77,9 +55,9 @@ export class PrintingEditionManagerListComponent implements OnInit {
         dialogRef.afterClosed()
             .subscribe((resultModel: PrintingEditionModelItem) => {
                 if (resultModel) {
-                    this.printingEditionService.create(resultModel)
+                    this.dataService.create(resultModel)
                         .subscribe(messageModel => {
-                            this.printingEditionService.showDialogMessage(messageModel.errors.toString());
+                            this.dataService.showDialogMessage(messageModel.errors.toString());
                             this.applyFilters();
                         });
                 }
@@ -98,9 +76,9 @@ export class PrintingEditionManagerListComponent implements OnInit {
         dialogRef.afterClosed()
             .subscribe((resultModel: PrintingEditionModelItem) => {
                 if (resultModel) {
-                    this.printingEditionService.update(resultModel)
+                    this.dataService.update(resultModel)
                         .subscribe(messageModel => {
-                            this.printingEditionService.showDialogMessage(messageModel.errors.toString());
+                            this.dataService.showDialogMessage(messageModel.errors.toString());
                             this.applyFilters();
                         });
                 }
@@ -119,39 +97,12 @@ export class PrintingEditionManagerListComponent implements OnInit {
         dialogRef.afterClosed()
             .subscribe((resultModel: PrintingEditionModelItem) => {
                 if (resultModel) {
-                    this.printingEditionService.delete(resultModel.id)
+                    this.dataService.delete(resultModel.id)
                         .subscribe(messageModel => {
-                            this.printingEditionService.showDialogMessage(messageModel.errors.toString());
+                            this.dataService.showDialogMessage(messageModel.errors.toString());
                             this.applyFilters();
                         });
                 }
             });
-    }
-
-    public setOrder(event): void {
-        this.filterModel.IsAscending = this.sort.direction === 'desc'
-            ? false : true;
-
-        const sortProp: string = this.sort.active.charAt(0).toUpperCase() + this.sort.active.slice(1);
-        console.log(this.filterModel.sortProperty);
-        this.filterModel.sortProperty = this.sort.direction !== ''
-            ? SortProperty[sortProp]
-            : SortProperty.Id;
-    }
-
-    public applyFilters(event?) {
-
-        this.paginator.pageIndex = event
-            ? this.paginator.pageIndex
-            : 0;
-
-        this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-
-        this.printingEditionService.getAll<PrintingEditionFilterModel>(this.filterModel).subscribe((data: PrintingEditionModel) => {
-            this.dataSource = new MatTableDataSource(data.items);
-
-            this.printingEditionModel = data;
-            this.paginator.length = data.counter;
-        });
     }
 }

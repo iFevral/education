@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
+import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material';
 
 import { UserModel, UserFilterModel, UserModelItem } from '../../../../shared/models';
 import { UserService } from '../../../../shared/services';
@@ -7,63 +7,37 @@ import { UserService } from '../../../../shared/services';
 import { DialogCrudComponent } from '../dialog/dialog-crud.component';
 
 import { Constants } from '../../../../shared/constants/constants';
-import { CRUDOperations, SortProperty, UserLockStatus } from '../../../../shared/enums';
+import { CRUDOperations, UserLockStatus } from '../../../../shared/enums';
+import { ListComponent } from '../../../../shared/components/base';
 
 @Component({
     selector: 'app-list',
     templateUrl: './list.component.html',
     styleUrls: ['./list.component.scss']
 })
-export class UserListComponent implements OnInit {
-    private pageSizeOptions = [5, 10, 15, 20];
-    private pageSize = this.pageSizeOptions[0];
-
-    @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-    @ViewChild(MatSort, { static: true }) sort: MatSort;
-
-    private userModel: UserModel;
-    private filterModel: UserFilterModel;
-
-    private displayedColumns: string[] = [
-        'id',
-        'firstName',
-        'email',
-        'status',
-        'control'
-    ];
-
-    private dataSource: MatTableDataSource<UserModelItem>;
+export class UserListComponent extends ListComponent<UserModelItem, UserModel, UserFilterModel, UserService> {
     private allStatuses: Array<string>;
     private statuses: Array<UserLockStatus>;
-
     constructor(
-        private userService: UserService,
+        userService: UserService,
         private dialog: MatDialog,
     ) {
+        super(new UserFilterModel(), userService);
+
+        this.displayedColumns = [
+            'id',
+            'firstName',
+            'email',
+            'status',
+            'control'
+        ];
+
         this.allStatuses = Constants.enumsAttributes.userLockStatuses;
         this.statuses = [
             UserLockStatus.Active,
             UserLockStatus.Blocked
         ];
-    }
-
-    public ngOnInit() {
-        this.filterModel = new UserFilterModel();
-        this.filterModel.quantity = this.pageSize;
-        this.filterModel.lockStatuses = [
-            UserLockStatus.Active,
-            UserLockStatus.Blocked
-        ];
-        this.userService.getAll<UserFilterModel>(this.filterModel).subscribe((data: UserModel) => {
-            this.userModel = data;
-            this.dataSource = new MatTableDataSource(data.items);
-            this.paginator.length = data.counter;
-        });
-    }
-
-    public setAmountOfPrintingEdition() {
-        this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-        this.filterModel.quantity = this.paginator.pageSize;
+        this.filterModel.lockStatuses = this.statuses;
     }
 
     public update(inputModel: UserModelItem): void {
@@ -78,9 +52,9 @@ export class UserListComponent implements OnInit {
         dialogRef.afterClosed()
             .subscribe((resultModel: UserModelItem) => {
                 if (resultModel) {
-                    this.userService.update(resultModel)
+                    this.dataService.update(resultModel)
                         .subscribe(messageModel => {
-                            this.userService.showDialogMessage(messageModel.errors.toString());
+                            this.dataService.showDialogMessage(messageModel.errors.toString());
                             this.applyFilters();
                         });
                 }
@@ -99,37 +73,16 @@ export class UserListComponent implements OnInit {
         dialogRef.afterClosed()
             .subscribe((resultModel: UserModelItem) => {
                 if (resultModel) {
-                    this.userService.delete(resultModel.id)
+                    this.dataService.delete(resultModel.id)
                         .subscribe(messageModel => {
-                            this.userService.showDialogMessage(messageModel.errors.toString());
+                            this.dataService.showDialogMessage(messageModel.errors.toString());
                             this.applyFilters();
                         });
                 }
             });
     }
 
-    public setOrder(event): void {
-        this.filterModel.IsAscending = this.sort.direction === 'desc'
-            ? false : true;
-
-        const sortProp: string = this.sort.active.charAt(0).toUpperCase() + this.sort.active.slice(1);
-        this.filterModel.sortProperty = this.sort.direction !== ''
-            ? SortProperty[sortProp]
-            : SortProperty.Id;
-    }
-
     public setLockout(row: UserModelItem): void {
-        this.userService.setLockout(row.email, row.isLocked).subscribe(messageModel => {
-            this.userService.showDialogMessage(messageModel.errors.toString());
-        });
-    }
-
-
-    public applyFilters() {
-        this.userService.getAll<UserFilterModel>(this.filterModel).subscribe((data: UserModel) => {
-            this.dataSource = new MatTableDataSource(data.items);
-            this.userModel = data;
-            this.paginator.length = data.counter;
-        });
+        this.dataService.setLockout(row.email, row.isLocked);
     }
 }

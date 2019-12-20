@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { MatDialogRef, MatTableDataSource } from '@angular/material';
-import { OrderService } from '../../../../shared/services';
+
+import { OrderService, CartService } from '../../../../shared/services';
+
 import { CartModel, CartModelItem } from '../../../../shared/models';
 
 @Component({
@@ -12,43 +14,27 @@ export class CartComponent {
     private title: string;
     private cart: CartModel;
     private total: number;
-    private displayedColumns: string[] = [
-        'title',
-        'price',
-        'quantity',
-        'sum',
-        'control'
-    ];
+    private displayedColumns: string[];
 
     private dataSource: MatTableDataSource<CartModelItem>;
 
     constructor(
-        public dialogRef: MatDialogRef<CartComponent>,
-        public orderService: OrderService
+        private dialogRef: MatDialogRef<CartComponent>,
+        private orderService: OrderService,
+        private cartService: CartService
     ) {
-        this.getCart();
+        this.displayedColumns = [
+            'title',
+            'price',
+            'quantity',
+            'sum',
+            'control'
+        ];
+        this.setCart();
     }
 
-    onClick(): void {
-        this.dialogRef.close();
-    }
-
-    public applyPurchasing() {
-        this.orderService.applyPurchasing();
-        this.onClick();
-    }
-
-    public removeItem(index: number) {
-        this.orderService.removeProductFromCart(index);
-    }
-
-    public changeQuantity(cartItem: CartModelItem) {
-        this.orderService.updateProductinCart(cartItem);
-        this.getCart();
-    }
-
-    public getCart() {
-        this.orderService.getProductsInCart().subscribe((resultModel: CartModel) => {
+    public setCart() {
+        this.cartService.getProductsInCart().subscribe((resultModel: CartModel) => {
             this.dataSource = new MatTableDataSource(resultModel.items);
             this.cart = resultModel;
             this.total = 0;
@@ -56,5 +42,24 @@ export class CartComponent {
                 this.total += element.price * element.quantity;
             });
         });
+    }
+
+    public updateItem(cartItem: CartModelItem) {
+        this.cartService.update(cartItem);
+        this.setCart();
+    }
+
+    public removeItem(index: number) {
+        this.cartService.remove(index);
+    }
+
+    public applyPurchasing() {
+        this.orderService.createOrder(this.cart);
+        this.cartService.clear();
+        this.close();
+    }
+
+    public close(): void {
+        this.dialogRef.close();
     }
 }

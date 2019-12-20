@@ -1,7 +1,5 @@
-import { BaseModel } from '../base/base.model';
-import { UserModelItem } from '..';
+import { BaseListModel } from '../base/base-list.model';
+import { UserModelItem } from './user.model.item';
 
-export class UserModel extends BaseModel {
-    public items: Array<UserModelItem> = new Array<UserModelItem>();
-    public counter: number;
+export class UserModel extends BaseListModel<UserModelItem> {
 }

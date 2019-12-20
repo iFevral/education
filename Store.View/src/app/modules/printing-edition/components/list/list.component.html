@@ -4,7 +4,7 @@
             <div class="sidenav-wrap">
                 <div class="sidenav-filter-categories">
                     <h4>Categories</h4>
-                    <mat-checkbox [checked]="true" color="primary" *ngFor="let type of types;let i = index"
+                    <mat-checkbox [checked]="true" color="primary" *ngFor="let type of allTypes;let i = index"
                         [checked]="type.isChecked" (change)="onCheckboxChecked($event, i+1);applyFilters()">
                         {{type}}
                     </mat-checkbox>
@@ -58,11 +58,11 @@
                 </div>
                 <hr>
                 <section class="cards-container">
-                    <app-card class="app-card-container" *ngFor="let printingEdition of printingEditionModel?.items"
+                    <app-card class="app-card-container" *ngFor="let printingEdition of dataModel?.items"
                         [printingEdition]="printingEdition"></app-card>
                 </section>
                 <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-                    (page)="setAmountOfPrintingEdition(); applyFilters($event)">
+                    (page)="setAmountOfItems(); applyFilters($event)">
                 </mat-paginator>
             </div>
         </mat-sidenav-content>

@@ -8,11 +8,11 @@ import { MaterialElementsModule } from '../../shared/modules';
 
 import {
     AuthorListComponent,
-    DialogCrudComponent
+    AuthorDialogComponent
 } from '.';
 
 @NgModule({
-    declarations: [AuthorListComponent, DialogCrudComponent],
+    declarations: [AuthorListComponent, AuthorDialogComponent],
     imports: [
         CommonModule,
         AuthorRoutingModule,
@@ -20,7 +20,7 @@ import {
         FormsModule
     ],
     entryComponents: [
-        DialogCrudComponent
+        AuthorDialogComponent
     ],
     providers: [AuthorService]
 })

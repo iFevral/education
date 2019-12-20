@@ -1,36 +1,42 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { DialogData } from './model/dialog-data.model';
 import { CRUDOperations } from '../../../../shared/enums';
+import { DialogData, BaseModel } from '../../../../shared/models';
+import { Constants } from '../../../constants/constants';
 
 @Component({
     selector: 'app-dialog-update',
     templateUrl: './dialog-crud.component.html',
     styleUrls: ['./dialog-crud.component.scss']
 })
-export class DialogCrudComponent {
-    private title: string;
-    private isFormVisible: boolean;
+export class DialogCrudComponent<ModelItem extends BaseModel> {
+    protected title: string;
+    protected isFormVisible: boolean;
+    protected titles: Array<string>;
+
     constructor(
-        public dialogRef: MatDialogRef<DialogCrudComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+        public dialogRef: MatDialogRef<DialogCrudComponent<ModelItem>>,
+        @Inject(MAT_DIALOG_DATA) protected data: DialogData<ModelItem>
+    ) {
+        this.titles = Constants.enumsAttributes.crudOperations;
+
         switch (data.type) {
             case CRUDOperations.Create:
-                this.title = 'Add new author';
+                this.title = this.titles[CRUDOperations.Create];
                 this.isFormVisible = true;
                 break;
             case CRUDOperations.Update:
-                this.title = 'Update author';
+                this.title = this.titles[CRUDOperations.Update];
                 this.isFormVisible = true;
                 break;
             case CRUDOperations.Delete:
-                this.title = `Delete "${data.model.name}"?`;
+                this.title = this.titles[CRUDOperations.Delete];
                 this.isFormVisible = false;
                 break;
         }
     }
 
-    onNoClick(): void {
+    onCancelClick(): void {
         this.dialogRef.close();
     }
 }

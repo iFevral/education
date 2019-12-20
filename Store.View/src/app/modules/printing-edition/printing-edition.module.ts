@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { PrintingEditionService, OrderService, AccountService } from '../../shared/services';
+import { PrintingEditionService, AccountService, CartService } from '../../shared/services';
 import { PrintingEditionRoutingModule } from './printing-edition-routing.module';
 
 import { FormsModule } from '@angular/forms';
@@ -22,6 +22,6 @@ import {
         FormsModule,
         FontAwesomeModule
     ],
-    providers: [PrintingEditionService, OrderService, AccountService]
+    providers: [PrintingEditionService, CartService, AccountService]
 })
 export class PrintingEditionModule { }

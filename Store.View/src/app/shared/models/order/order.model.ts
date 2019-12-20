@@ -1,11 +1,5 @@
-import { BaseModel } from '../base/base.model';
 import { OrderModelItem } from './order.model.item';
+import { BaseListModel } from '../base/base-list.model';
 
-export class OrderModel extends BaseModel {
-    constructor(
-        public items?: Array<OrderModelItem>,
-        public counter?: number
-    ) {
-        super();
-    }
+export class OrderModel extends BaseListModel<OrderModelItem> {
 }

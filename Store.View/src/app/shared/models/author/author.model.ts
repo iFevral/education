@@ -1,7 +1,5 @@
-import { BaseModel } from '../base/base.model';
 import { AuthorModelItem } from './author.model.item';
+import { BaseListModel } from '../base/base-list.model';
 
-export class AuthorModel extends BaseModel {
-    public items: Array<AuthorModelItem>;
-    public counter: number;
+export class AuthorModel extends BaseListModel<AuthorModelItem> {
 }

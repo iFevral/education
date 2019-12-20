@@ -11,15 +11,17 @@ import { Constants } from '../../constants/constants';
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
 
-    private tokenModel: BehaviorSubject<TokenModel>;
+    private tokenModel: TokenModel;
 
     constructor(private accountService: AccountService) {
-        this.tokenModel = this.accountService.getTokens();
+        this.accountService.getTokens().subscribe((tokenModel: TokenModel) => {
+            this.tokenModel = tokenModel;
+        });
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const accessToken = this.tokenModel.value
-            ? this.tokenModel.value.accessToken
+        const accessToken = this.tokenModel
+            ? this.tokenModel.accessToken
             : null;
 
         request = this.getRequestWithToken(request, accessToken);
@@ -28,13 +30,14 @@ export class JwtInterceptor implements HttpInterceptor {
             .pipe(catchError(accessError => {
                 if (accessError.status !== 401) {
                     this.accountService.redirectTo('/');
+                    this.accountService.checkRole();
                     throw throwError(accessError);
                 }
 
                 const refreshRequest = this.refreshToken(request, next)
                     .then(() => {
 
-                        const requestWithNewToken = this.getRequestWithToken(request, this.tokenModel.value.accessToken);
+                        const requestWithNewToken = this.getRequestWithToken(request, this.tokenModel.accessToken);
                         const repeatedRequest = next.handle(requestWithNewToken).toPromise().then(response => {
                             return response;
                         });
@@ -49,13 +52,12 @@ export class JwtInterceptor implements HttpInterceptor {
 
     public refreshToken(request: HttpRequest<any>, next: HttpHandler): Promise<HttpEvent<any>> {
 
-        const refreshRequest = this.getRequestWithToken(request, this.tokenModel.value.refreshToken, true);
+        const refreshRequest = this.getRequestWithToken(request, this.tokenModel.refreshToken, true);
 
         const refreshEvent = next.handle(refreshRequest)
             .pipe(tap(data => {
                 if (data instanceof HttpResponse) {
-                    localStorage.setItem('tokens', JSON.stringify(data.body));
-                    this.tokenModel.next(data.body);
+                    this.accountService.setTokens(data.body);
                 }
             }), catchError(err => {
                 if (err.status === 401) {
@@ -76,7 +78,7 @@ export class JwtInterceptor implements HttpInterceptor {
         }
 
         if (isRefresh) {
-            const flag = localStorage.getItem('isRememberMeActivated');
+            const flag = this.accountService.getRememberMeFlag();
             const isRememberMeActivated: boolean = flag ? Boolean(flag) : false;
             url = Constants.apiUrls.refreshTokenUrl + isRememberMeActivated;
             method = 'POST';

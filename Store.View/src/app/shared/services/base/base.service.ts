@@ -7,13 +7,12 @@ import { Observable } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
-export abstract class BaseService<T extends BaseModel> {
+export abstract class BaseService<Model extends BaseModel> {
 
-    private messageContainer: MatSnackBar;
-    constructor(protected http: HttpClient, protected url: string) { }
+    constructor(protected http: HttpClient, protected url: string, protected messageContainer: MatSnackBar) { }
 
-    public getAll<F extends BaseFilterModel>(filterModel: F): Observable<T> {
-        return this.http.post<T>(this.url, filterModel);
+    public getAll<FilterModel extends BaseFilterModel>(filterModel: FilterModel): Observable<Model> {
+        return this.http.post<Model>(this.url, filterModel);
     }
 
     public create(model: BaseModel): Observable<BaseModel> {

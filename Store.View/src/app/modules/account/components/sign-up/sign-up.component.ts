@@ -54,14 +54,7 @@ export class SignUpComponent {
             this.userModel.email = this.signUpForm.value.email;
             this.userModel.password = this.signUpForm.value.password;
 
-            this.accountService.signUp(this.userModel).subscribe(result => {
-                if (result.errors.length > 0) {
-                    this.showDialogMessage(result.errors.toString());
-                } else {
-                    this.showDialogMessage(result.message);
-                    this.router.navigate(['/']);
-                }
-            });
+            this.accountService.signUp(this.userModel);
         }
     }
 

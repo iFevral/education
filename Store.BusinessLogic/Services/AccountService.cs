@@ -130,29 +130,29 @@ namespace Store.BusinessLogic.Services
 
         public async Task<BaseModel> ConfirmEmailAsync(string email, string token)
         {
-            var emailModel = new EmailConfirmationModel();
+            var emailConfirmationModel = new EmailConfirmationModel();
 
             var user = await _userRepository.FindByEmailAsync(email);
             if (user == null)
             {
-                emailModel.Errors.Add(Constants.Errors.UsersNotExistError);
-                return emailModel;
+                emailConfirmationModel.Errors.Add(Constants.Errors.UsersNotExistError);
+                return emailConfirmationModel;
             }
 
             var result = await _userRepository.ConfirmEmailAsync(email, token);
             if (!result)
             {
-                emailModel.Errors.Add(Constants.Errors.EmailConfirmationError);
+                emailConfirmationModel.Errors.Add(Constants.Errors.EmailConfirmationError);
             }
 
             result = await _userRepository.UnlockAsync(user.Email);
             if (!result)
             {
-                emailModel.Errors.Add(Constants.Errors.UserLockError);
-                return emailModel;
+                emailConfirmationModel.Errors.Add(Constants.Errors.UserLockError);
+                return emailConfirmationModel;
             }
 
-            return emailModel;
+            return emailConfirmationModel;
         }
 
         public async Task<ResetPasswordModel> ResetPasswordAsync(string email)

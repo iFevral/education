@@ -1,10 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { DialogData } from './model/dialog-data.model';
-import { CRUDOperations, PrintingEditionType, SortProperty, PrintingEditionCurrency } from '../../../../shared/enums';
+import { CRUDOperations, PrintingEditionType, PrintingEditionCurrency } from '../../../../shared/enums';
 import { Constants } from '../../../../shared/constants/constants';
 import { AuthorService } from '../../../../shared/services';
-import { AuthorFilterModel, AuthorModelItem, AuthorModel } from '../../../../shared/models';
+import { AuthorFilterModel, AuthorModelItem, AuthorModel, DialogData, PrintingEditionModelItem } from '../../../../shared/models';
 
 @Component({
     selector: 'app-dialog-update',
@@ -25,7 +24,7 @@ export class DialogCrudComponent {
     private isFormVisible: boolean;
     constructor(
         public dialogRef: MatDialogRef<DialogCrudComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: DialogData,
+        @Inject(MAT_DIALOG_DATA) public data: DialogData<PrintingEditionModelItem>,
         private authorService: AuthorService) {
 
         const authorFilterModel: AuthorFilterModel = new AuthorFilterModel();

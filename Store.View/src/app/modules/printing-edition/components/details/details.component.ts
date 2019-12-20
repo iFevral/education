@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { PrintingEditionService, OrderService, AccountService } from '../../../../shared/services';
-import { Router, ActivatedRoute } from '@angular/router';
-import { PrintingEditionModelItem, CartModelItem, TokenModel } from '../../../../shared/models';
+import { PrintingEditionService, AccountService, CartService } from '../../../../shared/services';
+import { ActivatedRoute } from '@angular/router';
+import { PrintingEditionModelItem, CartModelItem } from '../../../../shared/models';
 import { Constants } from '../../../../shared/constants/constants';
 import { RoleName } from '../../../../shared/enums';
 
@@ -18,9 +18,8 @@ export class DetailsComponent implements OnInit {
 
     constructor(
         private route: ActivatedRoute,
-        private router: Router,
         private printingEditionService: PrintingEditionService,
-        private orderService: OrderService,
+        private cartService: CartService,
         private accountService: AccountService
     ) {
         this.printingEditionModel = new PrintingEditionModelItem();
@@ -47,7 +46,7 @@ export class DetailsComponent implements OnInit {
 
     public addProductToCart() {
         if (this.cartItem.quantity > 0) {
-            this.orderService.addProductToCart(this.cartItem);
+            this.cartService.add(this.cartItem);
         }
     }
 }

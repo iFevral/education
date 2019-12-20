@@ -1,7 +1,5 @@
-import { BaseModel } from '../base/base.model';
 import { PrintingEditionModelItem } from './printing-edition.model.item';
+import { BaseListModel } from '../base/base-list.model';
 
-export class PrintingEditionModel extends BaseModel {
-    public items: Array<PrintingEditionModelItem> = new Array<PrintingEditionModelItem>();
-    public counter: number;
+export class PrintingEditionModel extends BaseListModel<PrintingEditionModelItem> {
 }

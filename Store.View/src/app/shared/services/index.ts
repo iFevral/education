@@ -1,3 +1,4 @@
+export * from './base/base.service';
 export * from './account.service';
 export * from './author.service';
 export * from './cart.service';

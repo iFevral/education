@@ -60,6 +60,6 @@
         </table>
 
         <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-            (page)="setAmountOfPrintingEdition(); applyFilters()"></mat-paginator>
+            (page)="setAmountOfItems(); applyFilters($event)"></mat-paginator>
     </div>
 </section>

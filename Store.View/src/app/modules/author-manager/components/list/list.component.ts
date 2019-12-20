@@ -1,63 +1,34 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-
+import { Component } from '@angular/core';
 import { AuthorService } from '../../../../shared/services';
 import { AuthorFilterModel, AuthorModel, AuthorModelItem } from '../../../../shared/models';
-import { SortProperty, CRUDOperations } from '../../../../shared/enums';
+import { CRUDOperations } from '../../../../shared/enums';
 import { MatDialog } from '@angular/material';
-import { DialogCrudComponent } from '../dialog/dialog-crud.component';
+import { AuthorDialogComponent } from '../dialog/dialog.component';
+import { ListComponent } from '../../../../shared/components/base';
 
 @Component({
     selector: 'app-list',
     templateUrl: './list.component.html',
     styleUrls: ['./list.component.scss']
 })
-export class AuthorListComponent implements OnInit {
-
-    private pageSizeOptions = [5, 10, 15, 20];
-    private pageSize = this.pageSizeOptions[0];
-
-    @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-    @ViewChild(MatSort, { static: true }) sort: MatSort;
-
-    private authorModel: AuthorModel;
-    private filterModel: AuthorFilterModel;
-
-    private displayedColumns: string[] = [
-        'id',
-        'name',
-        'printingEdition',
-        'control'
-    ];
-    private dataSource: MatTableDataSource<AuthorModelItem>;
-
+export class AuthorListComponent extends ListComponent<AuthorModelItem, AuthorModel, AuthorFilterModel, AuthorService> {
 
     constructor(
-        private authorService: AuthorService,
+        authorService: AuthorService,
         private dialog: MatDialog
     ) {
-    }
-
-    public ngOnInit() {
-        this.filterModel = new AuthorFilterModel();
-        this.filterModel.quantity = this.pageSize;
-
-        this.authorService.getAll<AuthorFilterModel>(this.filterModel).subscribe((data: AuthorModel) => {
-            this.authorModel = data;
-            this.dataSource = new MatTableDataSource(data.items);
-            this.paginator.length = data.counter;
-        });
-    }
-
-    public setAmountOfAuthors() {
-        this.filterModel.quantity = this.paginator.pageSize;
+        super(new AuthorFilterModel(), authorService);
+        this.displayedColumns = [
+            'id',
+            'name',
+            'printingEdition',
+            'control'
+        ];
     }
 
     public create(): void {
         const newAuthorModel = new AuthorModelItem();
-        const dialogRef = this.dialog.open(DialogCrudComponent, {
+        const dialogRef = this.dialog.open(AuthorDialogComponent, {
             width: '400px',
             data: {
                 type: CRUDOperations.Create,
@@ -68,9 +39,9 @@ export class AuthorListComponent implements OnInit {
         dialogRef.afterClosed()
             .subscribe((resultModel: AuthorModelItem) => {
                 if (resultModel) {
-                    this.authorService.create(resultModel)
+                    this.dataService.create(resultModel)
                         .subscribe(messageModel => {
-                            this.authorService.showDialogMessage(messageModel.errors.toString());
+                            this.dataService.showDialogMessage(messageModel.errors.toString());
                             this.applyFilters();
                         });
                 }
@@ -78,7 +49,7 @@ export class AuthorListComponent implements OnInit {
     }
 
     public update(inputModel: AuthorModelItem): void {
-        const dialogRef = this.dialog.open(DialogCrudComponent, {
+        const dialogRef = this.dialog.open(AuthorDialogComponent, {
             width: '400px',
             data: {
                 type: CRUDOperations.Update,
@@ -89,9 +60,9 @@ export class AuthorListComponent implements OnInit {
         dialogRef.afterClosed()
             .subscribe((resultModel: AuthorModelItem) => {
                 if (resultModel) {
-                    this.authorService.update(resultModel)
+                    this.dataService.update(resultModel)
                         .subscribe(messageModel => {
-                            this.authorService.showDialogMessage(messageModel.errors.toString());
+                            this.dataService.showDialogMessage(messageModel.errors.toString());
                             this.applyFilters();
                         });
                 }
@@ -99,7 +70,7 @@ export class AuthorListComponent implements OnInit {
     }
 
     public delete(inputModel: AuthorModelItem): void {
-        const dialogRef = this.dialog.open(DialogCrudComponent, {
+        const dialogRef = this.dialog.open(AuthorDialogComponent, {
             width: '400px',
             data: {
                 type: CRUDOperations.Delete,
@@ -110,37 +81,12 @@ export class AuthorListComponent implements OnInit {
         dialogRef.afterClosed()
             .subscribe((resultModel: AuthorModelItem) => {
                 if (resultModel) {
-                    this.authorService.delete(resultModel.id)
+                    this.dataService.delete(resultModel.id)
                         .subscribe(messageModel => {
-                            this.authorService.showDialogMessage(messageModel.errors.toString());
+                            this.dataService.showDialogMessage(messageModel.errors.toString());
                             this.applyFilters();
                         });
                 }
             });
-    }
-
-    public setOrder(event): void {
-        this.filterModel.IsAscending = this.sort.direction === 'desc'
-            ? false : true;
-
-        const sortProp: string = this.sort.active.charAt(0).toUpperCase() + this.sort.active.slice(1);
-        this.filterModel.sortProperty = this.sort.direction !== ''
-            ? SortProperty[sortProp]
-            : SortProperty.Id;
-    }
-
-    public applyFilters(event?) {
-
-        this.paginator.pageIndex = event
-            ? this.paginator.pageIndex
-            : 0;
-
-        this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-
-        this.authorService.getAll<AuthorFilterModel>(this.filterModel).subscribe((data: AuthorModel) => {
-            this.dataSource = new MatTableDataSource(data.items);
-            this.authorModel = data;
-            this.paginator.length = data.counter;
-        });
     }
 }

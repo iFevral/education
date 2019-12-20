@@ -16,14 +16,13 @@ import { PrintingEditionManagerModule } from './modules/printing-edition-manager
 import { UserManagerModule } from './modules/user-manager/user-manager.module';
 
 import { AppComponent } from './app.component';
-import { HeaderComponent, FooterComponent, HomeComponent } from './shared/components/';
+import { HeaderComponent, FooterComponent } from './shared/components/';
 import { AccountService } from './shared/services';
 import { CartComponent } from './modules/order';
 
 @NgModule({
     declarations: [
         AppComponent,
-        HomeComponent,
         HeaderComponent,
         FooterComponent
     ],
