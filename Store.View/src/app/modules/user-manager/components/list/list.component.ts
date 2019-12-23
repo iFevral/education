@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material';
 import { UserModel, UserFilterModel, UserModelItem } from '../../../../shared/models';
 import { UserService } from '../../../../shared/services';
 
-import { DialogCrudComponent } from '../dialog/dialog-crud.component';
+import { UserDialogComponent } from '../dialog/dialog.component';
 
 import { Constants } from '../../../../shared/constants/constants';
 import { CRUDOperations, UserLockStatus } from '../../../../shared/enums';
@@ -41,7 +41,7 @@ export class UserListComponent extends ListComponent<UserModelItem, UserModel, U
     }
 
     public update(inputModel: UserModelItem): void {
-        const dialogRef = this.dialog.open(DialogCrudComponent, {
+        const dialogRef = this.dialog.open(UserDialogComponent, {
             width: '400px',
             data: {
                 type: CRUDOperations.Update,
@@ -62,7 +62,7 @@ export class UserListComponent extends ListComponent<UserModelItem, UserModel, U
     }
 
     public delete(inputModel: UserModelItem): void {
-        const dialogRef = this.dialog.open(DialogCrudComponent, {
+        const dialogRef = this.dialog.open(UserDialogComponent, {
             width: '400px',
             data: {
                 type: CRUDOperations.Delete,

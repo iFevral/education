@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Store.BusinessLogic.Common;
+using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Authors;
 using Store.BusinessLogic.Models.Filters;
@@ -29,7 +29,7 @@ namespace Store.BusinessLogic
 
             if (authors == null)
             {
-                authorModel.Errors.Add(Constants.Errors.NotFoundAuthorError);
+                authorModel.Errors.Add(Constants.Errors.NotFoundAuthorsError);
                 return authorModel;
             }
 

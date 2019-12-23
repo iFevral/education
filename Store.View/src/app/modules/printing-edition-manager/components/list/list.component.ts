@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
+import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { PrintingEditionModel, PrintingEditionModelItem, PrintingEditionFilterModel } from '../../../../shared/models';
 import { PrintingEditionService } from '../../../../shared/services';
-import { CRUDOperations, SortProperty, PrintingEditionCurrency, PrintingEditionType } from '../../../../shared/enums';
-import { DialogCrudComponent } from '../dialog/dialog-crud.component';
+import { CRUDOperations, PrintingEditionCurrency, PrintingEditionType } from '../../../../shared/enums';
+import { PrintingEditionDialogComponent } from '../dialog/dialog.component';
 import { Constants } from '../../../../shared/constants/constants';
 import { ListComponent } from '../../../../shared/components/base';
 
@@ -43,12 +43,12 @@ export class PrintingEditionManagerListComponent extends ListComponent<PrintingE
     }
 
     public create(): void {
-        const newprintingEditionModel = new PrintingEditionModelItem();
-        const dialogRef = this.dialog.open(DialogCrudComponent, {
+        const newPrintingEditionModel = new PrintingEditionModelItem();
+        const dialogRef = this.dialog.open(PrintingEditionDialogComponent, {
             width: '800px',
             data: {
                 type: CRUDOperations.Create,
-                model: newprintingEditionModel
+                model: newPrintingEditionModel
             }
         });
 
@@ -65,7 +65,7 @@ export class PrintingEditionManagerListComponent extends ListComponent<PrintingE
     }
 
     public update(inputModel: PrintingEditionModelItem): void {
-        const dialogRef = this.dialog.open(DialogCrudComponent, {
+        const dialogRef = this.dialog.open(PrintingEditionDialogComponent, {
             width: '800px',
             data: {
                 type: CRUDOperations.Update,
@@ -86,7 +86,7 @@ export class PrintingEditionManagerListComponent extends ListComponent<PrintingE
     }
 
     public delete(inputModel: PrintingEditionModelItem): void {
-        const dialogRef = this.dialog.open(DialogCrudComponent, {
+        const dialogRef = this.dialog.open(PrintingEditionDialogComponent, {
             width: '400px',
             data: {
                 type: CRUDOperations.Delete,

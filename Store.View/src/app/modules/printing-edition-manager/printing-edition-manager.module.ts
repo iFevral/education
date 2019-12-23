@@ -7,11 +7,11 @@ import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
     PrintingEditionManagerListComponent,
-    DialogCrudComponent
+    PrintingEditionDialogComponent
 } from '.';
 
 @NgModule({
-    declarations: [PrintingEditionManagerListComponent, DialogCrudComponent],
+    declarations: [PrintingEditionManagerListComponent, PrintingEditionDialogComponent],
     imports: [
         FormsModule,
         BrowserModule,
@@ -20,7 +20,7 @@ import {
         PrintingEditionManagerRoutingModule
     ],
     entryComponents: [
-        DialogCrudComponent
+        PrintingEditionDialogComponent
     ],
     providers: [
         PrintingEditionService,

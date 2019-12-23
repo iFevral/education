@@ -11,7 +11,6 @@ namespace Store.BusinessLogic.Common.Mappers.User.SignUp
             entity.LastName = model.LastName;
             entity.UserName = model.Email;
             entity.Email = model.Email;
-
             return entity;
         }
     }

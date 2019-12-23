@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Store.BusinessLogic.Common;
+using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
@@ -48,7 +48,7 @@ namespace Store.BusinessLogic.Services
             var userModel = new UserModelItem();
             if (user == null)
             {
-                userModel.Errors.Add(Constants.Errors.UsersNotExistError);
+                userModel.Errors.Add(Constants.Errors.UserNotExistsError);
                 return userModel;
             }
             userModel = user.MapToModel();

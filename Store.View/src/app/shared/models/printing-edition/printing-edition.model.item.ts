@@ -10,4 +10,5 @@ export class PrintingEditionModelItem extends BaseModel {
     public price?: number;
     public type?: PrintingEditionType;
     public currency?: PrintingEditionCurrency;
+    public image?: string;
 }

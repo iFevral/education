@@ -13,8 +13,11 @@ namespace Store.BusinessLogic.Common.Mappers.User
             model.LastName = entity.LastName;
             model.Email = entity.Email;
             model.IsLocked = entity.LockoutEnabled;
-            model.Roles = new List<string>();
+            model.Avatar = string.IsNullOrWhiteSpace(entity.Avatar) 
+                ? Constants.Constants.Images.DefaultUserAvatar 
+                : entity.Avatar;
 
+            model.Roles = new List<string>();
             return model;
         }
     }

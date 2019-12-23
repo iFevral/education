@@ -10,6 +10,7 @@ namespace Store.DataAccess.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool isRemoved { get; set; }
+        public string Avatar { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
     }

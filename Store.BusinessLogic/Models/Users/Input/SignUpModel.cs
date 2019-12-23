@@ -10,5 +10,6 @@ namespace Store.BusinessLogic.Models.Users
         public string Email { get; set; }
         public string Password { get; set; }
         public string NewPassword { get; set; }
+        public string Avatar { get; set; }
     }
 }

@@ -14,6 +14,7 @@ namespace Store.DataAccess.Entities
         public DateTime? Date { get; set; }
         public Enums.Enums.PrintingEditions.Currency? Currency { get; set; }
         public Enums.Enums.PrintingEditions.PrintingEditionType? Type { get; set; }
+        public string Image { get; set; }
 
         public virtual ICollection<AuthorInPrintingEdition> AuthorInBooks { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; }

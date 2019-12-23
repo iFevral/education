@@ -1,5 +1,4 @@
-﻿
-namespace Store.BusinessLogic.Common
+﻿namespace Store.BusinessLogic.Common.Constants
 {
     public static partial class Constants
     {

@@ -5,11 +5,11 @@ import { UserRoutingModule } from './user-manager-routing.module';
 import { FormsModule } from '@angular/forms';
 import { MaterialElementsModule } from '../../shared/modules';
 
-import { UserListComponent, DialogCrudComponent } from '.';
+import { UserListComponent, UserDialogComponent } from '.';
 import { UserService } from '../../shared/services';
 
 @NgModule({
-    declarations: [UserListComponent, DialogCrudComponent],
+    declarations: [UserListComponent, UserDialogComponent],
     imports: [
         CommonModule,
         FormsModule,
@@ -17,7 +17,7 @@ import { UserService } from '../../shared/services';
         UserRoutingModule
     ],
     entryComponents: [
-        DialogCrudComponent
+        UserDialogComponent
     ],
     providers: [UserService]
 })

@@ -6,4 +6,9 @@
     &:last-child {
         margin-right: 0;
     }
+
+    .mat-card-image {
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+    }
 }

@@ -13,7 +13,7 @@ export class ProfileComponent {
     private isEditMode: boolean = false;
     private editForm: FormGroup;
     private userModel: UserModelItem = new UserModelItem();
-    private passwordConfirmation: string;
+    private passwordConfirmationFormValue: string;
     constructor(private accountService: AccountService) {
 
         this.editForm = new FormGroup({
@@ -54,14 +54,26 @@ export class ProfileComponent {
     }
 
     public editProfile() {
-        this.accountService.editProfile(this.userModel).subscribe(data => {
-            console.log(data);
-        });
+        this.accountService.editProfile(this.userModel);
     }
 
     public cancelEditProfile() {
         this.userModel.password = '';
         this.userModel.newPassword = '';
-        this.passwordConfirmation = '';
+        this.passwordConfirmationFormValue = '';
+    }
+
+    public setAvatar(event) {
+        if (event.target.files.length > 0) {
+            const newImage = event.target.files[0];
+            const fileReader = new FileReader();
+
+            fileReader.onload = (fileLoadedEvent) => {
+                this.userModel.avatar = (<FileReader>fileLoadedEvent.target).result.toString();
+                this.accountService.editProfile(this.userModel);
+            };
+
+            fileReader.readAsDataURL(newImage);
+        }
     }
 }

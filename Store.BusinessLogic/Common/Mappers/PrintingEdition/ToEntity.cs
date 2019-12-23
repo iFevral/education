@@ -15,6 +15,7 @@ namespace Store.BusinessLogic.Common.Mappers.PrintingEdition
             entity.Price = model.Price;
             entity.Currency = model.Currency;
             entity.Type =  model.Type;
+            entity.Image = model.Image;
             entity.AuthorInBooks = new List<AuthorInPrintingEdition>();
             foreach(var author in model.Authors)
             {

@@ -18,6 +18,10 @@ namespace Store.BusinessLogic.Common.Mappers.User.SignUp
                 ? entity.Email
                 : model.Email;
 
+            entity.Avatar = string.IsNullOrWhiteSpace(model.Avatar)
+                ? entity.Avatar
+                : model.Avatar;
+
             return entity;
         }
     }

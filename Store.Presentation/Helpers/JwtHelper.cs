@@ -34,6 +34,7 @@ namespace Store.Presentation.Helpers
 
         public long GetUserIdFromToken(string token)
         {
+            token = RemoveBearerPrefix(token);
             var tokenData = new JwtSecurityTokenHandler().ReadJwtToken(token);
             long id = Convert.ToInt64(tokenData.Payload.Where(x => x.Key == "nameid").FirstOrDefault().Value);
             return id;
@@ -41,10 +42,13 @@ namespace Store.Presentation.Helpers
 
         public string GetUserRoleFromToken(string token)
         {
+            token = RemoveBearerPrefix(token);
             JwtSecurityToken tokenData = new JwtSecurityTokenHandler().ReadJwtToken(token);
             string role = tokenData.Payload.Where(x => x.Key == "role").FirstOrDefault().Value.ToString();
             return role;
         }
+
+
 
         private ICollection<Claim> GetRefreshClaims(UserModelItem userModel)
         {
@@ -70,6 +74,12 @@ namespace Store.Presentation.Helpers
             claims.Add(claim);
 
             return claims;
+        }
+
+        private string RemoveBearerPrefix(string token)
+        {
+            token = token.Substring(7);
+            return token;
         }
     }
 }

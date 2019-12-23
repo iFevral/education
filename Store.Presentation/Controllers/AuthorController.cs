@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Store.BusinessLogic.Common;
+using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Models.Authors;
 using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Services.Interfaces;
@@ -22,7 +22,7 @@ namespace Store.Presentation.Controllers
 
         [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPost]
-        public async Task<IActionResult> GetAll([FromHeader]string Authorization, [FromBody]AuthorFilterModel authorFilter)
+        public async Task<IActionResult> GetAll([FromBody]AuthorFilterModel authorFilter)
         {
             var authorModel = await _authorService.GetAllAsync(authorFilter);
 

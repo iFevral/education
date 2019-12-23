@@ -16,7 +16,6 @@ export abstract class BaseService<Model extends BaseModel> {
     }
 
     public create(model: BaseModel): Observable<BaseModel> {
-        console.log(model);
         return this.http.put<BaseModel>(this.url, model);
     }
 

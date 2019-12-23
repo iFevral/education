@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Store.BusinessLogic.Models.Users;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.BusinessLogic.Common;
+using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Helpers.Interface;
 using Store.Presentation.Helpers.Interface;
 using Store.DataAccess.Entities.Enums;
@@ -37,10 +37,9 @@ namespace Store.Presentation.Controllers
 
         [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPost]
-        public async Task<IActionResult> Profile([FromHeader]string Authorization)
+        public async Task<IActionResult> Profile([FromHeader]string authorization)
         {
-            string token = Authorization.Substring(7);
-            long userId = _jwtHelper.GetUserIdFromToken(token);
+            long userId = _jwtHelper.GetUserIdFromToken(authorization);
             var userModel = await _accountService.GetUserByIdAsync(userId);
 
             return Ok(userModel);
@@ -99,10 +98,9 @@ namespace Store.Presentation.Controllers
 
         [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPatch]
-        public async Task<IActionResult> Edit([FromHeader]string Authorization, [FromBody] SignUpModel signUpModel)
+        public async Task<IActionResult> Edit([FromHeader]string authorization, [FromBody] SignUpModel signUpModel)
         {
-            var token = Authorization.Substring(7);
-            signUpModel.Id = _jwtHelper.GetUserIdFromToken(token);
+            signUpModel.Id = _jwtHelper.GetUserIdFromToken(authorization);
             var model = await _accountService.UpdateProfile(signUpModel);
 
             return Ok(model);
@@ -136,10 +134,9 @@ namespace Store.Presentation.Controllers
         [Route("~/[controller]/[action]")]
         [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPost]
-        public async Task<IActionResult> GetRole([FromHeader] string Authorization)
+        public async Task<IActionResult> GetRole([FromHeader] string authorization)
         {
-            string token = Authorization.Substring(7);
-            string roleName = _jwtHelper.GetUserRoleFromToken(token);
+            string roleName = _jwtHelper.GetUserRoleFromToken(authorization);
             Enum.TryParse(roleName, out Enums.Role.RoleName role);
 
             return Ok(role);
@@ -150,8 +147,7 @@ namespace Store.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> RefreshToken(bool isRememberMeActivated, [FromHeader]string authorization)
         {
-            string token = authorization.Substring(7);
-            var userModel = await _accountService.GetUserByIdAsync(_jwtHelper.GetUserIdFromToken(token));
+            var userModel = await _accountService.GetUserByIdAsync(_jwtHelper.GetUserIdFromToken(authorization));
 
             if (userModel.Errors.Any())
             {

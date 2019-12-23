@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Store.BusinessLogic.Common;
+using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Models.Orders;
 using Store.BusinessLogic.Models.Payments;
@@ -30,14 +28,12 @@ namespace Store.Presentation.Controllers
 
         [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
         [HttpPost]
-        public async Task<IActionResult> GetAll([FromHeader]string Authorization, [FromBody]OrderFilterModel orderFilter)
-        {
-            var token = Authorization.Substring(7);
-            
-            string userRole = _jwtHelper.GetUserRoleFromToken(token);
+        public async Task<IActionResult> GetAll([FromHeader]string authorization, [FromBody]OrderFilterModel orderFilter)
+        {            
+            string userRole = _jwtHelper.GetUserRoleFromToken(authorization);
             if (userRole.Equals(Enums.Role.RoleName.Client.ToString()))
             {
-                orderFilter.UserId = _jwtHelper.GetUserIdFromToken(token);
+                orderFilter.UserId = _jwtHelper.GetUserIdFromToken(authorization);
             }
 
             var orderModel = await _orderService.GetAllAsync(orderFilter);
@@ -56,8 +52,7 @@ namespace Store.Presentation.Controllers
         [HttpPut]
         public async Task<IActionResult> Create([FromHeader]string authorization, [FromBody]OrderModelItem orderModelItem)
         {
-            var token = authorization.Substring(7);
-            orderModelItem.User.Id = _jwtHelper.GetUserIdFromToken(token);
+            orderModelItem.User.Id = _jwtHelper.GetUserIdFromToken(authorization);
             var orderModel = await _orderService.CreateAsync(orderModelItem);
 
             return Ok(orderModel);

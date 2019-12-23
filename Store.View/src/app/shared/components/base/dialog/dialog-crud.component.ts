@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { CRUDOperations } from '../../../../shared/enums';
 import { DialogData, BaseModel } from '../../../../shared/models';
@@ -9,7 +9,7 @@ import { Constants } from '../../../constants/constants';
     templateUrl: './dialog-crud.component.html',
     styleUrls: ['./dialog-crud.component.scss']
 })
-export class DialogCrudComponent<ModelItem extends BaseModel> {
+export class DialogCrudComponent<ModelItem extends BaseModel> implements OnInit {
     protected title: string;
     protected isFormVisible: boolean;
     protected titles: Array<string>;
@@ -20,7 +20,10 @@ export class DialogCrudComponent<ModelItem extends BaseModel> {
     ) {
         this.titles = Constants.enumsAttributes.crudOperations;
 
-        switch (data.type) {
+    }
+
+    public ngOnInit(): void {
+        switch (this.data.type) {
             case CRUDOperations.Create:
                 this.title = this.titles[CRUDOperations.Create];
                 this.isFormVisible = true;
@@ -35,8 +38,7 @@ export class DialogCrudComponent<ModelItem extends BaseModel> {
                 break;
         }
     }
-
-    onCancelClick(): void {
+    public onCancelClick(): void {
         this.dialogRef.close();
     }
 }

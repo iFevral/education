@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Collections.Generic;
-using Store.BusinessLogic.Common;
+using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Services.Interfaces;
@@ -9,7 +9,6 @@ using Store.BusinessLogic.Models.PrintingEditions;
 using Store.BusinessLogic.Common.Mappers.PrintingEdition;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
-using Store.BusinessLogic.Helpers.Interface;
 using Store.BusinessLogic.Extensions.Currency;
 
 namespace Store.BusinessLogic.Services
@@ -40,7 +39,7 @@ namespace Store.BusinessLogic.Services
 
             if (printingEditions == null)
             {
-                printingEditionModel.Errors.Add(Constants.Errors.NotFoundPringtingEditionError);
+                printingEditionModel.Errors.Add(Constants.Errors.NotFoundPrintingEditionsError);
                 return printingEditionModel;
             }
 
@@ -65,7 +64,7 @@ namespace Store.BusinessLogic.Services
             var printingEdition = await _printingEditionRepository.FindByIdAsync(id);
             if (printingEdition == null)
             {
-                printingEditionModel.Errors.Add(Constants.Errors.NotFoundPringtingEditionError);
+                printingEditionModel.Errors.Add(Constants.Errors.NotFoundPrintingEditionError);
                 return printingEditionModel;
             }
 
@@ -82,7 +81,7 @@ namespace Store.BusinessLogic.Services
             var result = await _printingEditionRepository.CreateAsync(printingEdition);
             if (!result)
             {
-                printingEditionModel.Errors.Add(Constants.Errors.CreatePringtingEditionError);
+                printingEditionModel.Errors.Add(Constants.Errors.CreatePrintingEditionError);
             }
 
             return printingEditionModel;
@@ -93,7 +92,7 @@ namespace Store.BusinessLogic.Services
             var printingEdition = await _printingEditionRepository.FindByIdAsync(printingEditionModel.Id);
             if(printingEdition == null)
             {
-                printingEditionModel.Errors.Add(Constants.Errors.NotFoundPringtingEditionError);
+                printingEditionModel.Errors.Add(Constants.Errors.NotFoundPrintingEditionError);
                 return printingEditionModel;
             }
 
@@ -109,7 +108,7 @@ namespace Store.BusinessLogic.Services
             result = await _printingEditionRepository.UpdateAsync(printingEdition);
             if(!result)
             {
-                printingEditionModel.Errors.Add(Constants.Errors.UpdatePringtingEditionError);
+                printingEditionModel.Errors.Add(Constants.Errors.UpdatePrintingEditionError);
             }
 
             return printingEditionModel;
@@ -121,7 +120,7 @@ namespace Store.BusinessLogic.Services
             var printingEdition = await _printingEditionRepository.FindByIdAsync(id);
             if (printingEdition == null)
             {
-                printingEditionModel.Errors.Add(Constants.Errors.NotFoundPringtingEditionError);
+                printingEditionModel.Errors.Add(Constants.Errors.NotFoundPrintingEditionError);
                 return printingEditionModel;
             }
 
@@ -129,7 +128,7 @@ namespace Store.BusinessLogic.Services
             var result = await _printingEditionRepository.UpdateAsync(printingEdition);
             if (!result)
             {
-                printingEditionModel.Errors.Add(Constants.Errors.DeletePringtingEditionError);
+                printingEditionModel.Errors.Add(Constants.Errors.DeletePrintingEditionError);
             }
 
             return printingEditionModel;

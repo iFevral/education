@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Collections.Generic;
-using Store.BusinessLogic.Common;
+using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Orders;
 using Store.BusinessLogic.Models.Filters;
@@ -54,7 +54,7 @@ namespace Store.BusinessLogic.Services
 
             if (orders == null)
             {
-                orderModel.Errors.Add(Constants.Errors.NotFoundOrderError);
+                orderModel.Errors.Add(Constants.Errors.NotFoundOrdersError);
                 return orderModel;
             }
 

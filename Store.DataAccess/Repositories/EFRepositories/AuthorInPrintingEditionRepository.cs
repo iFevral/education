@@ -17,8 +17,14 @@ namespace Store.DataAccess.Repositories.EFRepository
         {
             var authorInPrintingEdition = _dbContext.AuthorInBooks.Where(aib => aib.PrintingEditionId == printingEditionId);
 
+            if(!authorInPrintingEdition.Any())
+            {
+                return true;
+            }
+
             _dbContext.AuthorInBooks.RemoveRange(authorInPrintingEdition);
             var result = await _dbContext.SaveChangesAsync();
+
             return result > 0;
         }
     }

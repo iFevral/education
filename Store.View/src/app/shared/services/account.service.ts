@@ -77,9 +77,12 @@ export class AccountService {
         return this.rememberMeSubject.asObservable();
     }
 
-    public editProfile(userModel: UserModelItem): Observable<BaseModel> {
-        const response = this.http.patch<BaseModel>(Constants.apiUrls.accountControllerUrl, userModel);
-        return response;
+    public editProfile(userModel: UserModelItem): void {
+        this.http.patch<BaseModel>(Constants.apiUrls.accountControllerUrl, userModel).subscribe((resultModel: BaseModel) => {
+            if (resultModel.errors.length > 0) {
+                this.showDialogMessage(resultModel.errors.toString());
+            }
+        });
     }
 
     public signIn(email: string, password: string, rememberMeFlag: boolean) {
@@ -129,6 +132,7 @@ export class AccountService {
         console.log(localStorage.getItem('role'));
         console.log(localStorage.getItem('tokens'));
         console.log(this.tokenSubject);
+        console.log(this.getRole());
     }
 
     private showDialogMessage(message: string) {

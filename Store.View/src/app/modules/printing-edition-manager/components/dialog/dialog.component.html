@@ -14,13 +14,22 @@
         </mat-grid-tile>
         <mat-grid-tile>
             <div class="form-container">
+                <div class="title-image-container">
+                    <div class="img-container" [style.background]="'url(' + data.model.image + ')'">
+                    </div>
+                    <button mat-button (click)="fileInput.click()">
+                        <mat-icon>create</mat-icon>
+                        <input #fileInput type="file" (change)="setTitleImage($event)" style="display:none;" />
+                    </button>
+                </div>
                 <mat-form-field>
                     <mat-select placeholder="Category" [(ngModel)]="data.model.type">
                         <mat-option *ngFor="let type of types" [value]="type">{{allTypes[type - 1]}}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field>
-                    <mat-select placeholder="Authors" (selectionChange)="changeAuthors($event)" [(ngModel)]="authors" multiple>
+                    <mat-select placeholder="Authors" (selectionChange)="changeAuthors($event)" [(ngModel)]="authors"
+                        multiple>
                         <mat-option *ngFor="let author of allAuthors" [value]="author.id">{{author.name}}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -29,7 +38,8 @@
                 </mat-form-field>
                 <mat-form-field>
                     <mat-select placeholder="Currency" [(ngModel)]="data.model.currency">
-                        <mat-option *ngFor="let currency of currencies" [value]="currency">{{allCurrencies[currency - 1]}}</mat-option>
+                        <mat-option *ngFor="let currency of currencies" [value]="currency">
+                            {{allCurrencies[currency - 1]}}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -38,5 +48,5 @@
 </div>
 <div mat-dialog-actions>
     <button mat-button [mat-dialog-close]="data.model" cdkFocusInitial>Ok</button>
-    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button (click)="onCancelClick()">Cancel</button>
 </div>

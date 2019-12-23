@@ -18,3 +18,11 @@ p {
         transform: translateX(-100%);
     }
 }
+
+.img-container {
+    width: 50px;
+    height: 75px;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    float: left;
+}

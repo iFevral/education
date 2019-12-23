@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Models.PrintingEditions;
-using Store.BusinessLogic.Common;
+using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Models.Filters;
 
 namespace Store.Presentation.Controllers

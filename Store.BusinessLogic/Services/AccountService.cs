@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Store.BusinessLogic.Common;
 using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Users;
+using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Services.Interfaces;
 using Store.BusinessLogic.Common.Mappers.User;
 using Store.BusinessLogic.Common.Mappers.User.SignUp;
@@ -111,14 +111,14 @@ namespace Store.BusinessLogic.Services
             user = await _userRepository.FindByEmailAsync(signUpModel.Email);
             if (user == null)
             {
-                resultModel.Errors.Add(Constants.Errors.UserNotExistsError);
+                resultModel.Errors.Add(Constants.Errors.CreateUserError);
                 return resultModel;
             }
 
             result = await _userRepository.AddToRoleAsync(user.Id, Enums.Role.RoleName.Client.ToString()); 
             if(!result)
             {
-                resultModel.Errors.Add(Constants.Errors.RoleNotExistsError);
+                resultModel.Errors.Add(Constants.Errors.CreateUserError);
                 return resultModel;
             }
 

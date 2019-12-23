@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Entities.Enums;
@@ -37,21 +38,22 @@ namespace Store.DataAccess.Initialization
                 await _roleManager.CreateAsync(newRole);
             }
 
-            var user = await _userManager.FindByNameAsync("Admin");
+            var user = await _userManager.FindByEmailAsync("admin@example.com");
             if (user == null)
             {
                 var newUser = new User();
 
                 newUser.UserName = "Admin";
+                newUser.FirstName = "Admin";
                 newUser.LastName = "Admin";
                 newUser.Email = "admin@example.com";
                 newUser.EmailConfirmed = true;
 
                 await _userManager.CreateAsync(newUser, "4f1df324bfb6");
                 await _userManager.SetLockoutEnabledAsync(newUser, false);
+                await _userManager.SetLockoutEndDateAsync(newUser, DateTimeOffset.MinValue);
                 await _userManager.AddToRoleAsync(newUser, "Admin");
             };
-
         }
     }
 }

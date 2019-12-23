@@ -12,6 +12,7 @@ namespace Store.DataAccess.AppContext
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
         }
 
         public virtual DbSet<AuthorInPrintingEdition> AuthorInBooks { get; set; }

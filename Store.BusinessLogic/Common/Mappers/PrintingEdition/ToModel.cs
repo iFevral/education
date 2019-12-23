@@ -1,6 +1,5 @@
 ﻿using Store.BusinessLogic.Models.Authors;
 using Store.BusinessLogic.Models.PrintingEditions;
-using Store.DataAccess.Entities;
 
 namespace Store.BusinessLogic.Common.Mappers.PrintingEdition
 {
@@ -16,7 +15,9 @@ namespace Store.BusinessLogic.Common.Mappers.PrintingEdition
             model.Price = entity.Price;
             model.Currency = entity.Currency;
             model.Type = entity.Type;
-
+            model.Image = string.IsNullOrWhiteSpace(entity.Image)
+                ? Constants.Constants.Images.DefaultPrintingEditionTitle
+                : entity.Image;
             foreach(var item in entity.AuthorInBooks)
             {
                 var author = new AuthorModelItem();

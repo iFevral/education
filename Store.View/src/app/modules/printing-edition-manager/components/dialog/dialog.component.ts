@@ -1,16 +1,17 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { CRUDOperations, PrintingEditionType, PrintingEditionCurrency } from '../../../../shared/enums';
+import { PrintingEditionType, PrintingEditionCurrency } from '../../../../shared/enums';
 import { Constants } from '../../../../shared/constants/constants';
 import { AuthorService } from '../../../../shared/services';
 import { AuthorFilterModel, AuthorModelItem, AuthorModel, DialogData, PrintingEditionModelItem } from '../../../../shared/models';
+import { DialogCrudComponent } from '../../../../shared/components/base';
 
 @Component({
     selector: 'app-dialog-update',
-    templateUrl: './dialog-crud.component.html',
-    styleUrls: ['./dialog-crud.component.scss']
+    templateUrl: './dialog.component.html',
+    styleUrls: ['./dialog.component.scss']
 })
-export class DialogCrudComponent {
+export class PrintingEditionDialogComponent extends DialogCrudComponent<PrintingEditionModelItem> {
 
     private allTypes: Array<string>;
     private allCurrencies: Array<string>;
@@ -20,12 +21,12 @@ export class DialogCrudComponent {
     private allAuthors: Array<AuthorModelItem>;
     private authors: Array<number>;
 
-    private title: string;
-    private isFormVisible: boolean;
     constructor(
-        public dialogRef: MatDialogRef<DialogCrudComponent>,
+        public dialogRef: MatDialogRef<PrintingEditionDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData<PrintingEditionModelItem>,
-        private authorService: AuthorService) {
+        private authorService: AuthorService
+    ) {
+        super(dialogRef, data);
 
         const authorFilterModel: AuthorFilterModel = new AuthorFilterModel();
 
@@ -47,24 +48,6 @@ export class DialogCrudComponent {
             PrintingEditionCurrency.USD
         ];
 
-        switch (data.type) {
-            case CRUDOperations.Create:
-                this.title = 'Add printing edition';
-                this.isFormVisible = true;
-                break;
-            case CRUDOperations.Update:
-                this.title = 'Update printing edition';
-                this.isFormVisible = true;
-                this.data.model.authors.forEach(element => {
-                    this.authors.push(element.id);
-                });
-                break;
-            case CRUDOperations.Delete:
-                this.title = `Delete "${data.model.title}"?`;
-                this.isFormVisible = false;
-                break;
-
-        }
     }
 
     changeAuthors(event) {
@@ -76,7 +59,16 @@ export class DialogCrudComponent {
         });
     }
 
-    onNoClick(): void {
-        this.dialogRef.close();
+    public setTitleImage(event) {
+        if (event.target.files.length > 0) {
+            const newImage = event.target.files[0];
+            const fileReader = new FileReader();
+
+            fileReader.onload = (fileLoadedEvent) => {
+                this.data.model.image = (<FileReader>fileLoadedEvent.target).result.toString();
+            };
+
+            fileReader.readAsDataURL(newImage);
+        }
     }
 }

@@ -25,6 +25,9 @@ export const PageAnimation =
                     animate('1s ease-in-out',
                         style({ transform: 'translateX(0%)', opacity: 1 }))
                 ]), { optional: true }),
+                query(':leave section', [
+                    style({ opacity: '0' })
+                ], { optional: true }),
                 query(':leave', [
                     style({ transform: 'translateX(0%)' }),
                     animate('0.5s ease-in-out',

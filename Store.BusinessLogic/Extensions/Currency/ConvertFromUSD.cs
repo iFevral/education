@@ -1,4 +1,4 @@
-﻿using Store.BusinessLogic.Common;
+﻿using Store.BusinessLogic.Common.Constants;
 using Store.DataAccess.Entities.Enums;
 
 namespace Store.BusinessLogic.Extensions.Currency
