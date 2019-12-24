@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AccountService } from '../../services/account.service';
 import { RoleName } from '../../enums';
-import { TokenModel } from '../../models';
+import { TokenModel, UserModelItem } from '../../models';
 import { CartComponent } from '../../../modules/order';
 import { MatDialog } from '@angular/material';
 import { CartService } from '../../services';
@@ -15,6 +15,7 @@ export class HeaderComponent {
     private isAuthorized: boolean;
     private isAdmin: boolean;
     private badge: number;
+    private userModel: UserModelItem;
 
     constructor(
         private accountService: AccountService,
@@ -25,8 +26,9 @@ export class HeaderComponent {
             this.isAuthorized = tokenModel.refreshToken != null;
         });
 
-        this.accountService.getRole().subscribe((role: RoleName) => {
-            this.isAdmin = role === RoleName.Admin;
+        this.accountService.getProfile().subscribe((resultModel: UserModelItem) => {
+            this.isAdmin = RoleName[resultModel.roles[0]] === RoleName.Admin;
+            this.userModel = resultModel;
         });
 
         this.cartService.getProductsInCart().subscribe((resultModel) => {
@@ -47,9 +49,5 @@ export class HeaderComponent {
             .subscribe((resultModel) => {
                 console.log(resultModel);
             });
-    }
-
-    public log() {
-        this.accountService.log();
     }
 }

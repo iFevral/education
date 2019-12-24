@@ -1,18 +1,19 @@
 $white: #ffffff;
-$purple: #3f51b5;
-$purple-active: #5367d8;
-
+$white-active: #eeeeee;
+$aqua: #49c593;
+$aqua-active: rgb(69, 156, 121);
 header {
-    background-color: $purple;
+    background-color: $white;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     padding: 0px 16px;
+    z-index: 2;
 }
 
-button {
+.nav-button {
     margin-right: 5px;
-    padding: 8px;
+    padding: 14px;
     border-radius: 0;
 }
 
@@ -34,6 +35,25 @@ button {
 }
 
 .mat-button--active {
-    background-color: $purple-active;
+    background-color: $aqua;
     color: $white;
+
+    &:hover {
+        background-color: $aqua-active;
+    }
+}
+
+.navigation-menu-dropdown {
+    .avatar {
+        width: 40px;
+        min-width: 40px;
+        height: 40px;
+        line-height: 40px;
+        margin: 0 8px 0 0;
+        border-radius: 50%;
+        font-size: 17px;
+        font-weight: 600;
+        text-align: center;
+        object-fit: cover;
+    }
 }

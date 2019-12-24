@@ -4,24 +4,24 @@
         <div class="input-form-group">
             <mat-form-field>
                 <input placeholder="Email" name="emailInput" matInput formControlName="email">
+                <mat-error
+                    *ngIf="!signInForm.controls['email'].value && signInForm.controls['email'].touched">
+                    Email can`t be empty
+                </mat-error>
+                <mat-error
+                    *ngIf="signInForm.controls['email'].value && signInForm.controls['email'].invalid && signInForm.controls['email'].touched">
+                    Email is invalid
+                </mat-error>
             </mat-form-field>
-            <div class="alert alert-danger"
-                *ngIf="!signInForm.controls['email'].value && signInForm.controls['email'].touched">
-                Email can`t be empty
-            </div>
-            <div class="alert alert-danger"
-                *ngIf="signInForm.controls['email'].value && signInForm.controls['email'].invalid && signInForm.controls['email'].touched">
-                Email is invalid
-            </div>
         </div>
         <div class="input-form-group">
             <mat-form-field>
                 <input type="password" placeholder="Password" name="passwordInput" matInput formControlName="password">
+                <mat-error
+                    *ngIf="signInForm.controls['password'].invalid && signInForm.controls['password'].touched">
+                    Password can`t be empty
+                </mat-error>
             </mat-form-field>
-            <div class="alert alert-danger"
-                *ngIf="signInForm.controls['password'].invalid && signInForm.controls['password'].touched">
-                Password can`t be empty
-            </div>
         </div>
         <mat-checkbox color="primary" formControlName="rememberMe">Remember me?</mat-checkbox>
         <div class="input-form-group">

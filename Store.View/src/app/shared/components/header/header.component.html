@@ -1,24 +1,33 @@
 <header class="mat-elevation-z6">
     <div class="wrap">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Book_Hexagonal_Icon.svg/892px-Book_Hexagonal_Icon.svg.png" alt="" width="50px" >
-        <button mat-flat-button color="primary" routerLink="/" (click)="log()">Home</button>
-        <span class="nav-btns-managers" *ngIf="isAuthorized && isAdmin">
 
-        </span>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Book_Hexagonal_Icon.svg/892px-Book_Hexagonal_Icon.svg.png"
+            alt="" width="50px">
+        <button class="nav-button" mat-button routerLink="/">Home</button>
+
         <div class="nav-btns-auth" *ngIf="!isAuthorized">
-            <button class="btn-sign-in" mat-flat-button color="primary" routerLink="/Account/SignIn">Sign In</button>
-            <button class="btn-sign-up" mat-stroked-button color="primary" routerLink="/Account/SignUp">Sign Up</button>
+            <button class="nav-button btn-sign-in" mat-flat-button color="primary" routerLink="/Account/SignIn">Sign
+                In</button>
+            <button class="nav-button btn-sign-up" mat-stroked-button color="primary" routerLink="/Account/SignUp">Sign
+                Up</button>
         </div>
+
         <div class="nav-btns-auth" *ngIf="isAuthorized">
-            <button class="btn-cart" mat-flat-button color="primary" (click)="openCart()" *ngIf="!isAdmin">
-                <mat-icon [matBadge]="badge" [matBadgeHidden]="badge <= 0" matBadgePosition="before" matBadgeColor="warn" aria-hidden="false">shopping_cart</mat-icon>
+            <button class="nav-button btn-cart" mat-flat-button color="primary" (click)="openCart()" *ngIf="!isAdmin">
+                <mat-icon [matBadge]="badge" [matBadgeHidden]="badge <= 0" matBadgePosition="before"
+                    matBadgeColor="warn" aria-hidden="false">shopping_cart</mat-icon>
             </button>
 
-            <button mat-button [matMenuTriggerFor]="menu">
-                <mat-icon aria-hidden="false">account_circle</mat-icon>
+            <button class="nav-button navigation-menu-dropdown" mat-button [matMenuTriggerFor]="menu">
+                <img class="avatar" [src]="userModel.avatar" *ngIf="userModel.avatar">
+                <mat-icon aria-hidden="false" *ngIf="!userModel.avatar">account_circle</mat-icon>
+                <span>{{userModel.firstName}} {{userModel.lastName}}</span>
+                <mat-icon>keyboard_arrow_down</mat-icon>
             </button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item routerLink="/Account/Profile">My profile</button>
+
+            <mat-menu class="dropdown-items" #menu="matMenu">
+                <button mat-menu-item routerLink="/Account/Profile" routerLinkActive="mat-button--active">My
+                    profile</button>
                 <button mat-menu-item *ngIf="isAdmin" #AdminPanelItem routerLinkActive="mat-button--active"
                     routerLink="/Orders">Orders
                     managment</button>
@@ -31,7 +40,8 @@
                 <button mat-menu-item *ngIf="isAdmin" #AdminPanelItem routerLinkActive="mat-button--active"
                     routerLink="/Authors">Authors
                     managment</button>
-                <button mat-menu-item routerLink="/Orders/MyOrders">My orders</button>
+                <button mat-menu-item routerLink="/Orders/MyOrders" routerLinkActive="mat-button--active">My
+                    orders</button>
                 <button mat-menu-item (click)="signOut()">Sign Out</button>
             </mat-menu>
         </div>

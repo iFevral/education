@@ -13,9 +13,9 @@ import { MatSnackBar } from '@angular/material';
 export class AccountService {
 
     private tokenSubject: BehaviorSubject<TokenModel>;
-
-    private roleSubject: BehaviorSubject<RoleName>;
+    private profileSubject: BehaviorSubject<UserModelItem>;
     private rememberMeSubject: BehaviorSubject<boolean>;
+
     constructor(private http: HttpClient, private router: Router, private messageContainer: MatSnackBar) {
 
         let tokenModel: TokenModel = JSON.parse(localStorage.getItem('tokens'));
@@ -24,11 +24,11 @@ export class AccountService {
         }
         this.tokenSubject = new BehaviorSubject<TokenModel>(tokenModel);
 
-        let accountModel: RoleName = JSON.parse(localStorage.getItem('role'));
+        let accountModel: UserModelItem = JSON.parse(localStorage.getItem('profile'));
         if (!accountModel) {
-            accountModel = RoleName.None;
+            accountModel = new UserModelItem();
         }
-        this.roleSubject = new BehaviorSubject<RoleName>(accountModel);
+        this.profileSubject = new BehaviorSubject<UserModelItem>(accountModel);
 
         let isRememberMeActivated: boolean = JSON.parse(localStorage.getItem('rememberMeFlag'));
         if (!isRememberMeActivated) {
@@ -46,26 +46,21 @@ export class AccountService {
         return this.tokenSubject.asObservable();
     }
 
-    public checkRole() {
-        this.http.post<RoleName>(Constants.apiUrls.userRoleUrl, null)
+    public setProfile() {
+        this.http.post<UserModelItem>(Constants.apiUrls.accountControllerUrl, null)
             .subscribe(
                 result => {
-                    localStorage.setItem('role', JSON.stringify(result));
-                    this.roleSubject.next(result);
+                    localStorage.setItem('profile', JSON.stringify(result));
+                    this.profileSubject.next(result);
                 },
                 error => {
-                    localStorage.removeItem('role');
+                    localStorage.removeItem('profile');
                 }
             );
     }
 
-    public getRole(): Observable<RoleName> {
-        return this.roleSubject.asObservable();
-    }
-
     public getProfile(): Observable<UserModelItem> {
-        const response = this.http.post<UserModelItem>(Constants.apiUrls.accountControllerUrl, null);
-        return response;
+        return this.profileSubject.asObservable();
     }
 
     public setRememberMeFlag(rememberMeFlag: boolean) {
@@ -90,7 +85,7 @@ export class AccountService {
         this.http.post<TokenModel>(Constants.apiUrls.authenticationUrl + rememberMeFlag, { email, password })
             .subscribe(data => {
                 if (data && data.accessToken && data.refreshToken) {
-                    this.checkRole();
+                    this.setProfile();
                     this.setTokens(data);
                     this.setRememberMeFlag(rememberMeFlag);
                     this.redirectTo('/');
@@ -128,12 +123,6 @@ export class AccountService {
         this.router.navigate([path]);
     }
 
-    public log() {
-        console.log(localStorage.getItem('role'));
-        console.log(localStorage.getItem('tokens'));
-        console.log(this.tokenSubject);
-        console.log(this.getRole());
-    }
 
     private showDialogMessage(message: string) {
         if (message && message !== '') {

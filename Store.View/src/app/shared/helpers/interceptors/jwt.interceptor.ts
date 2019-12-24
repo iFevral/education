@@ -30,7 +30,6 @@ export class JwtInterceptor implements HttpInterceptor {
             .pipe(catchError(accessError => {
                 if (accessError.status !== 401) {
                     this.accountService.redirectTo('/');
-                    this.accountService.checkRole();
                     throw throwError(accessError);
                 }
 

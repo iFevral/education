@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PrintingEditionService, AccountService, CartService } from '../../../../shared/services';
 import { ActivatedRoute } from '@angular/router';
-import { PrintingEditionModelItem, CartModelItem } from '../../../../shared/models';
+import { PrintingEditionModelItem, CartModelItem, UserModelItem } from '../../../../shared/models';
 import { Constants } from '../../../../shared/constants/constants';
 import { RoleName } from '../../../../shared/enums';
 
@@ -25,8 +25,8 @@ export class DetailsComponent implements OnInit {
         this.printingEditionModel = new PrintingEditionModelItem();
         this.types = Constants.enumsAttributes.printingEditionTypes;
 
-        this.accountService.getRole().subscribe((role: RoleName) => {
-            this.isClient = role === RoleName.User;
+        this.accountService.getProfile().subscribe((resultModel: UserModelItem) => {
+            this.isClient = RoleName[resultModel.roles[0]] === RoleName.User;
         });
     }
 

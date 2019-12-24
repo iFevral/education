@@ -1,70 +1,62 @@
-<section class="printing-edition-section">
-    <mat-sidenav-container class="mat-sidenav-container">
-        <mat-sidenav #sidenav mode="side" [(opened)]="isSidebarOpened">
-            <div class="sidenav-wrap">
-                <div class="sidenav-filter-categories">
-                    <h4>Categories</h4>
-                    <mat-checkbox [checked]="true" color="primary" *ngFor="let type of allTypes;let i = index"
-                        [checked]="type.isChecked" (change)="onCheckboxChecked($event, i+1);applyFilters()">
-                        {{type}}
-                    </mat-checkbox>
-                </div>
-                <hr>
-                <div class="sidenav-filter-price">
-                    <h4>Price</h4>
-                    <mat-form-field class="price-form">
-                        <input matInput autocomplete="off" type="number" placeholder="Min value"
-                            [(ngModel)]="this.filterModel.minPrice" (input)="applyFilters()">
-                    </mat-form-field>
-                    <span>{{allCurrencies[this.filterModel.currency - 1]}}</span>
-                    <mat-form-field class="price-form">
-                        <input matInput autocomplete="off" type="number" placeholder="Max value"
-                            [(ngModel)]="this.filterModel.maxPrice" (input)="applyFilters()">
-                    </mat-form-field>
-                    <span>{{allCurrencies[this.filterModel.currency - 1]}}</span>
-                </div>
+<section class="container printing-edition-section">
+    <div class="sidebar-container">
+        <div class="sidebar-item">
+            <mat-form-field class="search-input-field">
+                <input matInput placeholder="Search" [(ngModel)]="this.filterModel.searchQuery"
+                    (input)="applyFilters()">
+            </mat-form-field>
+        </div>
+        <div class="sidebar-item">
+            <mat-form-field>
+                <mat-select placeholder="Currency" [(ngModel)]="this.filterModel.currency"
+                    (selectionChange)="applyFilters()">
+                    <mat-option *ngFor="let currency of currencies" [value]="currency">
+                        {{allCurrencies[currency - 1]}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Sort by" [(ngModel)]="this.filterModel.sortProperty"
+                    (selectionChange)="applyFilters()">
+                    <mat-option *ngFor="let prop of sortProperties" [value]="prop">
+                        {{allSortProperties[prop-1]}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="toggleDataOrder(); applyFilters()">
+                <fa-icon [icon]="sortIcon"></fa-icon>
+            </button>
+        </div>
+        <div class="sidebar-item">
+            <div class="sidenav-filter-categories">
+                <h4>Categories</h4>
+                <mat-checkbox [checked]="true" color="primary" *ngFor="let type of allTypes;let i = index"
+                    [checked]="type.isChecked" (change)="onCheckboxChecked($event, i+1);applyFilters()">
+                    {{type}}
+                </mat-checkbox>
             </div>
-        </mat-sidenav>
-        <mat-sidenav-content>
-            <div class="btn-filter-container">
-                <button class="btn-filter" mat-raised-button color="primary" (click)="sidenav.toggle()">
-                    <fa-icon [icon]="filterIcon"></fa-icon>
-                </button>
+            <hr>
+            <div class="sidenav-filter-price">
+                <h4>Price</h4>
+                <mat-form-field class="price-form">
+                    <input matInput autocomplete="off" type="number" placeholder="Min value"
+                        [(ngModel)]="this.filterModel.minPrice" (input)="applyFilters()">
+                </mat-form-field>
+                <span>{{allCurrencies[this.filterModel.currency - 1]}}</span>
+                <mat-form-field class="price-form">
+                    <input matInput autocomplete="off" type="number" placeholder="Max value"
+                        [(ngModel)]="this.filterModel.maxPrice" (input)="applyFilters()">
+                </mat-form-field>
+                <span>{{allCurrencies[this.filterModel.currency - 1]}}</span>
             </div>
-            <div class="main-container">
-                <h1>Home</h1>
-                <div class="form-fields">
-                    <mat-form-field class="search-input-field">
-                        <input matInput placeholder="Search" [(ngModel)]="this.filterModel.searchQuery"
-                            (input)="applyFilters()">
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-select placeholder="Currency" [(ngModel)]="this.filterModel.currency"
-                            (selectionChange)="applyFilters()">
-                            <mat-option *ngFor="let currency of currencies" [value]="currency">
-                                {{allCurrencies[currency - 1]}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-select placeholder="Sort by" [(ngModel)]="this.filterModel.sortProperty"
-                            (selectionChange)="applyFilters()">
-                            <mat-option *ngFor="let prop of sortProperties" [value]="prop">{{allSortProperties[prop-1]}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <button mat-raised-button color="primary" (click)="toggleDataOrder(); applyFilters()">
-                        <fa-icon [icon]="sortIcon"></fa-icon>
-                    </button>
-                </div>
-                <hr>
-                <section class="cards-container">
-                    <app-card class="app-card-container" *ngFor="let printingEdition of dataModel?.items"
-                        [printingEdition]="printingEdition"></app-card>
-                </section>
-                <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-                    (page)="setAmountOfItems(); applyFilters($event)">
-                </mat-paginator>
-            </div>
-        </mat-sidenav-content>
-    </mat-sidenav-container>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="container cards-container">
+            <app-card class="app-card" *ngFor="let printingEdition of dataModel?.items"
+                [printingEdition]="printingEdition"></app-card>
+        </div>
+        <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+            (page)="setAmountOfItems(); applyFilters($event)">
+        </mat-paginator>
+    </div>
 </section>

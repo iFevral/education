@@ -4,64 +4,63 @@
         <div class="input-form-group">
             <mat-form-field>
                 <input placeholder="First name" name="passwordInput" matInput formControlName="firstName">
+                <mat-error *ngIf="signUpForm.controls['firstName'].invalid && signUpForm.controls['firstName'].touched">
+                    First name can`t be empty
+                </mat-error>
             </mat-form-field>
-            <div class="alert alert-danger"
-                *ngIf="signUpForm.controls['firstName'].invalid && signUpForm.controls['firstName'].touched">
-                First name can`t be empty
-            </div>
         </div>
 
         <div class="input-form-group">
             <mat-form-field>
                 <input placeholder="Last name" name="passwordInput" matInput formControlName="lastName">
+                <mat-error *ngIf="signUpForm.controls['lastName'].invalid && signUpForm.controls['lastName'].touched">
+                    Last name can`t be empty
+                </mat-error>
             </mat-form-field>
-            <div class="alert alert-danger"
-                *ngIf="signUpForm.controls['lastName'].invalid && signUpForm.controls['lastName'].touched">
-                Last name can`t be empty
-            </div>
         </div>
 
         <div class="input-form-group">
             <mat-form-field>
                 <input type="email" placeholder="Email" name="emailInput" matInput formControlName="email">
+                <mat-error *ngIf="signUpForm.controls['email'].invalid && signUpForm.controls['email'].touched">
+                    Email can`t be empty
+                </mat-error>
             </mat-form-field>
-            <div class="alert alert-danger"
-                *ngIf="signUpForm.controls['email'].invalid && signUpForm.controls['email'].touched">
-                Email can`t be empty
-            </div>
         </div>
 
         <div class="input-form-group">
             <mat-form-field>
                 <input type="password" placeholder="Password" name="passwordInput" matInput formControlName="password">
+                <mat-error *ngIf="!signUpForm.controls['password'].value && signUpForm.controls['password'].touched">
+                    Password can`t be empty
+                </mat-error>
+                <mat-error
+                    *ngIf="signUpForm.controls['password'].value && signUpForm.controls['password'].invalid && signUpForm.controls['password'].touched">
+                    Minimum password size is 6
+                </mat-error>
             </mat-form-field>
-            <div class="alert alert-danger"
-                *ngIf="!signUpForm.controls['password'].value && signUpForm.controls['password'].touched">
-                Password can`t be empty
-            </div>
-            <div class="alert alert-danger"
-                *ngIf="signUpForm.controls['password'].value && signUpForm.controls['password'].invalid && signUpForm.controls['password'].touched">
-                Minimum password size is 6  
-            </div>
         </div>
 
         <div class="input-form-group">
             <mat-form-field>
                 <input type="password" placeholder="Confirm Password" name="passwordInput" matInput
                     formControlName="confirmPassword">
+                <mat-error
+                    *ngIf="signUpForm.controls['confirmPassword'].invalid && signUpForm.controls['confirmPassword'].touched">
+                    Password can`t be empty
+                </mat-error>
+                <mat-error *ngIf=" signUpForm.controls['confirmPassword'].touched &&
+                        signUpForm.controls['confirmPassword'].value && 
+                        signUpForm.controls['confirmPassword'].value != signUpForm.controls['password'].value">
+                    Passwords must be the same
+                </mat-error>
             </mat-form-field>
-            <div class="alert alert-danger" *ngIf="signUpForm.controls['confirmPassword'].invalid && signUpForm.controls['confirmPassword'].touched">
-                Password can`t be empty
-            </div>
-            <div class="alert alert-danger" *ngIf=" signUpForm.controls['confirmPassword'].touched &&
-                signUpForm.controls['confirmPassword'].value && 
-                signUpForm.controls['confirmPassword'].value != signUpForm.controls['password'].value">
-                Passwords must be the same
-            </div>
         </div>
 
         <div class="input-form-group">
-            <button mat-flat-button color="primary" [disabled]="signUpForm.invalid || signUpForm.controls['confirmPassword'].value != signUpForm.controls['password'].value" (click)="signUp()">Sign Up</button>
+            <button mat-flat-button color="primary"
+                [disabled]="signUpForm.invalid || signUpForm.controls['confirmPassword'].value != signUpForm.controls['password'].value"
+                (click)="signUp()">Sign Up</button>
         </div>
         <br>
         <div class="input-form-group">
