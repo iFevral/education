@@ -1,0 +1,75 @@
+
+
+$primary: #49c593;
+$primary-active: #21a364;
+$accent: #6d71ff;
+$accent-active: #3e42ff;
+$white: #ffffff;
+$body-color: #FAFAFA;
+$white-active: #eeeeee;
+
+$mat-myapp-primary: (
+    50: #e9f8f2,
+    100: #c8eedf,
+    200: #a4e2c9,
+    300: #80d6b3,
+    400: #64cea3,
+    500: #49c593,
+    600: #42bf8b,
+    700: #39b880,
+    800: #31b076,
+    900: #21a364,
+    A100: #dfffee,
+    A200: #acffd4,
+    A400: #79ffba,
+    A700: #5fffad,
+    contrast: (
+        50: #ffffff,
+        100: #ffffff,
+        200: #ffffff,
+        300: #ffffff,
+        400: #ffffff,
+        500: #ffffff,
+        600: #ffffff,
+        700: #ffffff,
+        800: #ffffff,
+        900: #ffffff,
+        A100: #ffffff,
+        A200: #ffffff,
+        A400: #ffffff,
+        A700: #ffffff
+    )
+);
+
+$mat-myapp-accent: (
+    50 : #edeeff,
+    100 : #d3d4ff,
+    200 : #b6b8ff,
+    300 : #999cff,
+    400 : #8386ff,
+    500 : #6d71ff,
+    600 : #6569ff,
+    700 : #5a5eff,
+    800 : #5054ff,
+    900 : #3e42ff,
+    A100 : #ffffff,
+    A200 : #ffffff,
+    A400 : #e6e7ff,
+    A700 : #cdceff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);

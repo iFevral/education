@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../../services/account.service';
 import { RoleName } from '../../enums';
 import { TokenModel, UserModelItem } from '../../models';
@@ -11,7 +11,8 @@ import { CartService } from '../../services';
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+
     private isAuthorized: boolean;
     private isAdmin: boolean;
     private badge: number;
@@ -22,13 +23,18 @@ export class HeaderComponent {
         private dialog: MatDialog,
         private cartService: CartService
     ) {
+    }
+
+    public ngOnInit(): void {
         this.accountService.getTokens().subscribe((tokenModel: TokenModel) => {
             this.isAuthorized = tokenModel.refreshToken != null;
         });
 
         this.accountService.getProfile().subscribe((resultModel: UserModelItem) => {
-            this.isAdmin = RoleName[resultModel.roles[0]] === RoleName.Admin;
-            this.userModel = resultModel;
+            if (resultModel.roles) {
+                this.isAdmin = RoleName[resultModel.roles[0]] === RoleName.Admin;
+                this.userModel = resultModel;
+            }
         });
 
         this.cartService.getProductsInCart().subscribe((resultModel) => {

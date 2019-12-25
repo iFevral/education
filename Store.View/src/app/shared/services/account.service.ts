@@ -6,7 +6,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { TokenModel, UserModelItem, RegistrationResultModel, BaseModel } from '../models';
 import { Constants } from '../constants/constants';
-import { RoleName } from '../enums';
 import { MatSnackBar } from '@angular/material';
 
 @Injectable({ providedIn: 'root' })
@@ -100,7 +99,7 @@ export class AccountService {
             .subscribe((data: RegistrationResultModel) => {
                 if (data && data.message) {
                     this.showDialogMessage(data.message);
-                    this.redirectTo('/');
+                    this.redirectTo('/Account/SignIn');
                 } else {
                     this.showDialogMessage(data.errors.toString());
                 }
@@ -109,9 +108,12 @@ export class AccountService {
 
     public signOut() {
         const model: TokenModel = new TokenModel();
+        const profile: UserModelItem = new UserModelItem();
         localStorage.clear();
         this.tokenSubject.next(model);
-        this.redirectTo('/');
+        this.profileSubject.next(profile);
+        this.setRememberMeFlag(null);
+        this.redirectTo('/Account/SignIn');
     }
 
     public resetPassword(email: string) {

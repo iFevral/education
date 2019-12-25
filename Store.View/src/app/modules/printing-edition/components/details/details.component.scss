@@ -1,4 +1,4 @@
-$aqua: #49c593;
+@import "src/assets/styles/color-scheme.scss";
 
 .product-section {
     padding-top: 100px;
@@ -11,6 +11,7 @@ $aqua: #49c593;
         font-weight: 300;
         font-size: 0.875rem;
         line-height: 1.5;
+
         .product-image {
             flex: 1 1 20%;
             padding: 20px 25px;
@@ -22,7 +23,16 @@ $aqua: #49c593;
 
         .product-info {
             p {
-                margin: 10px;
+                margin-bottom: 10px;
+            }
+            .author-name:not(:last-of-type)::after {
+                content: ", ";
+            }
+            
+            .cart {
+                .mat-form-field {
+                    width: 70px;
+                }
             }
         }
     }
@@ -33,19 +43,19 @@ $aqua: #49c593;
 }
 
 .font-color {
-    color: $aqua;
+    color: $primary;
 }
 
 .mat-icon {
     vertical-align: middle;
-    font-size: 1em;
+    font-size: 1.25rem;
 }
 
 .link {
     cursor: pointer;
     transition: 0.2s;
     &:hover {
-        color: $aqua;
+        color: $primary;
     }
 }
 

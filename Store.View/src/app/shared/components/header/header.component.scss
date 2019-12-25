@@ -1,7 +1,5 @@
-$white: #ffffff;
-$white-active: #eeeeee;
-$aqua: #49c593;
-$aqua-active: rgb(69, 156, 121);
+@import "src/assets/styles/color-scheme.scss";
+
 header {
     background-color: $white;
     display: flex;
@@ -20,6 +18,10 @@ header {
 .wrap {
     width: 100%;
     position: relative;
+
+    img {
+        width: 50px;
+    }
 }
 
 .nav-btns-auth {
@@ -30,16 +32,15 @@ header {
 
 .btn-sign-up,
 .btn-sign-out {
-    background-color: $white;
     margin-right: 0;
 }
 
 .mat-button--active {
-    background-color: $aqua;
+    background-color: $primary;
     color: $white;
 
     &:hover {
-        background-color: $aqua-active;
+        background-color: $primary-active;
     }
 }
 

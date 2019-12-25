@@ -1,38 +1,45 @@
 <section class="sign-in-section">
-    <h1>Sign In</h1>
-    <form [formGroup]="signInForm" novalidate>
-        <div class="input-form-group">
-            <mat-form-field>
-                <input placeholder="Email" name="emailInput" matInput formControlName="email">
-                <mat-error
-                    *ngIf="!signInForm.controls['email'].value && signInForm.controls['email'].touched">
-                    Email can`t be empty
-                </mat-error>
-                <mat-error
-                    *ngIf="signInForm.controls['email'].value && signInForm.controls['email'].invalid && signInForm.controls['email'].touched">
-                    Email is invalid
-                </mat-error>
-            </mat-form-field>
+    <mat-card class="content-wrap">
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Book_Hexagonal_Icon.svg/892px-Book_Hexagonal_Icon.svg.png"
+                alt="">
         </div>
-        <div class="input-form-group">
-            <mat-form-field>
-                <input type="password" placeholder="Password" name="passwordInput" matInput formControlName="password">
-                <mat-error
-                    *ngIf="signInForm.controls['password'].invalid && signInForm.controls['password'].touched">
-                    Password can`t be empty
-                </mat-error>
-            </mat-form-field>
-        </div>
-        <mat-checkbox color="primary" formControlName="rememberMe">Remember me?</mat-checkbox>
-        <div class="input-form-group">
-            <p><a [routerLink]="['/Account/ResetPassword']">Forgot your password?</a></p>
-        </div>
-        <div class="input-form-group">
-            <button mat-flat-button color="primary" [disabled]="signInForm.invalid" (click)="signIn()">Sign In</button>
-        </div>
-        <br>
-        <div class="input-form-group">
-            <p>Need an account? <a [routerLink]="['/Account/SignUp']">Sign up!</a></p>
-        </div>
-    </form>
+        <form [formGroup]="signInForm" novalidate>
+            <div class="input-form-group">
+                <mat-form-field>
+                    <input placeholder="Email" matInput formControlName="email">
+                    <mat-error *ngIf="!signInForm.controls['email'].value && signInForm.controls['email'].touched">
+                        Email can`t be empty
+                    </mat-error>
+                    <mat-error
+                        *ngIf="signInForm.controls['email'].value && signInForm.controls['email'].invalid && signInForm.controls['email'].touched">
+                        Email is invalid
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="input-form-group">
+                <mat-form-field>
+                    <input type="password" placeholder="Password" matInput formControlName="password">
+                    <mat-error
+                        *ngIf="signInForm.controls['password'].invalid && signInForm.controls['password'].touched">
+                        Password can`t be empty
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="input-form-group">
+                <mat-checkbox color="primary" formControlName="rememberMe">Remember me?</mat-checkbox>
+            </div>
+            <div class="input-form-group">
+                <button class="submit-button" mat-flat-button color="primary" [disabled]="signInForm.invalid"
+                    (click)="signIn()">Sign
+                    In</button>
+            </div>
+            <div class="label-form-group">
+                <p>Need an account? <a [routerLink]="['/Account/SignUp']">Sign up!</a></p>
+            </div>
+            <div class="label-form-group">
+                <p><a [routerLink]="['/Account/ResetPassword']">Forgot your password?</a></p>
+            </div>
+        </form>
+    </mat-card>
 </section>

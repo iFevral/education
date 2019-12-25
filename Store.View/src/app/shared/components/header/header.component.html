@@ -2,23 +2,23 @@
     <div class="wrap">
 
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Book_Hexagonal_Icon.svg/892px-Book_Hexagonal_Icon.svg.png"
-            alt="" width="50px">
+            alt="">
         <button class="nav-button" mat-button routerLink="/">Home</button>
 
         <div class="nav-btns-auth" *ngIf="!isAuthorized">
-            <button class="nav-button btn-sign-in" mat-flat-button color="primary" routerLink="/Account/SignIn">Sign
+            <button class="nav-button btn-sign-in" mat-button color="primary" routerLink="/Account/SignIn">Sign
                 In</button>
-            <button class="nav-button btn-sign-up" mat-stroked-button color="primary" routerLink="/Account/SignUp">Sign
+            <button class="nav-button btn-sign-up" mat-flat-button color="primary" routerLink="/Account/SignUp">Sign
                 Up</button>
         </div>
 
-        <div class="nav-btns-auth" *ngIf="isAuthorized">
-            <button class="nav-button btn-cart" mat-flat-button color="primary" (click)="openCart()" *ngIf="!isAdmin">
+        <div class="nav-btns-auth" *ngIf="isAuthorized == true">
+            <button class="nav-button btn-cart" mat-flat-button color="primary" (click)="openCart()" *ngIf="isAdmin == false">
                 <mat-icon [matBadge]="badge" [matBadgeHidden]="badge <= 0" matBadgePosition="before"
                     matBadgeColor="warn" aria-hidden="false">shopping_cart</mat-icon>
             </button>
 
-            <button class="nav-button navigation-menu-dropdown" mat-button [matMenuTriggerFor]="menu">
+            <button class="nav-button navigation-menu-dropdown" mat-button [matMenuTriggerFor]="menu" *ngIf="userModel.roles">
                 <img class="avatar" [src]="userModel.avatar" *ngIf="userModel.avatar">
                 <mat-icon aria-hidden="false" *ngIf="!userModel.avatar">account_circle</mat-icon>
                 <span>{{userModel.firstName}} {{userModel.lastName}}</span>

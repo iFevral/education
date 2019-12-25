@@ -1,7 +1,5 @@
-$white: #ffffff;
-$white-active: #eeeeee;
-$aqua: #49c593;
-$aqua-active: rgb(69, 156, 121);
+@import "src/assets/styles/color-scheme.scss";
+
 
 .printing-edition-section {
     margin: 0;
@@ -64,11 +62,11 @@ $aqua-active: rgb(69, 156, 121);
                     user-select: none;
 
                     &:hover {
-                        color: $aqua;
+                        color: $primary;
                     }
 
                     &:active {
-                        color: $aqua-active;
+                        color: $primary-active;
                     }
                 }
             }

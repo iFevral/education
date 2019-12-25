@@ -5,19 +5,17 @@
                 <img [src]="printingEditionModel.image" alt="">
             </div>
             <div class="product-info">
-                <h5 class="link home-link" [routerLink]="['/']">
+                <p class="link home-link" [routerLink]="['/']">
                     <mat-icon>arrow_back</mat-icon> Back to shop
-                </h5>
+                </p>
                 <h3>{{printingEditionModel.title}}</h3>
                 <h4><span class="font-color">${{printingEditionModel.price}}</span></h4>
                 <p><span class="font-medium">Type</span>: {{types[printingEditionModel.type - 1]}}</p>
                 <p>
                     <span class="font-medium">Authors</span>:
-                    <span *ngFor="let author of printingEditionModel.authors">{{author.name}} </span></p>
+                    <span class="author-name" *ngFor="let author of printingEditionModel.authors">{{author.name}}</span></p>
                 <br>
                 <p id="description">{{printingEditionModel.description}}</p>
-                <p>Price</p>
-                
 
                 <div class="cart" *ngIf="isClient">
                     <mat-form-field class="price-form">
@@ -25,9 +23,7 @@
                             [(ngModel)]="this.cartItem.quantity">
                     </mat-form-field>
                     <div class="btn-cart">
-                        <button mat-raised-button color="primary" (click)="addProductToCart()">
-                            <mat-icon aria-hidden="false">add_shopping_cart</mat-icon>Add to cart
-                        </button>
+                        <button mat-raised-button color="primary" (click)="addProductToCart()">Add to cart</button>
                     </div>
                 </div>
             </div>

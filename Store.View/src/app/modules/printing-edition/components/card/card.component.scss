@@ -1,5 +1,4 @@
-$aqua: #49c593;
-$aqua-active: rgb(56, 124, 97);
+@import "src/assets/styles/color-scheme.scss";
 
 .product-card {
     width: 100%;
@@ -24,6 +23,10 @@ $aqua-active: rgb(56, 124, 97);
 
             &#authors {
                 font-size: 0.75rem;
+
+                .author-name:not(:last-of-type)::after {
+                    content: ", ";
+                }
             }
 
             &#title {
@@ -33,17 +36,17 @@ $aqua-active: rgb(56, 124, 97);
                 transition: 0.2s;
 
                 &:hover {
-                    color: $aqua;
+                    color: $primary;
                 }
 
                 &:active {
-                    color: $aqua-active;
+                    color: $primary-active;
                 }
             }
 
             &#price {
                 margin-top: 20px;
-                color: $aqua;
+                color: $primary;
                 font-size: 1.25rem;
                 font-weight: 500;
             }

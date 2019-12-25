@@ -1,0 +1,43 @@
+@import "src/assets/styles/color-scheme";
+
+.sign-up-section {
+    display: flex;
+    justify-content: center;
+    padding: 50px 35%;
+
+    .content-wrap {
+        flex: 0 0 480px;
+        width: 100%;
+        padding: 48px;
+        min-height: 0;
+        .logo {
+            img {
+                display: block;
+                margin: auto;
+                width: 50%;
+            }
+        }
+
+        .input-form-group {
+            .mat-form-field {
+                width: 100%;
+            }
+
+            .submit-button {
+                width: 100%;
+                border-radius: 0;
+            }
+        }
+
+        .label-form-group {
+            margin-top: 20px;
+            text-align: center;
+
+            a {
+                color: $primary;
+                text-decoration: none;
+                font-weight: 500;
+            }
+        }
+    }
+}
