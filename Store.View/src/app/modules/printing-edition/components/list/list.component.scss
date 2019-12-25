@@ -6,20 +6,16 @@ $aqua-active: rgb(69, 156, 121);
 .printing-edition-section {
     margin: 0;
     max-width: 100%;
-
-    padding: 20px 20px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-
+    font-weight: 500;
     .sidebar-container {
         min-width: 270px;
-        padding-top: 20px;
 
         .sidebar-item {
-            margin-top: 50px;
+            margin-bottom: 50px;
             padding: 15px;
-            border: 1px solid black;
             transition: 1s;
 
             .sidenav-filter-categories {
@@ -28,7 +24,17 @@ $aqua-active: rgb(69, 156, 121);
                 }
             }
 
-            mat-form-field {
+            .sidenav-filter-price {
+                .price-form {
+                    width: 45%;
+
+                    &:first-of-type{
+                        margin-right: 10%;
+                    }
+                }
+            }
+
+            .mat-form-field {
                 width: 100%;
             }
         }
@@ -36,6 +42,37 @@ $aqua-active: rgb(69, 156, 121);
 
     .main-container {
         flex: 1 1 60%;
+        .main-container-filters {
+            display: flex;
+
+            .filter-card {
+                width: 140px;
+                margin-left: 20px;
+                background: none;
+                .mat-form-field#currency {
+                    width: 100%;
+                }
+
+                .mat-form-field#sorting {
+                    width: 75%;
+                }
+
+                .mat-icon {
+                    vertical-align: middle;
+                    transition: 0.2s;
+                    cursor: pointer;
+                    user-select: none;
+
+                    &:hover {
+                        color: $aqua;
+                    }
+
+                    &:active {
+                        color: $aqua-active;
+                    }
+                }
+            }
+        }
 
         .cards-container {
             display: flex;
@@ -43,7 +80,6 @@ $aqua-active: rgb(69, 156, 121);
             justify-content: flex-start;
             .app-card {
                 margin: 16px;
-               
 
                 &:first {
                     margin-left: 0 !important;
@@ -57,59 +93,88 @@ $aqua-active: rgb(69, 156, 121);
     }
 }
 
-@media only screen and (min-width: 986px) {
-    .sidebar-container {
-        flex: 0 0 30%;
-    }
+.inverted {
+    transform: scaleY(-1);
+}
 
-    .main-container {
-        flex: 1 1 60%;
+@media only screen and (min-width: 1280px) {
+    .printing-edition-section {
+        padding: 50px 8%;
 
-        .cards-container {
-            padding: 20px 40px;
+        .sidebar-container {
+            flex: 0 0 20%;
+        }
 
-            .app-card {
-                min-height: 220px;
-                width: 200px;
+        .main-container {
+            flex: 1 1 70%;
+
+            .cards-container {
+                .app-card {
+                    min-height: 320px;
+                    width: 320px;
+                }
             }
         }
     }
 }
 
-@media only screen and (min-width: 801px) and (max-width: 986px) {
-    .sidebar-container {
-        flex: 0 0 30%;
-    }
+@media only screen and (min-width: 986px) and (max-width: 1280px) {
+    .printing-edition-section {
+        padding: 50px 3%;
+        .sidebar-container {
+            flex: 0 0 20%;
+        }
 
-    .main-container {
-        flex: 1 1 100%;
+        .main-container {
+            flex: 1 1 70%;
 
-        .cards-container {
-            padding: 20px 20px;
-
-            .app-card {
-                min-height: 200px;
-                width: 185px;
+            .cards-container {
+                .app-card {
+                    min-height: 320px;
+                    width: 250px;
+                }
             }
         }
     }
 }
 
-@media only screen and (max-width: 800px) {
-    .sidebar-container {
-        flex: 0 0 100%;
+@media only screen and (min-width: 768px) and (max-width: 986px) {
+    .printing-edition-section {
+        padding: 50px 3%;
+        .sidebar-container {
+            flex: 0 0 30%;
+        }
+
+        .main-container {
+            flex: 1 1 60%;
+
+            .cards-container {
+                .app-card {
+                    min-height: 200px;
+                    width: 250px;
+                }
+            }
+        }
     }
+}
 
-    .main-container {
-        flex: 1 1 100%;
+@media only screen and (max-width: 768px) {
+    .printing-edition-section {
+        padding: 50px 3%;
+        .sidebar-container {
+            flex: 0 0 100%;
+        }
 
-        .cards-container {
-            padding: 20px 0px;
-            justify-content: center !important;
+        .main-container {
+            flex: 1 1;
 
-            .app-card {
-                min-height: 600px;
-                width: 400px;
+            .cards-container {
+                justify-content: center !important;
+
+                .app-card {
+                    min-height: 600px;
+                    width: 100%;
+                }
             }
         }
     }

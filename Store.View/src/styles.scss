@@ -1,4 +1,4 @@
-$body-color: #f8f8fa;
+$body-color: #FAFAFA;
 @import "~@angular/material/theming";
 $mat-myapp-primary: (
     50: #e9f8f2,
@@ -79,15 +79,16 @@ body {
     background: $body-color;
     padding: 0;
     margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-family: Roboto, "Helvetica Neue", sans-serif !important;
     position: relative;
 }
 
-header {
-    z-index: 9999;
-}
-button:focus {
+*:focus {
     outline: 0;
+}
+
+header {
+    z-index: 2;
 }
 
 section {

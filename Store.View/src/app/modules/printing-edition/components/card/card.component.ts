@@ -9,9 +9,12 @@ import { Constants } from '../../../../shared/constants/constants';
 })
 export class CardComponent implements OnInit{
     private allCurrencies: Array<string>;
+    private allCurrenciesSymbols: Array<string>;
+
     @Input() printingEdition: PrintingEditionModelItem;
 
     public ngOnInit(): void {
         this.allCurrencies = Constants.enumsAttributes.printingEditionCurrencies;
+        this.allCurrenciesSymbols = Constants.enumsAttributes.printingEditionCurrenciesSymbols;
     }
 }

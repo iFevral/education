@@ -6,3 +6,12 @@ export enum PrintingEditionCurrency {
     JPY = 5,
     UAH = 6
 }
+
+export enum PrintingEditionCurrencySymbol {
+    '$' = 1,
+    '€' = 2,
+    '£' = 3,
+    '₣' = 4,
+    '¥' = 5,
+    '₴' = 6
+}

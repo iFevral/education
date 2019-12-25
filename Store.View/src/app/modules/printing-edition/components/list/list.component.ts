@@ -4,7 +4,6 @@ import { PrintingEditionService } from '../../../../shared/services';
 import { PrintingEditionModel, PrintingEditionFilterModel, PrintingEditionModelItem } from '../../../../shared/models';
 import { PrintingEditionType, SortProperty, PrintingEditionCurrency } from '../../../../shared/enums';
 
-import { faSortAmountUpAlt, faSortAmountDownAlt, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { Constants } from '../../../../shared/constants/constants';
 import { ListComponent } from '../../../../shared/components/base';
 
@@ -15,13 +14,10 @@ import { ListComponent } from '../../../../shared/components/base';
 })
 export class PrintingEditionListComponent extends ListComponent<PrintingEditionModelItem, PrintingEditionModel, PrintingEditionFilterModel, PrintingEditionService> {
 
-    private isSidebarOpened: boolean;
-    private sortIcon = faSortAmountUpAlt;
-    private filterIcon = faFilter;
-
     private allTypes: Array<string>;
     private allCurrencies: Array<string>;
     private allSortProperties: Array<string>;
+    private allCurrenciesSymbols: Array<string>;
 
     private types: Array<PrintingEditionType>;
     private sortProperties: Array<SortProperty>;
@@ -33,7 +29,7 @@ export class PrintingEditionListComponent extends ListComponent<PrintingEditionM
         super(new PrintingEditionFilterModel(), printingEditionService);
         this.allTypes = Constants.enumsAttributes.printingEditionTypes;
         this.allCurrencies = Constants.enumsAttributes.printingEditionCurrencies;
-
+        this.allCurrenciesSymbols = Constants.enumsAttributes.printingEditionCurrenciesSymbols;
         this.types = [
             PrintingEditionType.Books,
             PrintingEditionType.Magazines,
@@ -44,7 +40,7 @@ export class PrintingEditionListComponent extends ListComponent<PrintingEditionM
             PrintingEditionCurrency.USD,
             PrintingEditionCurrency.EUR,
             PrintingEditionCurrency.GBP,
-            PrintingEditionCurrency.CHF,
+            PrintingEditionCurrency.CHF, 
             PrintingEditionCurrency.JPY,
             PrintingEditionCurrency.UAH
         ];
@@ -74,6 +70,5 @@ export class PrintingEditionListComponent extends ListComponent<PrintingEditionM
 
     public toggleDataOrder() {
         this.filterModel.IsAscending = !this.filterModel.IsAscending;
-        this.sortIcon = this.sortIcon === faSortAmountUpAlt ? faSortAmountDownAlt : faSortAmountUpAlt;
     }
 }
