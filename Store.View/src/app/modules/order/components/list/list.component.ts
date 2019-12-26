@@ -36,6 +36,7 @@ export class OrderListComponent extends ListComponent<OrderModelItem, OrderModel
             OrderStatus.Paid,
             OrderStatus.Unpaid
         ];
+        this.filterModel.IsAscending = false;
         this.filterModel.statuses = this.statuses;
     }
 }

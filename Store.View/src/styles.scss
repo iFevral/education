@@ -20,21 +20,22 @@ body {
 }
 
 *:focus {
-    outline: 0;
+    outline: 0 !important;
 }
+
 
 header {
     z-index: 2;
 }
 
 section {
-    min-height: 86.6vh;
     z-index: 1;
 }
 
 .mat-snack-bar-container {
     background: $white;
     font-weight: 500;
+    color: $primary;
 }
 
 .mat-simple-snackbar-action {

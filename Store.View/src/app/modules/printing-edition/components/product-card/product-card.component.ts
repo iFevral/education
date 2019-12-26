@@ -3,11 +3,11 @@ import { PrintingEditionModelItem } from '../../../../shared/models';
 import { Constants } from '../../../../shared/constants/constants';
 
 @Component({
-    selector: 'app-card',
-    templateUrl: './card.component.html',
-    styleUrls: ['./card.component.scss']
+    selector: 'app-product-card',
+    templateUrl: './product-card.component.html',
+    styleUrls: ['./product-card.component.scss']
 })
-export class CardComponent implements OnInit{
+export class ProductCardComponent implements OnInit{
     private allCurrencies: Array<string>;
     private allCurrenciesSymbols: Array<string>;
 

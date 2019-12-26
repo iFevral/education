@@ -14,6 +14,7 @@ import {
     ResetPasswordComponent
 } from '.';
 import { ProfileComponent } from './components/profile/profile.component';
+import { EmailConfirmationComponent } from './components/email-confirmation/email-confirmation.component';
 
 @NgModule({
     imports: [
@@ -28,7 +29,8 @@ import { ProfileComponent } from './components/profile/profile.component';
         SignUpComponent,
         SignInComponent,
         ResetPasswordComponent,
-        ProfileComponent
+        ProfileComponent,
+        EmailConfirmationComponent
     ],
     bootstrap: [
         SignInComponent

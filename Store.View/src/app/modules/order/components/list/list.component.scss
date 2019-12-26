@@ -1,10 +1,91 @@
+.order-section {
+    padding: 50px 10% 0 10%;
+    h1 {
+        display: inline-block;
+    }
 
-td,
-th {
-    width: 15%;
+    .btn-add {
+        position: relative;
+        right: 0;
+        display: inline-block;
+    }
 
-    
-    &:first-child {
-        width: 4%;
+    .table-container {
+        width: 100%;
+        max-height: 60vh;
+        overflow: auto;
+
+        .mat-table-sticky:first-child {
+            border-right: 2px solid #e0e0e0;
+        }
+
+        .mat-table-sticky:last-child {
+            border-left: 2px solid #e0e0e0;
+        }
+
+        table {
+            width: 100%;
+
+            th {
+                padding-right: 4px;
+                padding-left: 4px;
+
+                .mat-form-field {
+                    top: 4px;
+                    color: rgba(0, 0, 0, 0.54);
+                    font-weight: 500;
+                    width: 80px;
+                }
+            }
+
+            tr {
+                td {
+                    padding-right: 4px;
+                    padding-left: 4px;
+                }
+
+                #id {
+                    text-align: center;
+                    width: 3%;
+                }
+
+                #date {
+                    width: 10%;
+                }
+
+                #userName {
+                    width: 10%;
+                }
+
+                #email {
+                    width: 10%;
+                }
+
+                #productType {
+                    width: 10%;
+                }
+
+                #title {
+                    width: 10%;
+                }
+
+                #quntity {
+                    width: 10%;
+                }
+
+                #amount {
+                    width: 10%;
+                }
+
+                #status {
+                    width: 10%;
+                }
+            }
+        }
+    }
+
+    .mat-paginator {
+        position: relative;
+        z-index: 2;
     }
 }

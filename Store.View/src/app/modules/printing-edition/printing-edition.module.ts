@@ -9,12 +9,12 @@ import { MaterialElementsModule } from '../../shared/modules';
 
 import {
     PrintingEditionListComponent,
-    CardComponent,
+    ProductCardComponent,
     DetailsComponent
 } from '.';
 
 @NgModule({
-    declarations: [PrintingEditionListComponent, CardComponent, DetailsComponent],
+    declarations: [PrintingEditionListComponent, ProductCardComponent, DetailsComponent],
     imports: [
         BrowserModule,
         MaterialElementsModule,

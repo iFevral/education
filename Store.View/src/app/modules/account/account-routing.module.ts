@@ -6,7 +6,8 @@ import {
     SignInComponent,
     SignUpComponent,
     ResetPasswordComponent,
-    ProfileComponent
+    ProfileComponent,
+    EmailConfirmationComponent
 } from '.';
 
 const accountRoutes: Routes = [
@@ -16,7 +17,8 @@ const accountRoutes: Routes = [
             { path: 'SignIn', component: SignInComponent, data: { animation: 'SignIn' } },
             { path: 'SignUp', component: SignUpComponent, data: { animation: 'SignUp' } },
             { path: 'ResetPassword', component: ResetPasswordComponent, data: { animation: 'ResetPassword' } },
-            { path: 'Profile', component: ProfileComponent, data: { animation: 'Profile' } }
+            { path: 'Profile', component: ProfileComponent, data: { animation: 'Profile' } },
+            { path: 'ConfirmEmail', component: EmailConfirmationComponent }
         ]
     }
 ];

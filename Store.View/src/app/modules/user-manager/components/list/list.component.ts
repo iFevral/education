@@ -25,8 +25,7 @@ export class UserListComponent extends ListComponent<UserModelItem, UserModel, U
         super(new UserFilterModel(), userService);
 
         this.displayedColumns = [
-            'id',
-            'firstName',
+            'userName',
             'email',
             'status',
             'control'

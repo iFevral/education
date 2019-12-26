@@ -18,7 +18,7 @@
                     matBadgeColor="warn" aria-hidden="false">shopping_cart</mat-icon>
             </button>
 
-            <button class="nav-button navigation-menu-dropdown" mat-button [matMenuTriggerFor]="menu" *ngIf="userModel.roles">
+            <button class="nav-button navigation-menu-dropdown" mat-button [matMenuTriggerFor]="menu" *ngIf="userModel && userModel.role">
                 <img class="avatar" [src]="userModel.avatar" *ngIf="userModel.avatar">
                 <mat-icon aria-hidden="false" *ngIf="!userModel.avatar">account_circle</mat-icon>
                 <span>{{userModel.firstName}} {{userModel.lastName}}</span>
@@ -40,7 +40,7 @@
                 <button mat-menu-item *ngIf="isAdmin" #AdminPanelItem routerLinkActive="mat-button--active"
                     routerLink="/Authors">Authors
                     managment</button>
-                <button mat-menu-item routerLink="/Orders/MyOrders" routerLinkActive="mat-button--active">My
+                <button mat-menu-item *ngIf="!isAdmin" routerLink="/Orders/MyOrders" routerLinkActive="mat-button--active">My
                     orders</button>
                 <button mat-menu-item (click)="signOut()">Sign Out</button>
             </mat-menu>

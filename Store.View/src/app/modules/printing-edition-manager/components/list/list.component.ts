@@ -23,7 +23,6 @@ export class PrintingEditionManagerListComponent extends ListComponent<PrintingE
     ) {
         super(new PrintingEditionFilterModel(), printingEditionService);
         this.displayedColumns = [
-            'id',
             'title',
             'description',
             'type',

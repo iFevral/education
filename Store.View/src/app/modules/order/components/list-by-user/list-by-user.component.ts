@@ -39,6 +39,7 @@ export class OrderListByUserComponent extends ListComponent<OrderModelItem, Orde
         ];
 
         const userId = parseInt(this.route.snapshot.paramMap.get('id'), 10);
+        this.filterModel.IsAscending = false;
         this.filterModel.statuses = this.statuses;
         this.filterModel.userId = isNaN(userId)
             ? null

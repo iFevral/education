@@ -40,7 +40,7 @@ export class PrintingEditionListComponent extends ListComponent<PrintingEditionM
             PrintingEditionCurrency.USD,
             PrintingEditionCurrency.EUR,
             PrintingEditionCurrency.GBP,
-            PrintingEditionCurrency.CHF, 
+            PrintingEditionCurrency.CHF,
             PrintingEditionCurrency.JPY,
             PrintingEditionCurrency.UAH
         ];

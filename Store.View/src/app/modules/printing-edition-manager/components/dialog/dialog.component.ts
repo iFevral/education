@@ -48,6 +48,11 @@ export class PrintingEditionDialogComponent extends DialogCrudComponent<Printing
             PrintingEditionCurrency.USD
         ];
 
+        this.titles = [``,
+            `Create printing edition`,
+            `Update printing edition`,
+            `Delete "${data.model.title}"?`
+        ];
     }
 
     changeAuthors(event) {

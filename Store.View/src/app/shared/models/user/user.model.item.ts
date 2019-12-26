@@ -9,5 +9,5 @@ export class UserModelItem extends BaseModel {
     public newPassword?: string;
     public isLocked?: boolean;
     public avatar?: string;
-    public roles?: Array<string>;
+    public role?: string;
 }

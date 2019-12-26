@@ -46,7 +46,6 @@ export class SignUpComponent {
     }
 
     public signUp() {
-        console.log(this.signUpForm);
         if (this.signUpForm.value.password === this.signUpForm.value.confirmPassword) {
 
             this.userModel.firstName = this.signUpForm.value.firstName;

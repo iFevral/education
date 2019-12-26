@@ -1,7 +1,6 @@
 export * from './base/base.model';
 export * from './base/base-list.model';
 export * from './base/base-filter.model';
-export * from './account/account.model';
 export * from './author/author.filter.model';
 export * from './author/author.model';
 export * from './author/author.model.item';

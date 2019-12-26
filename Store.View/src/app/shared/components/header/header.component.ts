@@ -31,8 +31,8 @@ export class HeaderComponent implements OnInit {
         });
 
         this.accountService.getProfile().subscribe((resultModel: UserModelItem) => {
-            if (resultModel.roles) {
-                this.isAdmin = RoleName[resultModel.roles[0]] === RoleName.Admin;
+            if (resultModel.role) {
+                this.isAdmin = RoleName[resultModel.role] === RoleName.Admin;
                 this.userModel = resultModel;
             }
         });
@@ -50,10 +50,5 @@ export class HeaderComponent implements OnInit {
         const dialogRef = this.dialog.open(CartComponent, {
             width: '800px'
         });
-
-        dialogRef.afterClosed()
-            .subscribe((resultModel) => {
-                console.log(resultModel);
-            });
     }
 }

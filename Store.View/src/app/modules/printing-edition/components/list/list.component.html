@@ -1,8 +1,9 @@
 <section class="container printing-edition-section">
     <div class="sidebar-container">
         <mat-card class="sidebar-item">
+            <h4>Search</h4>
             <mat-form-field class="search-input-field">
-                <input matInput placeholder="Search" [(ngModel)]="this.filterModel.searchQuery"
+                <input autocomplete="off" matInput placeholder="Title or Author Name" [(ngModel)]="this.filterModel.searchQuery"
                     (input)="applyFilters()">
             </mat-form-field>
         </mat-card>
@@ -60,8 +61,8 @@
                 </div>
             </div>
             <div class="cards-container">
-                <app-card class="app-card" *ngFor="let printingEdition of dataModel?.items"
-                    [printingEdition]="printingEdition"></app-card>
+                <app-product-card class="app-card" *ngFor="let printingEdition of dataModel?.items"
+                    [printingEdition]="printingEdition"></app-product-card>
             </div>
             <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
                 (page)="setAmountOfItems(); applyFilters($event)">

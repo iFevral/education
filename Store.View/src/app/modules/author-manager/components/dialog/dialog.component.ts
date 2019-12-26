@@ -15,5 +15,11 @@ export class AuthorDialogComponent extends DialogCrudComponent<AuthorModelItem> 
         @Inject(MAT_DIALOG_DATA) protected data: DialogData<AuthorModelItem>
     ) {
         super(dialogRef, data);
+
+        this.titles = [``,
+            `Create author`,
+            `Update author`,
+            `Delete author "${data.model.name}"?`
+        ];
     }
 }

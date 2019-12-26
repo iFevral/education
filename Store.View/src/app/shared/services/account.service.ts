@@ -82,7 +82,7 @@ export class AccountService {
     public signIn(email: string, password: string, rememberMeFlag: boolean) {
 
         this.http.post<TokenModel>(Constants.apiUrls.authenticationUrl + rememberMeFlag, { email, password })
-            .subscribe(data => {
+            .subscribe((data: TokenModel) => {
                 if (data && data.accessToken && data.refreshToken) {
                     this.setProfile();
                     this.setTokens(data);
@@ -118,6 +118,11 @@ export class AccountService {
 
     public resetPassword(email: string) {
         const response = this.http.post<RegistrationResultModel>(Constants.apiUrls.passwordResetingUrl, { email });
+        return response;
+    }
+
+    public confirmEmail(email: string, token: string) {
+        const response = this.http.post<BaseModel>(Constants.apiUrls.emailConfirmingUrl, { email, token });
         return response;
     }
 

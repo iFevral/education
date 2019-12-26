@@ -19,7 +19,6 @@ export class AuthorListComponent extends ListComponent<AuthorModelItem, AuthorMo
     ) {
         super(new AuthorFilterModel(), authorService);
         this.displayedColumns = [
-            'id',
             'name',
             'printingEdition',
             'control'

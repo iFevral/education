@@ -1,92 +1,93 @@
 <section class="profile-section">
-    <mat-card class="content-wrap">
-        <h2>Profile</h2>
-
-        <div class="data-container" *ngIf="!isEditMode">
+    <div class="content-wrap">
+        <mat-card class="avatar-container">
             <div class="avatar">
                 <img [src]="userModel.avatar" alt="">
+                <mat-icon class="avatar-button-edit" (click)="avatarPathForm.click()">create</mat-icon>
             </div>
-            <button mat-button (click)="avatarPathForm.click()">
-                <mat-icon>create</mat-icon>
-            </button>
             <input class="avatar-path-form" #avatarPathForm (change)="setAvatar($event)" type="file">
-            <h3>First name: {{userModel.firstName}}</h3>
-            <h3>Last Name: {{userModel.lastName}}</h3>
-            <h3>E-mail: {{userModel.email}}</h3>
-            <div class="input-form-group">
-                <button mat-flat-button color="primary" (click)="changeMode()">Edit</button>
+        </mat-card>
+        <mat-card class="info-wrap">
+            <div class="info-container" *ngIf="!isEditMode">
+                <h4>Profile information</h4>
+                <p><label class="label">First name:</label><span>{{userModel.firstName}}</span></p>
+                <p><label class="label">Last Name:</label><span>{{userModel.lastName}}</span></p>
+                <p><label class="label">E-mail:</label><span>{{userModel.email}}</span></p>
+                <p><label class="label">Role:</label><span>{{userModel.role}}</span></p>
+                <div class="input-form-group">
+                    <button mat-flat-button color="primary" (click)="changeMode()">Edit</button>
+                </div>
             </div>
-        </div>
 
-        <div class="edit-form-container" *ngIf="isEditMode">
-            <form [formGroup]="editForm" novalidate>
-                <div class="input-form-group">
-                    <mat-form-field>
-                        <input placeholder="First name" name="passwordInput" matInput formControlName="firstName"
-                            [(ngModel)]="userModel.firstName">
-                        <mat-error
-                            *ngIf="editForm.controls['firstName'].invalid && editForm.controls['firstName'].touched">
-                            First name can`t be empty
+            <div class="edit-form-container" *ngIf="isEditMode">
+                <form [formGroup]="editForm" novalidate>
+                    <div class="input-form-group">
+                        <mat-form-field>
+                            <input placeholder="First name" name="passwordInput" matInput formControlName="firstName"
+                                [(ngModel)]="userModel.firstName" required>
+                            <mat-error
+                                *ngIf="editForm.controls['firstName'].invalid && editForm.controls['firstName'].touched">
+                                First name can`t be empty
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="input-form-group">
+                        <mat-form-field>
+                            <input placeholder="Last name" name="passwordInput" matInput formControlName="lastName"
+                                [(ngModel)]="userModel.lastName" required>
+                            <mat-error
+                                *ngIf="editForm.controls['lastName'].invalid && editForm.controls['lastName'].touched">
+                                Last name can`t be empty
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="input-form-group">
+                        <mat-form-field>
+                            <input type="email" placeholder="Email" name="emailInput" matInput formControlName="email"
+                                [(ngModel)]="userModel.email" required>
+                            <mat-error *ngIf="editForm.controls['email'].invalid && editForm.controls['email'].touched">
+                                Email can`t be empty
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="input-form-group">
+                        <mat-form-field>
+                            <input type="password" placeholder="Password" name="passwordInput" matInput
+                                formControlName="oldPassword" [(ngModel)]="userModel.password">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="input-form-group">
+                        <mat-form-field>
+                            <input type="password" placeholder="New password" name="passwordInput" matInput
+                                formControlName="newPassword" [(ngModel)]="userModel.newPassword">
+                            <mat-error
+                                *ngIf="editForm.controls['newPassword'].value && editForm.controls['newPassword'].invalid && editForm.controls['newPassword'].touched">
+                                Minimum password size is 6
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="input-form-group">
+                        <mat-form-field>
+                            <input type="password" placeholder="Confirm Password" name="passwordInput" matInput
+                                formControlName="confirmPassword" [(ngModel)]="passwordConfirmationFormValue">
+                        </mat-form-field>
+                        <mat-error class="password-error-alert" *ngIf="editForm.controls['confirmPassword'].touched &&
+                            editForm.controls['confirmPassword'].value != editForm.controls['newPassword'].value">
+                            Passwords must be the same
                         </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class="input-form-group">
-                    <mat-form-field>
-                        <input placeholder="Last name" name="passwordInput" matInput formControlName="lastName"
-                            [(ngModel)]="userModel.lastName">
-                        <mat-error
-                            *ngIf="editForm.controls['lastName'].invalid && editForm.controls['lastName'].touched">
-                            Last name can`t be empty
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class="input-form-group">
-                    <mat-form-field>
-                        <input type="email" placeholder="Email" name="emailInput" matInput formControlName="email"
-                            [(ngModel)]="userModel.email">
-                        <mat-error *ngIf="editForm.controls['email'].invalid && editForm.controls['email'].touched">
-                            Email can`t be empty
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class="input-form-group">
-                    <mat-form-field>
-                        <input type="password" placeholder="Password" name="passwordInput" matInput
-                            formControlName="oldPassword" [(ngModel)]="userModel.password">
-                    </mat-form-field>
-                </div>
-
-                <div class="input-form-group">
-                    <mat-form-field>
-                        <input type="password" placeholder="New password" name="passwordInput" matInput
-                            formControlName="newPassword" [(ngModel)]="userModel.newPassword">
-                        <mat-error
-                            *ngIf="editForm.controls['newPassword'].value && editForm.controls['newPassword'].invalid && editForm.controls['newPassword'].touched">
-                            Minimum password size is 6
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class="input-form-group">
-                    <mat-form-field>
-                        <input type="password" placeholder="Confirm Password" name="passwordInput" matInput
-                            formControlName="confirmPassword" [(ngModel)]="passwordConfirmationFormValue">
-                    </mat-form-field>
-                    <mat-error class="password-error-alert" *ngIf="editForm.controls['confirmPassword'].touched &&
-                        editForm.controls['confirmPassword'].value != editForm.controls['newPassword'].value">
-                        Passwords must be the same
-                    </mat-error>
-                </div>
-                <br>
-                <div class="input-form-group">
-                    <button mat-flat-button color="primary" (click)="editProfile(); changeMode()"
-                        [disabled]="editForm.invalid || editForm.controls['confirmPassword'].value != editForm.controls['newPassword'].value">Ok</button>
-                    <button mat-flat-button color="primary" (click)="cancelEditProfile(); changeMode()">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </mat-card>
+                    </div>
+                    <br>
+                    <div class="input-form-group">
+                        <button mat-flat-button color="primary" (click)="editProfile(); changeMode()"
+                            [disabled]="editForm.invalid || editForm.controls['confirmPassword'].value != editForm.controls['newPassword'].value">Save</button>
+                    </div>
+                </form>
+            </div>
+        </mat-card>
+    </div>
 </section>

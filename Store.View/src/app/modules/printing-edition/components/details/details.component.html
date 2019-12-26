@@ -2,7 +2,7 @@
     <div class="container">
         <mat-card class="product-container">
             <div class="product-image">
-                <img [src]="printingEditionModel.image" alt="">
+                <img [src]="printingEditionModel.image ? printingEditionModel.image : ''" alt="">
             </div>
             <div class="product-info">
                 <p class="link home-link" [routerLink]="['/']">

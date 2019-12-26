@@ -1,52 +1,50 @@
 <section class="author-section">
-    <h1 (click)="applyFilter()">Authors</h1>
+    <h1>Authors</h1>
     <hr>
-    <div class="wrap">
-        <button mat-raised-button color="primary" (click)="create()">Create</button>
-    </div>
-    <br>
-    <div class="mat-elevation-z8">
-        <table (matSortChange)="setOrder($event); applyFilters()" mat-table [dataSource]="dataSource" matSort>
+    <div class="table-container mat-elevation-z8">
+        <table mat-table (matSortChange)="setOrder($event); applyFilters()" [dataSource]="dataSource" matSort>
 
-            <!-- ID Column -->
-            <ng-container matColumnDef="id">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-                <td mat-cell *matCellDef="let row"> {{row.id}} </td>
-            </ng-container>
-
-            <!-- Name Column -->
-            <ng-container matColumnDef="name">
+            <ng-container matColumnDef="name" sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-                <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+                <td id="name" mat-cell *matCellDef="let row"> {{row.name}} </td>
             </ng-container>
 
-            <!-- Color Column -->
             <ng-container matColumnDef="printingEdition">
                 <th mat-header-cell *matHeaderCellDef> Printing Editions </th>
-                <td mat-cell *matCellDef="let row">
+                <td id="printingEdition" mat-cell *matCellDef="let row">
                     <p *ngFor="let item of row.printingEditions">{{item.title}}</p>
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="control">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let row">
-                    <span> 
-                        <button mat-raised-button color="primary" (click)="update(row)">Update</button>
+            <ng-container matColumnDef="control" stickyEnd>
+                <th mat-header-cell *matHeaderCellDef>
+                    <div class="btn-add">
+                        <button mat-button color="primary" (click)="create()">
+                            <mat-icon>add_box</mat-icon>
+                        </button>
+                    </div>
+                </th>
+                <td id="control" mat-cell *matCellDef="let row">
+                    <span>
+                        <button mat-button color="primary" (click)="update(row)">
+                            <mat-icon>create</mat-icon>
+                        </button>
                     </span>
 
-                    <span> 
-                        <button mat-raised-button color="primary" (click)="delete(row)">Delete</button>
+                    <span>
+                        <button mat-button color="primary" (click)="delete(row)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
                     </span>
                 </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;">
             </tr>
         </table>
 
-        <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-            (page)="setAmountOfAuthors(); applyFilters($event)"></mat-paginator>
     </div>
+    <mat-paginator class="mat-elevation-z8" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+        (page)="setAmountOfItems(); applyFilters($event)"></mat-paginator>
 </section>

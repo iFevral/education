@@ -1,14 +1,14 @@
 
 
-$primary: #49c593;
-$primary-active: #21a364;
-$accent: #6d71ff;
-$accent-active: #3e42ff;
+$accent: #49c593;
+$accent-active: #21a364;
+$primary: #6d71ff;
+$primary-active: #3e42ff;
 $white: #ffffff;
 $body-color: #FAFAFA;
 $white-active: #eeeeee;
 
-$mat-myapp-primary: (
+$mat-myapp-accent: (
     50: #e9f8f2,
     100: #c8eedf,
     200: #a4e2c9,
@@ -41,7 +41,7 @@ $mat-myapp-primary: (
     )
 );
 
-$mat-myapp-accent: (
+$mat-myapp-primary: (
     50 : #edeeff,
     100 : #d3d4ff,
     200 : #b6b8ff,

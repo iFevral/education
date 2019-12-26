@@ -26,7 +26,7 @@ export class DetailsComponent implements OnInit {
         this.types = Constants.enumsAttributes.printingEditionTypes;
 
         this.accountService.getProfile().subscribe((resultModel: UserModelItem) => {
-            this.isClient = RoleName[resultModel.roles[0]] === RoleName.Client;
+            this.isClient = RoleName[resultModel.role] === RoleName.Client;
         });
     }
 
