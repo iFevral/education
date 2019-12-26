@@ -12,6 +12,6 @@ namespace Store.BusinessLogic.Models.Users
         public string Email { get; set; }
         public bool IsLocked { get; set; }
         public string Avatar { get; set; } = Constants.Images.DefaultUserAvatar;
-        public IList<string> Roles { get; set; } = new List<string>();
+        public string Role { get; set; }
     }
 }

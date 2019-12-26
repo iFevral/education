@@ -27,7 +27,7 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// <summary>
         /// Confirm email
         /// </summary>
-        public Task<BaseModel> ConfirmEmailAsync(string username, string token);
+        public Task<BaseModel> ConfirmEmailAsync(EmailConfirmationModel emailConfirmationModel);
 
         /// <summary>
         /// Set new password 

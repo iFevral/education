@@ -2,7 +2,7 @@
 
 namespace Store.BusinessLogic.Models.Base
 {
-    public abstract class BaseModel
+    public class BaseModel
     {
         public ICollection<string> Errors = new List<string>();
     }

@@ -53,7 +53,7 @@ namespace Store.BusinessLogic.Services
             }
             userModel = user.MapToModel();
 
-            userModel.Roles = await _userRepository.GetUserRolesAsync(user.Id);
+            userModel.Role = await _userRepository.GetUserRolesAsync(user.Id);
             return userModel;
         }
 

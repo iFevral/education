@@ -42,7 +42,7 @@ namespace Store.DataAccess.Repositories.Interfaces
         /// <summary>
         /// Get all roles of user
         /// </summary>
-        public Task<IList<string>> GetUserRolesAsync(long id);
+        public Task<string> GetUserRolesAsync(long id);
 
         /// <summary>
         /// Find user by id

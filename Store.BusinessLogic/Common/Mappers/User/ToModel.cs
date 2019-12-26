@@ -17,7 +17,6 @@ namespace Store.BusinessLogic.Common.Mappers.User
                 ? Constants.Constants.Images.DefaultUserAvatar 
                 : entity.Avatar;
 
-            model.Roles = new List<string>();
             return model;
         }
     }

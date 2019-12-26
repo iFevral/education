@@ -70,7 +70,7 @@ namespace Store.Presentation.Helpers
             var claim = new Claim(ClaimTypes.Email, userModel.Email);
             claims.Add(claim);
 
-            claim = new Claim(ClaimTypes.Role, userModel.Roles.First());
+            claim = new Claim(ClaimTypes.Role, userModel.Role);
             claims.Add(claim);
 
             return claims;

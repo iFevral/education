@@ -40,9 +40,9 @@ namespace Store.BusinessLogic.Services
             }
 
             userModel = user.MapToModel();
-            userModel.Roles = await _userRepository.GetUserRolesAsync(user.Id);
+            userModel.Role = await _userRepository.GetUserRolesAsync(user.Id);
 
-            if (userModel.Roles == null)
+            if (userModel.Role == null)
             {
                 userModel.Errors.Add(Constants.Errors.UserNotInAnyRoleError);
             }
@@ -69,7 +69,7 @@ namespace Store.BusinessLogic.Services
             }
 
 
-            if (user.LockoutEnabled)
+            if (user.LockoutEnabled && user.isRemoved)
             {
                 userModel.Errors.Add(Constants.Errors.UserLockError);
                 return userModel;
@@ -77,7 +77,7 @@ namespace Store.BusinessLogic.Services
 
             userModel = user.MapToModel();
 
-            userModel.Roles = await _userRepository.GetUserRolesAsync(user.Id);
+            userModel.Role = await _userRepository.GetUserRolesAsync(user.Id);
             
             var result = await _userRepository.CheckSignInAsync(signInModel.Email, signInModel.Password);
             if(!result)
@@ -128,18 +128,18 @@ namespace Store.BusinessLogic.Services
             return resultModel;
         }
 
-        public async Task<BaseModel> ConfirmEmailAsync(string email, string token)
+        public async Task<BaseModel> ConfirmEmailAsync(EmailConfirmationModel model)
         {
             var emailConfirmationModel = new EmailConfirmationModel();
 
-            var user = await _userRepository.FindByEmailAsync(email);
+            var user = await _userRepository.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 emailConfirmationModel.Errors.Add(Constants.Errors.UsersNotExistError);
                 return emailConfirmationModel;
             }
 
-            var result = await _userRepository.ConfirmEmailAsync(email, token);
+            var result = await _userRepository.ConfirmEmailAsync(model.Email, model.Token);
             if (!result)
             {
                 emailConfirmationModel.Errors.Add(Constants.Errors.EmailConfirmationError);

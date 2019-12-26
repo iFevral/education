@@ -10,6 +10,7 @@ using Store.BusinessLogic.Helpers.Interface;
 using Store.Presentation.Helpers.Interface;
 using Store.DataAccess.Entities.Enums;
 using System;
+using Store.BusinessLogic.Models.Base;
 
 namespace Store.Presentation.Controllers
 {
@@ -50,20 +51,22 @@ namespace Store.Presentation.Controllers
         public async Task<IActionResult> SignIn(bool isRememberMeActivated, [FromBody] SignInModel loginData)
         {
             var userModel = await _accountService.SignInAsync(loginData);
+            var tokenModel = new TokenModel();
 
             if (userModel.Errors.Any())
             {
-                return Ok(userModel);
+                tokenModel.Errors = userModel.Errors;
+
+                return Ok(tokenModel);
             }
 
-            var tokenModel = new TokenModel();
 
             double tokenLifeTime = _jwtConfig.GetValue<double>("AccessTokenLifeTime");
             string secretKey = _jwtConfig.GetValue<string>("SecretKey");
 
 
             tokenModel.AccessToken = _jwtHelper.GenerateToken(userModel, tokenLifeTime, secretKey, true);
-            
+
 
             tokenLifeTime = isRememberMeActivated
                 ? _jwtConfig.GetValue<double>("RefreshTokenLifeTimeLong")
@@ -87,7 +90,7 @@ namespace Store.Presentation.Controllers
             }
 
             string subject = Constants.EmailHeaders.EmailConfirmation;
-            string body = $"Confirmation link: <a href='{_configuration["Url"]}/Account/ConfirmEmail?email={emailConfirmationModel.Email}&token={emailConfirmationModel.Token}'>Verify Email</a>";
+            string body = $"Confirmation link: <a href='{_configuration["ViewUrl"]}/Account/ConfirmEmail?email={emailConfirmationModel.Email}&token={emailConfirmationModel.Token}'>Verify Email</a>";
 
             await _emailHelper.Send(signUpModel.Email, subject, body);
             emailConfirmationModel.Token = null;
@@ -108,14 +111,14 @@ namespace Store.Presentation.Controllers
 
 
         [Route("~/[controller]/[action]")]
-        [HttpGet]
-        public async Task<IActionResult> ConfirmEmail(string email, string token)
+        [HttpPost]
+        public async Task<IActionResult> ConfirmEmail([FromBody]EmailConfirmationModel emailConfirmationModel)
         {
-            token = token.Replace(" ", "+");
-            var userModel = await _accountService.ConfirmEmailAsync(email, token);
+            emailConfirmationModel.Token = emailConfirmationModel.Token.Replace(" ", "+");
+            var model = await _accountService.ConfirmEmailAsync(emailConfirmationModel);
 
-            return Ok(userModel);
-        }
+            return Ok(model);
+        } 
 
         [Route("~/[controller]/[action]")]
         [HttpPost]

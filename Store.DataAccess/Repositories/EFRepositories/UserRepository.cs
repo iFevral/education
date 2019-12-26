@@ -75,8 +75,8 @@ namespace Store.DataAccess.Repositories.EFRepository
         {
             var user = await FindByEmailAsync(email);
             var result = await _userManager.SetLockoutEnabledAsync(user, false);
-            result = await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MinValue);
-            return result.Succeeded;
+            var result2 = await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MinValue);
+            return result.Succeeded || result2.Succeeded;
         }
 
         public async Task<string> GenerateEmailConfirmationTokenAsync(string email)
@@ -134,10 +134,11 @@ namespace Store.DataAccess.Repositories.EFRepository
             return user;
         }
 
-        public async Task<IList<string>> GetUserRolesAsync(long id)
+        public async Task<string> GetUserRolesAsync(long id)
         {
             var user = await FindByIdAsync(id);
-            return await _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
+            return roles.First();
         }
 
         public async Task<bool> AddToRoleAsync(long id, string rolename)
