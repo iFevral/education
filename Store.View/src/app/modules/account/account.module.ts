@@ -1,29 +1,29 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialElementsModule } from '../../shared/modules';
+import { AccountRoutingModule } from './account-routing.module';
 
 import { AccountService } from '../../shared/services';
 
-import { AccountRoutingModule } from './account-routing.module';
 import {
     SignInComponent,
     SignUpComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    ProfileComponent,
+    EmailConfirmationComponent
 } from '.';
-import { ProfileComponent } from './components/profile/profile.component';
-import { EmailConfirmationComponent } from './components/email-confirmation/email-confirmation.component';
 
 @NgModule({
     imports: [
+        CommonModule,
         FormsModule,
-        BrowserModule,
-        AccountRoutingModule,
         ReactiveFormsModule,
         MaterialElementsModule,
-        FontAwesomeModule
+        FontAwesomeModule,
+        AccountRoutingModule
     ],
     declarations: [
         SignUpComponent,

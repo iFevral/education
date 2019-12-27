@@ -9,7 +9,6 @@ import { MaterialElementsModule } from './shared/modules';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AuthorManagerModule } from './modules/author-manager/author-manager.module';
-import { AccountModule } from './modules/account/account.module';
 import { OrderManagerModule } from './modules/order/order-manager.module';
 import { PrintingEditionModule } from './modules/printing-edition/printing-edition.module';
 import { PrintingEditionManagerModule } from './modules/printing-edition-manager/printing-edition-manager.module';
@@ -33,7 +32,6 @@ import { CartComponent } from './modules/order';
         FontAwesomeModule,
         BrowserAnimationsModule,
         MaterialElementsModule,
-        AccountModule,
         AuthorManagerModule,
         OrderManagerModule,
         PrintingEditionModule,
@@ -45,8 +43,15 @@ import { CartComponent } from './modules/order';
     ],
     providers: [
         AccountService,
-        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: JwtInterceptor,
+            multi: true
+        }
     ],
-    bootstrap: [AppComponent]
+
+    bootstrap: [
+        AppComponent
+    ]
 })
 export class AppModule { }

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { AccountService } from '../../../../shared/services';
 import { BaseModel } from '../../../../shared/models';
-import { Constants } from '../../../../shared/constants/constants';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
