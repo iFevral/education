@@ -16,7 +16,7 @@ namespace Store.DataAccess.Initialization
             
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
-            services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<IAuthorRepository, Repositories.DapperRepositories.AuthorRepository>();
             services.AddScoped<IPrintingEditionRepository, PrintingEditionRepository>();
             services.AddScoped<IAuthorInPrintingEditionRepository, AuthorInPrintingEditionRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();

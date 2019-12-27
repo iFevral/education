@@ -1,7 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Models.Authors;
 using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Services.Interfaces;
@@ -9,7 +7,6 @@ using Store.BusinessLogic.Services.Interfaces;
 namespace Store.Presentation.Controllers
 {
     [Route("[controller]s")]
-    [Authorize(Roles = Constants.RoleNames.Admin)]
     [ApiController]
     public class AuthorController : ControllerBase
     {
@@ -20,7 +17,6 @@ namespace Store.Presentation.Controllers
             _authorService = authorService;
         }
 
-        [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPost]
         public async Task<IActionResult> GetAll([FromBody]AuthorFilterModel authorFilter)
         {
@@ -38,7 +34,6 @@ namespace Store.Presentation.Controllers
             return Ok(authorModel);
         }
 
-        [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPut]
         public async Task<IActionResult> Create([FromBody]AuthorModelItem authorItem)
         {
@@ -47,7 +42,6 @@ namespace Store.Presentation.Controllers
             return Ok(authorModel);
         }
 
-        [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpPatch]
         public async Task<IActionResult> Update([FromBody]AuthorModelItem authorItem)
         {
@@ -57,7 +51,6 @@ namespace Store.Presentation.Controllers
         }
 
         [Route("~/[controller]s/{id}")]
-        [Authorize(Roles = Constants.RoleNames.Admin)]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
