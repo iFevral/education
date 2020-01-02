@@ -63,10 +63,10 @@ namespace Store.DataAccess.Repositories.DapperRepositories
                 var list = new ListModel<OrderModel>();
                 list.Items = new List<OrderModel>();
 
-                queryResult.Read<OrderModel, decimal, User, OrderItem, PrintingEdition, OrderModel>(
+                queryResult.Read<OrderModel, decimal?, User, OrderItem, PrintingEdition, OrderModel>(
                     (order, orderPrice, user, orderItem, printingEdition) =>
                     {
-                        order.OrderPrice = orderPrice;
+                        order.OrderPrice = orderPrice == null ? 0 : orderPrice;
                         order.User = user;
 
                         if (list.Items.Count() == 0 || list.Items.Last().Id != order.Id)

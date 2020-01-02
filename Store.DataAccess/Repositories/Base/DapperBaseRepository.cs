@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Dapper.Contrib.Extensions;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Models.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-
+using Microsoft.Data.SqlClient;
+using System.Linq;
 
 namespace Store.DataAccess.Repositories.Base
 {
@@ -17,34 +17,59 @@ namespace Store.DataAccess.Repositories.Base
             _connectionString = configuration.GetConnectionString("DbConnection");
         }
 
-        public virtual Task<bool> CreateAsync(T item)
+        public virtual async Task<bool> CreateAsync(T item)
         {
-            throw new System.NotImplementedException();
+            using (var databaseConnection = new SqlConnection(_connectionString))
+            {
+                int id = await databaseConnection.InsertAsync<T>(item);
+                return id > 0;
+            }
         }
 
-        public virtual Task<T> FindAsync(Expression<Func<T, bool>> predicate)
+        public async Task<bool> CreateListAsync(IEnumerable<T> items)
         {
-            throw new System.NotImplementedException();
+            using (var databaseConnection = new SqlConnection(_connectionString))
+            {
+                await databaseConnection.InsertAsync(items);
+                return true;
+            }
         }
-
-        public virtual Task<T> FindByIdAsync(long id)
+    
+        public virtual async Task<T> FindByIdAsync(long id)
         {
-            throw new System.NotImplementedException();
+            using (var databaseConnection = new SqlConnection(_connectionString))
+            {
+                var item = await databaseConnection.GetAsync<T>(id);
+                return item;
+            }
         }
 
         public virtual IEnumerable<T> GetAll(FilterModel<T> filterModel, out int counter)
         {
-            throw new System.NotImplementedException();
+            using (var databaseConnection = new SqlConnection(_connectionString))
+            {
+                var items = databaseConnection.GetAll<T>();
+                counter = items.Count();
+                return items;
+            }
         }
 
-        public virtual Task<bool> RemoveAsync(T item)
+        public virtual async Task<bool> RemoveAsync(T item)
         {
-            throw new System.NotImplementedException();
+            using (var databaseConnection = new SqlConnection(_connectionString))
+            {
+                var result = await databaseConnection.DeleteAsync<T>(item);
+                return result;
+            }
         }
 
-        public virtual Task<bool> UpdateAsync(T item)
+        public virtual async Task<bool> UpdateAsync(T item)
         {
-            throw new System.NotImplementedException();
+            using (var databaseConnection = new SqlConnection(_connectionString))
+            {
+                var result = await databaseConnection.UpdateAsync<T>(item);
+                return result;
+            }
         }
     }
 }

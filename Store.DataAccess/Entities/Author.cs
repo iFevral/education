@@ -8,6 +8,7 @@ namespace Store.DataAccess.Entities
     {
         public string Name { get; set; }
 
+        [Dapper.Contrib.Extensions.Computed]
         public virtual ICollection<AuthorInPrintingEdition> AuthorInPrintingEdition { get; set; }
     }
 }

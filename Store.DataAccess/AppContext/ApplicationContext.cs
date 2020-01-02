@@ -15,7 +15,7 @@ namespace Store.DataAccess.AppContext
             Database.EnsureCreated();
         }
 
-        public virtual DbSet<AuthorInPrintingEdition> AuthorInBooks { get; set; }
+        public virtual DbSet<AuthorInPrintingEdition> AuthorInPrintingEditions { get; set; }
         public virtual DbSet<Author> Authors { get; set; }
         public virtual DbSet<OrderItem> OrderItems { get; set; }
         public virtual DbSet<Order> Orders { get; set; }

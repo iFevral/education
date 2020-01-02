@@ -16,14 +16,6 @@ namespace Store.BusinessLogic.Common.Mappers.PrintingEdition
             entity.Currency = model.Currency;
             entity.Type =  model.Type;
             entity.Image = model.Image;
-            entity.AuthorInPrintingEditions = new List<AuthorInPrintingEdition>();
-            foreach(var author in model.Authors)
-            {
-                var authorId = author.Id;
-                var authorInBooks = new AuthorInPrintingEdition();
-                authorInBooks.AuthorId = authorId;
-                entity.AuthorInPrintingEditions.Add(authorInBooks);
-            }
 
             return entity;
         }

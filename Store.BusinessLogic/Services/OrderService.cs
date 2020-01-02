@@ -12,6 +12,7 @@ using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
 using Store.DataAccess.Entities.Enums;
 using System.Linq;
+using Store.BusinessLogic.Common.Mappers.OrderItem;
 
 namespace Store.BusinessLogic.Services
 {
@@ -19,11 +20,15 @@ namespace Store.BusinessLogic.Services
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IPaymentRepository _paymentsRepository;
+        private readonly IOrderItemRepository _orderItemRepository;
+
         public OrderService(IPaymentRepository paymentsRepository,
-                            IOrderRepository orderRepository)
+                            IOrderRepository orderRepository,
+                            IOrderItemRepository orderItemRepository)
         {
             _paymentsRepository = paymentsRepository;
             _orderRepository = orderRepository;
+            _orderItemRepository = orderItemRepository;
         }
 
         public async Task<OrderModel> GetAllAsync(OrderFilterModel orderFilterModel)
@@ -68,6 +73,15 @@ namespace Store.BusinessLogic.Services
                 modelItem.Errors.Add(Constants.Errors.CreateOrderError);
             }
 
+            var orderItems = modelItem.OrderItems.MapToOrderItemsList(order.Id);
+
+            result = await _orderItemRepository.CreateListAsync(orderItems);
+
+            if (!result && orderItems.Count() > 0)
+            {
+                modelItem.Errors.Add(Constants.Errors.CreateOrderError);
+            }
+
             return modelItem;
         }
 
@@ -107,13 +121,13 @@ namespace Store.BusinessLogic.Services
             payment.TransactionId = modelItem.TransactionId;
 
             var result = await _paymentsRepository.CreateAsync(payment);
+
             if (!result)
             {
                 orderModel.Errors.Add(Constants.Errors.CreatePaymentError);
                 return orderModel;
             }
         
-            payment = await _paymentsRepository.FindAsync(p => p.TransactionId.Equals(modelItem.TransactionId));
             order.PaymentId = payment.Id;
             order.Status = Enums.Order.OrderStatus.Paid;
             result = await _orderRepository.UpdateAsync(order);

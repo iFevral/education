@@ -4,6 +4,6 @@ namespace Store.DataAccess.Models
 {
     public class OrderModel : Order 
     {
-        public decimal OrderPrice { get; set; }
+        public decimal? OrderPrice { get; set; }
     }
 }

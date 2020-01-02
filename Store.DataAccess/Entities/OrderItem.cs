@@ -9,8 +9,10 @@ namespace Store.DataAccess.Entities
         public long PrintingEditionId { get; set; }
         public long OrderId { get; set; }
 
+        [Dapper.Contrib.Extensions.Computed]
         public virtual Order Order { get; set; }
 
+        [Dapper.Contrib.Extensions.Computed]
         public virtual PrintingEdition PrintingEdition { get; set; }
     }
 }

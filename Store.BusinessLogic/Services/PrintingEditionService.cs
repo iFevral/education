@@ -9,6 +9,8 @@ using Store.BusinessLogic.Common.Mappers.PrintingEdition;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
 using Store.BusinessLogic.Extensions.Currency;
+using Store.BusinessLogic.Common.Mappers.AuthorInPrintingEdition;
+using System.Linq;
 
 namespace Store.BusinessLogic.Services
 {
@@ -79,6 +81,15 @@ namespace Store.BusinessLogic.Services
                 printingEditionModel.Errors.Add(Constants.Errors.CreatePrintingEditionError);
             }
 
+            var authorInPrintingEditions = printingEditionModel.Authors.MapToAuthorInPrintingEditionList(printingEdition.Id).ToList();
+
+            result = await _authorInPrintingEditionRepository.CreateListAsync(authorInPrintingEditions);
+
+            if (!result && authorInPrintingEditions.Count > 0)
+            {
+                printingEditionModel.Errors.Add(Constants.Errors.CreatePrintingEditionError);
+            }
+
             return printingEditionModel;
         }
 
@@ -93,7 +104,7 @@ namespace Store.BusinessLogic.Services
 
             printingEdition = printingEditionModel.MapToEntity(printingEdition);
             
-            var result = await _authorInPrintingEditionRepository.RemoveAuthorsInPrintingEditions(printingEdition.Id);
+            var result = await _authorInPrintingEditionRepository.RemoveByPrintingEditionAsync(printingEdition.Id);
             if (!result)
             {
                 printingEditionModel.Errors.Add(Constants.Errors.DeleteAuthorError);
@@ -101,9 +112,19 @@ namespace Store.BusinessLogic.Services
             }
 
             result = await _printingEditionRepository.UpdateAsync(printingEdition);
+            
             if(!result)
             {
                 printingEditionModel.Errors.Add(Constants.Errors.UpdatePrintingEditionError);
+            }
+
+            var authorInPrintingEditions = printingEditionModel.Authors.MapToAuthorInPrintingEditionList(printingEdition.Id).ToList();
+
+            result = await _authorInPrintingEditionRepository.CreateListAsync(authorInPrintingEditions);
+
+            if (!result && authorInPrintingEditions.Count > 0)
+            {
+                printingEditionModel.Errors.Add(Constants.Errors.CreatePrintingEditionError);
             }
 
             return printingEditionModel;

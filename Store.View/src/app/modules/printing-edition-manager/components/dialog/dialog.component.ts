@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { PrintingEditionType, PrintingEditionCurrency } from '../../../../shared/enums';
+import { PrintingEditionType, PrintingEditionCurrency, CRUDOperations } from '../../../../shared/enums';
 import { Constants } from '../../../../shared/constants/constants';
 import { AuthorService } from '../../../../shared/services';
 import { AuthorFilterModel, AuthorModelItem, AuthorModel, DialogData, PrintingEditionModelItem } from '../../../../shared/models';
@@ -35,7 +35,11 @@ export class PrintingEditionDialogComponent extends DialogCrudComponent<Printing
         });
 
         this.authors = new Array<number>();
-
+        if (data.type === CRUDOperations.Update) {
+            data.model.authors.forEach(element => {
+                this.authors.push(element.id);
+            });
+        }
         this.allTypes = Constants.enumsAttributes.printingEditionTypes;
         this.types = [
             PrintingEditionType.Books,
@@ -55,8 +59,9 @@ export class PrintingEditionDialogComponent extends DialogCrudComponent<Printing
         ];
     }
 
-    changeAuthors(event) {
+    changeAuthors() {
         this.data.model.authors = new Array<AuthorModelItem>();
+
         this.authors.forEach(element => {
             const authorModel = new AuthorModelItem();
             authorModel.id = element;

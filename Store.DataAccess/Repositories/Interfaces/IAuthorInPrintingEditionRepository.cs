@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using Store.DataAccess.Entities;
+using Store.DataAccess.Repositories.Base;
+using System.Threading.Tasks;
 
 namespace Store.DataAccess.Repositories.Interfaces
 {
-    public interface IAuthorInPrintingEditionRepository
+    public interface IAuthorInPrintingEditionRepository : IGenericRepository<AuthorInPrintingEdition>
     {
-        public Task<bool> RemoveAuthorsInPrintingEditions(long printingEditionId);
+        public Task<bool> RemoveByPrintingEditionAsync(long printingEditionId);
     }
 }

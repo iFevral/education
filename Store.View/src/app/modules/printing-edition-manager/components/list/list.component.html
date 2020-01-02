@@ -29,9 +29,9 @@
             <ng-container matColumnDef="authors">
                 <th mat-header-cell *matHeaderCellDef>Authors</th>
                 <td id="authors" mat-cell *matCellDef="let row">
-                    <tr *ngFor="let author of row.authors">
-                        <td>{{author.name}} </td>
-                    </tr>
+                    <span *ngFor="let author of row.authors">
+                        {{author.name}}
+                    </span>
                 </td>
             </ng-container>
 

@@ -8,6 +8,7 @@ namespace Store.DataAccess.Entities
     {
         public string TransactionId { get; set; }
 
+        [Dapper.Contrib.Extensions.Computed]
         public virtual ICollection<Order> Orders { get; set; }
     }
 }

@@ -27,7 +27,7 @@ export class OrderListComponent extends ListComponent<OrderModelItem, OrderModel
             'productType',
             'title',
             'quantity',
-            'amount',
+            'orderPrice',
             'status'
         ];
         this.allStatuses = Constants.enumsAttributes.orderStatuses;

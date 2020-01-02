@@ -13,7 +13,7 @@ namespace Store.BusinessLogic.Models.Orders
         public string Description { get; set; }
         public Enums.Order.OrderStatus Status { get; set; } = Enums.Order.OrderStatus.Unpaid;
         public DateTime? Date { get; set; } = DateTime.Now;
-        public decimal OrderPrice { get; set; }
+        public decimal? OrderPrice { get; set; }
         public UserModelItem User { get; set; } = new UserModelItem();
         public PaymentModelItem Payment { get; set; }
 

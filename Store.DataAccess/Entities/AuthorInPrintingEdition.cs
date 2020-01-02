@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess.Entities
 {
-    [Table("AuthorInPrintingEditions")]
+    [Table("AuthorInPrintingEdition")]
     public class AuthorInPrintingEdition : BaseEntity
     {
         [Key]
@@ -12,7 +12,10 @@ namespace Store.DataAccess.Entities
         public long PrintingEditionId { get; set; }
 
 
+        [Dapper.Contrib.Extensions.Computed]
         public virtual Author Author { get; set; }
+        
+        [Dapper.Contrib.Extensions.Computed]
         public virtual PrintingEdition PrintingEdition { get; set; }
     }
 }

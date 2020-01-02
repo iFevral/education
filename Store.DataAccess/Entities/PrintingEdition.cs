@@ -16,7 +16,9 @@ namespace Store.DataAccess.Entities
         public Enums.Enums.PrintingEditions.PrintingEditionType? Type { get; set; }
         public string Image { get; set; }
 
+        [Dapper.Contrib.Extensions.Computed]
         public virtual ICollection<AuthorInPrintingEdition> AuthorInPrintingEditions { get; set; }
+        [Dapper.Contrib.Extensions.Computed]
         public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
 }

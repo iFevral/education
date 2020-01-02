@@ -38,7 +38,6 @@ import {
     exports: [
         SignUpComponent,
         SignInComponent
-    ],
-    providers: [AccountService]
+    ]
 })
 export class AccountModule { }

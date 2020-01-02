@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
+﻿using System.Threading.Tasks;
 using System.Collections.Generic;
 using Store.DataAccess.Models.Filters;
 
@@ -15,12 +13,6 @@ namespace Store.DataAccess.Repositories.Base
         public IEnumerable<T> GetAll(FilterModel<T> filterModel, out int counter);
 
         /// <summary>
-        /// Find instance by predicate
-        /// </summary>
-        /// <returns>First found instance</returns>
-        public Task<T> FindAsync(Expression<Func<T, bool>> predicate);
-
-        /// <summary>
         /// Find instance by id async
         /// </summary>
         /// <returns>First found instance</returns>
@@ -31,6 +23,11 @@ namespace Store.DataAccess.Repositories.Base
         /// </summary>
         public Task<bool> CreateAsync(T item);
 
+        /// <summary>
+        /// Create instances async
+        /// </summary>
+        public Task<bool> CreateListAsync(IEnumerable<T> items);
+        
         /// <summary>
         /// Update instance async
         /// </summary>

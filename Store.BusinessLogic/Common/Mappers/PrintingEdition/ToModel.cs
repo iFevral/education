@@ -18,6 +18,7 @@ namespace Store.BusinessLogic.Common.Mappers.PrintingEdition
             model.Image = string.IsNullOrWhiteSpace(entity.Image)
                 ? Constants.Constants.Images.DefaultPrintingEditionTitle
                 : entity.Image;
+
             foreach(var item in entity.AuthorInPrintingEditions)
             {
                 var author = new AuthorModelItem();

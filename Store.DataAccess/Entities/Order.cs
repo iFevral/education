@@ -12,8 +12,11 @@ namespace Store.DataAccess.Entities
         public long UserId { get; set; }
         public long? PaymentId { get; set; }
 
+        [Dapper.Contrib.Extensions.Computed]
         public virtual Payment Payment { get; set; }
+        [Dapper.Contrib.Extensions.Computed]
         public virtual User User { get; set; }
+        [Dapper.Contrib.Extensions.Computed]
         public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
 }

@@ -1,28 +1,29 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Store.DataAccess.AppContext;
+using Store.DataAccess.Entities;
+using Store.DataAccess.Repositories.Base;
 using Store.DataAccess.Repositories.Interfaces;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
-    public class AuthorInPrintingEditionRepository : IAuthorInPrintingEditionRepository
+    public class AuthorInPrintingEditionRepository : EFBaseRepository<AuthorInPrintingEdition>, IAuthorInPrintingEditionRepository
     {
-        private readonly ApplicationContext _dbContext;
-        public AuthorInPrintingEditionRepository(ApplicationContext dbContext)
+        public AuthorInPrintingEditionRepository(ApplicationContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
+            _dbSet = _dbContext.AuthorInPrintingEditions;
         }
 
-        public async Task<bool> RemoveAuthorsInPrintingEditions(long printingEditionId)
+        public async Task<bool> RemoveByPrintingEditionAsync(long printingEditionId)
         {
-            var authorInPrintingEdition = _dbContext.AuthorInBooks.Where(aib => aib.PrintingEditionId == printingEditionId);
+            var authorInPrintingEdition = _dbSet.Where(aib => aib.PrintingEditionId == printingEditionId);
 
-            if(!authorInPrintingEdition.Any())
+            if(authorInPrintingEdition == null || !authorInPrintingEdition.Any())
             {
                 return true;
             }
 
-            _dbContext.AuthorInBooks.RemoveRange(authorInPrintingEdition);
+            _dbContext.AuthorInPrintingEditions.RemoveRange(authorInPrintingEdition);
             var result = await _dbContext.SaveChangesAsync();
 
             return result > 0;

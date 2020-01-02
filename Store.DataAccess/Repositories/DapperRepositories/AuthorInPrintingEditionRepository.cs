@@ -1,10 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Store.DataAccess.Entities;
+using Store.DataAccess.Repositories.Base;
+using Store.DataAccess.Repositories.Interfaces;
 using System.Text;
+using System.Threading.Tasks;
+using Dapper;
 
 namespace Store.DataAccess.Repositories.DapperRepositories
 {
-    class AuthorInPrintingEditionRepository
+    public class AuthorInPrintingEditionRepository : DapperBaseRepository<AuthorInPrintingEdition>, IAuthorInPrintingEditionRepository
     {
+        public AuthorInPrintingEditionRepository(IConfiguration configuration) : base(configuration)
+        {
+        }
+
+        public async Task<bool> RemoveByPrintingEditionAsync(long printingEditionId)
+        {
+            var sql = new StringBuilder($@"DELETE FROM AuthorInPrintingEdition WHERE PrintingEditionId = {printingEditionId}");
+            using (var databaseConnection = new SqlConnection(_connectionString))
+            {
+                await databaseConnection.QueryAsync(sql.ToString());
+                return true;
+            }
+        }
     }
 }

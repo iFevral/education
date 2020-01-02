@@ -21,15 +21,6 @@ namespace Store.BusinessLogic.Common.Mappers.Order
 
             entity.UserId = model.User.Id;
 
-            entity.OrderItems = new List<OrderItem>();
-            foreach (var item in model.OrderItems)
-            {
-                var orderItem = new OrderItem();
-                orderItem .Amount = item.Amount;
-                orderItem .PrintingEditionId = item.PrintingEdition.Id;
-                entity.OrderItems.Add(orderItem);
-            }
-
             return entity;
         }
     }

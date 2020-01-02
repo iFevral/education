@@ -58,6 +58,13 @@ namespace Store.DataAccess.Repositories.Base
             return result > 0;
         }
 
+        public virtual async Task<bool> CreateListAsync(IEnumerable<T> items)
+        {
+            _dbSet.AddRange(items);
+            var result = await _dbContext.SaveChangesAsync();
+            return result > 0;
+        }
+
         public virtual async Task<bool> UpdateAsync(T item)
         {
             _dbContext.Entry(item).State = EntityState.Modified;
