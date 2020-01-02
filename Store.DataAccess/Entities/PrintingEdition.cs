@@ -16,7 +16,7 @@ namespace Store.DataAccess.Entities
         public Enums.Enums.PrintingEditions.PrintingEditionType? Type { get; set; }
         public string Image { get; set; }
 
-        public virtual ICollection<AuthorInPrintingEdition> AuthorInBooks { get; set; }
+        public virtual ICollection<AuthorInPrintingEdition> AuthorInPrintingEditions { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
 }

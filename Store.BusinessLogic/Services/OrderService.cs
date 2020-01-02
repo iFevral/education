@@ -26,40 +26,22 @@ namespace Store.BusinessLogic.Services
             _orderRepository = orderRepository;
         }
 
-        public async Task<OrderModelItem> FindByIdAsync(int id)
-        {
-            var orderModel = new OrderModelItem();
-            var order = await _orderRepository.FindByIdAsync(id);
-            if (order == null)
-            {
-                orderModel.Errors.Add(Constants.Errors.NotFoundOrderError);
-                return orderModel;
-            }
-
-            orderModel = order.MapToModel();
-            return orderModel;
-        }
-
         public async Task<OrderModel> GetAllAsync(OrderFilterModel orderFilterModel)
         {
-            IEnumerable<Order> orders;
             var orderModel = new OrderModel();
             var filterModel = orderFilterModel.MapToEFFilterModel();
 
-            int counter = 0;
+            var listOfOrders = await _orderRepository.GetAllOrders(filterModel);
 
-            orders = filterModel.SortProperty == Enums.Filter.SortProperty.Amount
-                ? _orderRepository.GetAllSortedByAmount(filterModel, out counter)
-                : _orderRepository.GetAll(filterModel, out counter);
-
-            if (orders == null)
+            if (listOfOrders.Items == null)
             {
                 orderModel.Errors.Add(Constants.Errors.NotFoundOrdersError);
                 return orderModel;
             }
 
-            orderModel.Counter = counter;
-            foreach (var item in orders)
+            orderModel.Counter = listOfOrders.Counter;
+
+            foreach (var item in listOfOrders.Items)
             {
                 var orderItem = new OrderModelItem();
                 orderModel.Items.Add(item.MapToModel());

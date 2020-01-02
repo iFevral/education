@@ -8,6 +8,6 @@ namespace Store.DataAccess.Entities
     {
         public string Name { get; set; }
 
-        public virtual ICollection<AuthorInPrintingEdition> AuthorInBooks { get; set; }
+        public virtual ICollection<AuthorInPrintingEdition> AuthorInPrintingEdition { get; set; }
     }
 }

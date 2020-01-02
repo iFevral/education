@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Collections.Generic;
-using Store.DataAccess.Models.EFFilters;
+using Store.DataAccess.Models.Filters;
 
 namespace Store.DataAccess.Repositories.Base
 {

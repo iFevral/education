@@ -1,12 +1,13 @@
-﻿using Store.DataAccess.Entities;
-using Store.DataAccess.Models.EFFilters;
+﻿using System.Threading.Tasks;
+using Store.DataAccess.Entities;
+using Store.DataAccess.Models;
+using Store.DataAccess.Models.Filters;
 using Store.DataAccess.Repositories.Base;
-using System.Collections.Generic;
 
 namespace Store.DataAccess.Repositories.Interfaces
 {
     public interface IOrderRepository : IGenericRepository<Order>
     {
-        public IEnumerable<Order> GetAllSortedByAmount(FilterModel<Order> filterModel, out int counter);
+        public Task<ListModel<OrderModel>> GetAllOrders(OrderFilterModel filterModel);
     }
 }

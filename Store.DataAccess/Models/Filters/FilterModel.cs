@@ -2,7 +2,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace Store.DataAccess.Models.EFFilters
+namespace Store.DataAccess.Models.Filters
 {
     public class FilterModel<T> where T : class
     {

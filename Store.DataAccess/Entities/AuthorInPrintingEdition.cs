@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.DataAccess.Entities
 {
-    [Table("AuthorInPrintingEdition")]
+    [Table("AuthorInPrintingEditions")]
     public class AuthorInPrintingEdition : BaseEntity
     {
         [Key]

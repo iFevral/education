@@ -1,15 +1,14 @@
-﻿using System.Linq;
-using Store.BusinessLogic.Models.Filters;
-using Store.DataAccess.Models.EFFilters;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Store.BusinessLogic.Extensions.Currency;
 
 namespace Store.BusinessLogic.Common.Mappers.Filter
 {
     public static partial class FilterMapperExtension
     {
-        public static FilterModel<DataAccess.Entities.PrintingEdition> MapToEFFilterModel(this PrintingEditionFilterModel filterBL)
+        public static DataAccess.Models.Filters.PrintingEditionFilterModel MapToEFFilterModel(this Models.Filters.PrintingEditionFilterModel filterBL)
         {
-            var filterDAL = new FilterModel<DataAccess.Entities.PrintingEdition>();
+            var filterDAL = new DataAccess.Models.Filters.PrintingEditionFilterModel();
             filterDAL.SortProperty = filterBL.SortProperty;
             filterDAL.IsAscending = filterBL.IsAscending;
             filterDAL.StartIndex = filterBL.StartIndex;
@@ -33,7 +32,21 @@ namespace Store.BusinessLogic.Common.Mappers.Filter
                                            (!printingEdition.isRemoved) &&
                                            (string.IsNullOrWhiteSpace(filterBL.SearchQuery) ||
                                             printingEdition.Title.ToLower().Contains(filterBL.SearchQuery.ToLower()) ||
-                                            printingEdition.AuthorInBooks.Any(aib => aib.Author.Name.ToLower().Contains(filterBL.SearchQuery.ToLower())));
+                                            printingEdition.AuthorInPrintingEditions.Any(aib => aib.Author.Name.ToLower().Contains(filterBL.SearchQuery.ToLower())));
+
+            filterDAL.SearchQuery = filterBL.SearchQuery;
+            
+            filterDAL.MinPrice = filterBL.MinPrice == null
+                ? 0
+                : filterBL.MinPrice;
+
+            filterDAL.MaxPrice = filterBL.MaxPrice == null
+                ? 100000000
+                : filterBL.MaxPrice;
+
+            filterDAL.Types = filterBL.Types.Count() == 0
+                ? new List<int>() { 0 }
+                : filterBL.Types;
 
             return filterDAL;
         }

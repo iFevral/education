@@ -13,7 +13,7 @@ namespace Store.BusinessLogic.Common.Mappers.Author
             model.Id = entity.Id;
             model.Name = entity.Name;
 
-            foreach (var authorInBook in entity.AuthorInBooks)
+            foreach (var authorInBook in entity.AuthorInPrintingEdition)
             {
                 var printingEdition = new PrintingEditionModelItem();
                 printingEdition.Id = authorInBook.PrintingEditionId;

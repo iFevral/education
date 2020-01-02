@@ -1,11 +1,12 @@
 ﻿using System.Linq;
-using System.Collections.Generic;
 using Store.DataAccess.Entities;
 using Store.DataAccess.AppContext;
-using Store.DataAccess.Models.EFFilters;
 using Store.DataAccess.Repositories.Base;
 using Store.DataAccess.Extensions.Sorting;
 using Store.DataAccess.Repositories.Interfaces;
+using System.Threading.Tasks;
+using Store.DataAccess.Models;
+using Store.DataAccess.Models.Filters;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
@@ -15,20 +16,36 @@ namespace Store.DataAccess.Repositories.EFRepository
         {
         }
 
-        public IEnumerable<Order> GetAllSortedByAmount(FilterModel<Order> filterModel, out int counter)
+        public async Task<ListModel<OrderModel>> GetAllOrders(OrderFilterModel filterModel)
         {
-            var items = _dbSet.Where(filterModel.Predicate)
+            var list = new ListModel<OrderModel>();
+            list.Items = _dbSet.Where(filterModel.Predicate)
                                .AsEnumerable()
-                               .SortByOrderAmount(filterModel.IsAscending);
+                               .GroupBy(order => order)
+                               .Select(group => new OrderModel
+                               {
+                                   Id = group.Key.Id,
+                                   CreationDate = group.Key.CreationDate,
+                                   Description = group.Key.Description,
+                                   isRemoved = group.Key.isRemoved,
+                                   Status = group.Key.Status,
+                                   User = group.Key.User,
+                                   UserId = group.Key.UserId,
+                                   Payment = group.Key.Payment,
+                                   PaymentId = group.Key.PaymentId,
+                                   OrderItems = group.Key.OrderItems,
+                                   OrderPrice = group.Key.OrderItems.Sum(item => item.Amount * item.PrintingEdition.Price)
+                               })
+                               .SortBy(filterModel.SortProperty.ToString(), filterModel.IsAscending);
 
-            counter = items.Count();
+            list.Counter = list.Items.Count();
 
             if (filterModel.Quantity > 0)
             {
-                items = items.Skip(filterModel.StartIndex).Take(filterModel.Quantity);
+                list.Items = list.Items.Skip(filterModel.StartIndex).Take(filterModel.Quantity);
             }
 
-            return items.ToList();
+            return list;
         }
     }
 }

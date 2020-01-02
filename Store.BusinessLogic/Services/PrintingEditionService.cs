@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using System.Collections.Generic;
 using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Filters;
@@ -27,25 +26,21 @@ namespace Store.BusinessLogic.Services
 
         public async Task<PrintingEditionModel> GetAllAsync(PrintingEditionFilterModel printingEditionFilterModel)
         {
-
-
             var printingEditionModel = new PrintingEditionModel();
 
-            IEnumerable<PrintingEdition> printingEditions;
             var filterModel = printingEditionFilterModel.MapToEFFilterModel();
             
-            printingEditions = _printingEditionRepository.GetAll(filterModel, out int counter);
-            
+            var listOfPrintingEditions = await _printingEditionRepository.GetAllPrintingEditions(filterModel);
 
-            if (printingEditions == null)
+            if (listOfPrintingEditions.Items == null)
             {
                 printingEditionModel.Errors.Add(Constants.Errors.NotFoundPrintingEditionsError);
                 return printingEditionModel;
             }
 
-            printingEditionModel.Counter = counter;
+            printingEditionModel.Counter = listOfPrintingEditions.Counter;
 
-            foreach( var printingEdition in printingEditions)
+            foreach(var printingEdition in listOfPrintingEditions.Items)
             {
                 var item = printingEdition.MapToModel();
                 

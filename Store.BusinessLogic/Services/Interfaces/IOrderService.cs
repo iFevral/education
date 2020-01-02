@@ -16,12 +16,6 @@ namespace Store.BusinessLogic.Services.Interfaces
         public Task<OrderModel> GetAllAsync(OrderFilterModel orderFilter);
 
         /// <summary>
-        /// Get order by order id
-        /// </summary>
-        /// <returns>Order with id</returns>
-        public Task<OrderModelItem> FindByIdAsync(int id);
-
-        /// <summary>
         /// Create order
         /// </summary>
         public Task<BaseModel> CreateAsync(OrderModelItem modelItem);

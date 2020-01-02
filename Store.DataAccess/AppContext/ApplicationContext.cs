@@ -30,12 +30,12 @@ namespace Store.DataAccess.AppContext
 
                 entity.HasIndex(e => e.AuthorId);
                 entity.HasOne(x => x.Author)
-                      .WithMany(x => x.AuthorInBooks)
+                      .WithMany(x => x.AuthorInPrintingEdition)
                       .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasIndex(e => e.PrintingEditionId);
                 entity.HasOne(x => x.PrintingEdition)
-                      .WithMany(x => x.AuthorInBooks)
+                      .WithMany(x => x.AuthorInPrintingEditions)
                       .OnDelete(DeleteBehavior.Cascade);
             });
 

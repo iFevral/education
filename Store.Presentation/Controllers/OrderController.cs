@@ -40,15 +40,6 @@ namespace Store.Presentation.Controllers
             return Ok(orderModel);
         }
 
-        [Route("~/[controller]s/{id}")]
-        [HttpPost]
-        public async Task<IActionResult> Get(int id)
-        {
-            var orderModel = await _orderService.FindByIdAsync(id);
-
-            return Ok(orderModel);
-        }
-
         [HttpPut]
         public async Task<IActionResult> Create([FromHeader]string authorization, [FromBody]OrderModelItem orderModelItem)
         {

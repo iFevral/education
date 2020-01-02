@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.AppContext;
 using Store.DataAccess.Entities;
-using Store.DataAccess.Models.EFFilters;
+using Store.DataAccess.Models.Filters;
 using Store.DataAccess.Extensions.Sorting;
 
 namespace Store.DataAccess.Repositories.Base

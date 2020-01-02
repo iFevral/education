@@ -1,13 +1,14 @@
 ﻿using Store.BusinessLogic.Models.Orders;
 using Store.BusinessLogic.Models.PrintingEditions;
 using Store.BusinessLogic.Models.Users;
+using Store.DataAccess.Models;
 using System.Linq;
 
 namespace Store.BusinessLogic.Common.Mappers.Order
 {
     public static partial class OrderMapperExtension
     {
-        public static OrderModelItem MapToModel(this DataAccess.Entities.Order entity)
+        public static OrderModelItem MapToModel(this DataAccess.Models.OrderModel entity)
         {
             var model = new OrderModelItem();
 
@@ -22,15 +23,7 @@ namespace Store.BusinessLogic.Common.Mappers.Order
             model.User.LastName = entity.User.LastName;
             model.User.Email = entity.User.Email;
 
-            var query = entity.OrderItems
-                .GroupBy(item => item.OrderId)
-                .Select(g => new 
-                             { 
-                                 OrderId = g.Key,
-                                 Amount = g.Sum(item => item.PrintingEdition.Price * item.Amount) 
-                             });
-
-            model.OrderPrice = query.First().Amount;
+            model.OrderPrice = entity.OrderPrice;
 
             foreach (var item in entity.OrderItems)
             {

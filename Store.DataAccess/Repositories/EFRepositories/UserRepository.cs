@@ -2,10 +2,9 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.Entities;
 using Store.DataAccess.Repositories.Interfaces;
-using Store.DataAccess.Models.EFFilters;
+using Store.DataAccess.Models.Filters;
 using Store.DataAccess.Extensions.Sorting;
 using System;
 

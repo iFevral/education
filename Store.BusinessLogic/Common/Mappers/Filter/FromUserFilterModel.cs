@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Store.BusinessLogic.Models.Filters;
-using Store.DataAccess.Models.EFFilters;
+using Store.DataAccess.Models.Filters;
 
 namespace Store.BusinessLogic.Common.Mappers.Filter
 {

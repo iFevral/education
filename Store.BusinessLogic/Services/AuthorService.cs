@@ -25,16 +25,16 @@ namespace Store.BusinessLogic
             var authorModel = new AuthorModel();
             var filterModel = authorFilterModel.MapToEFFilterModel();
 
-            var authors = _authorRepository.GetAll(filterModel, out int counter);
+            var listOfAuthors = await _authorRepository.GetAllAuthors(filterModel);
 
-            if (authors == null)
+            if (listOfAuthors.Items == null)
             {
                 authorModel.Errors.Add(Constants.Errors.NotFoundAuthorsError);
                 return authorModel;
             }
 
-            authorModel.Counter = counter;
-            foreach (var author in authors)
+            authorModel.Counter = listOfAuthors.Counter;
+            foreach (var author in listOfAuthors.Items)
             {
                 var authorModelItem = new AuthorModelItem();
                 authorModel.Items.Add(author.MapToModel());
