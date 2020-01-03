@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { AuthorModel } from '../models';
-import { Constants } from '../constants/constants';
-import { BaseService } from './base/base.service';
+import { AuthorModel } from 'src/app/shared/models';
+import { Constants } from 'src/app/shared/constants/constants';
+import { BaseService } from 'src/app/shared/services/base/base.service';
 import { MatSnackBar } from '@angular/material';
 
 @Injectable({

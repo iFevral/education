@@ -1,6 +1,6 @@
-import { BaseModel } from '../base/base.model';
-import { AuthorModelItem } from '../author/author.model.item';
-import { PrintingEditionType, PrintingEditionCurrency } from '../../enums';
+import { BaseModel } from 'src/app/shared/models/base/base.model';
+import { AuthorModelItem } from 'src/app/shared/models/author/author.model.item';
+import { PrintingEditionType, PrintingEditionCurrency } from 'src/app/shared/enums';
 
 export class PrintingEditionModelItem extends BaseModel {
     public id?: number;

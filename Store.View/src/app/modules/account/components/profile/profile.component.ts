@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { AccountService } from '../../../../shared/services';
-
-import { UserModelItem } from '../../../../shared/models';
 import { Constants } from 'src/app/shared/constants/constants';
+import { AccountService } from 'src/app/shared/services';
+
+import { UserModelItem } from 'src/app/shared/models';
 
 @Component({
     selector: 'app-profile',

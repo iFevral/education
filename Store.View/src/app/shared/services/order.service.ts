@@ -1,9 +1,18 @@
 import { Injectable } from '@angular/core';
-import { BaseService } from './base/base.service';
+import { BaseService } from 'src/app/shared/services/base/base.service';
 import { HttpClient } from '@angular/common/http';
-import { Constants } from '../constants/constants';
+import { Constants } from 'src/app/shared/constants/constants';
 import { Observable } from 'rxjs';
-import { OrderModel, BaseModel, PaymentModel, CartModel, CartModelItem, OrderModelItem, OrderItemModel, PrintingEditionModelItem } from '../models';
+import {
+    OrderModel,
+    BaseModel,
+    PaymentModel,
+    CartModel,
+    CartModelItem,
+    OrderModelItem,
+    OrderItemModel,
+    PrintingEditionModelItem
+} from 'src/app/shared/models';
 import { MatSnackBar } from '@angular/material';
 
 @Injectable({

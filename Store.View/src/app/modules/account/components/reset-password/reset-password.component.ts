@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 
-import { AccountService } from '../../../../shared/services';
+import { AccountService } from 'src/app/shared/services';
 
 @Component({
     selector: 'app-reset-password',

@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AccountService } from '../../../../shared/services';
-import { UserModelItem } from '../../../../shared/models';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+import { AccountService } from 'src/app/shared/services';
+import { UserModelItem } from 'src/app/shared/models';
 import { Constants } from 'src/app/shared/constants/constants';
 
 @Component({

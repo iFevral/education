@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { JwtInterceptor } from './shared/helpers';
+import { JwtInterceptor } from 'src/app/shared/helpers';
 
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from 'src/app/app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialElementsModule } from './shared/modules';
+import { MaterialElementsModule } from 'src/app/shared/modules';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { OrderManagerModule } from './modules/order-manager/order-manager.module';
+import { OrderManagerModule } from 'src/app/modules/order-manager/order-manager.module';
 
-import { AppComponent } from './app.component';
-import { HeaderComponent, FooterComponent } from './shared/components/';
-import { AccountService } from './shared/services';
-import { CartComponent } from './modules/order-manager';
+import { AppComponent } from 'src/app/app.component';
+import { HeaderComponent, FooterComponent } from 'src/app/shared/components/';
+import { AccountService } from 'src/app/shared/services';
+import { CartComponent } from 'src/app/modules/order-manager';
 
 @NgModule({
     declarations: [

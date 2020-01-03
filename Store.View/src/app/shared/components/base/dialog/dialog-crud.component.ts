@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { CRUDOperations } from '../../../../shared/enums';
-import { DialogData, BaseModel } from '../../../../shared/models';
-import { Constants } from '../../../constants/constants';
+import { CRUDOperations } from 'src/app/shared/enums';
+import { DialogData, BaseModel } from 'src/app/shared/models';
+import { Constants } from 'src/app/shared/constants/constants';
 
 @Component({
     selector: 'app-dialog-update',

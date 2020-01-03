@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserRoutingModule } from './user-manager-routing.module';
+import { UserRoutingModule } from 'src/app/modules/user-manager/user-manager-routing.module';
 
 import { FormsModule } from '@angular/forms';
-import { MaterialElementsModule } from '../../shared/modules';
+import { MaterialElementsModule } from 'src/app/shared/modules';
 
-import { UserListComponent, UserDialogComponent } from '.';
-import { UserService } from '../../shared/services';
+import { UserListComponent, UserDialogComponent } from 'src/app/modules/user-manager/index';
+import { UserService } from 'src/app/shared/services';
 
 @NgModule({
     declarations: [UserListComponent, UserDialogComponent],

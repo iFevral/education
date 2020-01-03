@@ -1,5 +1,5 @@
-import { BaseModel } from '../base/base.model';
-import { PrintingEditionModelItem } from '../printing-edition/printing-edition.model.item';
+import { BaseModel } from 'src/app/shared/models/base/base.model';
+import { PrintingEditionModelItem } from 'src/app/shared/models/printing-edition/printing-edition.model.item';
 
 export class OrderItemModel extends BaseModel {
     public id?: number;

@@ -1,2 +1,2 @@
-export * from './list/list.component';
-export * from './dialog/dialog-crud.component';
+export * from 'src/app/shared/components/base/list/list.component';
+export * from 'src/app/shared/components/base/dialog/dialog-crud.component';

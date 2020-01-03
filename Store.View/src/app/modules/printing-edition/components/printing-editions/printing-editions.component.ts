@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
-import { PrintingEditionService } from '../../../../shared/services';
-import { PrintingEditionModel, PrintingEditionFilterModel, PrintingEditionModelItem } from '../../../../shared/models';
-import { PrintingEditionType, SortProperty, PrintingEditionCurrency } from '../../../../shared/enums';
+import { PrintingEditionService } from 'src/app/shared/services';
+import { PrintingEditionModel, PrintingEditionFilterModel, PrintingEditionModelItem } from 'src/app/shared/models';
+import { PrintingEditionType, SortProperty, PrintingEditionCurrency } from 'src/app/shared/enums';
 
-import { Constants } from '../../../../shared/constants/constants';
-import { ListComponent } from '../../../../shared/components/base';
+import { Constants } from 'src/app/shared/constants/constants';
+import { ListComponent } from 'src/app/shared/components/base';
 
 @Component({
     selector: 'app-list',

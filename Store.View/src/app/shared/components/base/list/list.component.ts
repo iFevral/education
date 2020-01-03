@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { BaseModel, BaseListModel, BaseFilterModel } from '../../../models';
-import { BaseService } from '../../../services';
-import { SortProperty } from '../../../enums';
+import { BaseModel, BaseListModel, BaseFilterModel } from 'src/app/shared/models';
+import { BaseService } from 'src/app/shared/services';
+import { SortProperty } from 'src/app/shared/enums';
 
 
 @Component({

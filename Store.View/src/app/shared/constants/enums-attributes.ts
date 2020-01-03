@@ -1,4 +1,12 @@
-import { SortProperty, OrderStatus, PrintingEditionType, PrintingEditionCurrency, UserLockStatus, CRUDOperations, PrintingEditionCurrencySymbol } from '../enums';
+import {
+    SortProperty,
+    OrderStatus,
+    PrintingEditionType,
+    PrintingEditionCurrency,
+    UserLockStatus,
+    CRUDOperations,
+    PrintingEditionCurrencySymbol
+} from 'src/app/shared/enums';
 
 export class EnumsAttributes {
     public sortProperties: Array<string>;

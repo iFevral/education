@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MaterialElementsModule } from '../../shared/modules';
-import { AccountRoutingModule } from './account-routing.module';
+
+import { MaterialElementsModule } from 'src/app/shared/modules';
+import { AccountRoutingModule } from 'src/app/modules/account/account-routing.module';
 
 import {
     SignInComponent,
@@ -20,7 +20,6 @@ import {
         FormsModule,
         ReactiveFormsModule,
         MaterialElementsModule,
-        FontAwesomeModule,
         AccountRoutingModule
     ],
     declarations: [

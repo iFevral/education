@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthorListComponent, } from '.';
+import { AuthorListComponent, } from 'src/app/modules/author-manager/index';
 
 const authorRoutes: Routes = [
     { path: '', component: AuthorListComponent, data: { animation: 'Authors' } }

@@ -1,7 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { DialogData, AuthorModelItem } from '../../../../shared/models';
-import { DialogCrudComponent } from '../../../../shared/components/base';
+
+import { DialogData, AuthorModelItem } from 'src/app/shared/models';
+import { DialogCrudComponent } from 'src/app/shared/components/base';
 
 @Component({
     selector: 'app-dialog-update',

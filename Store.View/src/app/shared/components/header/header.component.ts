@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { AccountService } from '../../services/account.service';
-import { RoleName } from '../../enums';
-import { TokenModel, UserModelItem } from '../../models';
-import { CartComponent } from '../../../modules/order-manager';
+
+import { AccountService } from 'src/app/shared/services/account.service';
+import { TokenModel, UserModelItem } from 'src/app/shared/models';
+import { CartService } from 'src/app/shared/services';
+import { RoleName } from 'src/app/shared/enums';
+
 import { MatDialog } from '@angular/material';
-import { CartService } from '../../services';
+import { CartComponent } from 'src/app/modules/order-manager';
 
 @Component({
     selector: 'app-header',

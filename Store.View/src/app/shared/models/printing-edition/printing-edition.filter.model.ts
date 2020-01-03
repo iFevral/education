@@ -1,5 +1,5 @@
-import { BaseFilterModel } from '../base/base-filter.model';
-import { PrintingEditionType, PrintingEditionCurrency } from '../../enums';
+import { BaseFilterModel } from 'src/app/shared/models/base/base-filter.model';
+import { PrintingEditionType, PrintingEditionCurrency } from 'src/app/shared/enums';
 
 export class PrintingEditionFilterModel extends BaseFilterModel {
     public searchQuery?: string;

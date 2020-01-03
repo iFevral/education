@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PageAnimation } from './shared/helpers/page-animation';
+import { PageAnimation } from 'src/app/shared/helpers/page-animation';
 
 @Component({
     selector: 'app-root',

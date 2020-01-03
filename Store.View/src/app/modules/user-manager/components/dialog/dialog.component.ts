@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { CRUDOperations, UserLockStatus } from '../../../../shared/enums';
-import { Constants } from '../../../../shared/constants/constants';
-import { DialogData, UserModelItem } from '../../../../shared/models';
-import { DialogCrudComponent } from '../../../../shared/components/base';
+import { CRUDOperations, UserLockStatus } from 'src/app/shared/enums';
+import { Constants } from 'src/app/shared/constants/constants';
+import { DialogData, UserModelItem } from 'src/app/shared/models';
+import { DialogCrudComponent } from 'src/app/shared/components/base';
 
 @Component({
     selector: 'app-dialog-update',

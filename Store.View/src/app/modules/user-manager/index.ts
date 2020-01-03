@@ -1,2 +1,2 @@
-export * from './components/users/users.component';
-export * from './components/dialog/dialog.component';
+export * from 'src/app/modules/user-manager/components/users/users.component';
+export * from 'src/app/modules/user-manager/components/dialog/dialog.component';

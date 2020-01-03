@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { OrderModel, OrderFilterModel, OrderModelItem } from '../../../../shared/models';
-import { OrderService } from '../../../../shared/services';
-import { OrderStatus } from '../../../../shared/enums';
-import { Constants } from '../../../../shared/constants/constants';
-import { ListComponent } from '../../../../shared/components/base';
+
+import { Constants } from 'src/app/shared/constants/constants';
+import { OrderService } from 'src/app/shared/services';
+import { OrderStatus } from 'src/app/shared/enums';
+
+import { OrderModel, OrderFilterModel, OrderModelItem } from 'src/app/shared/models';
+import { ListComponent } from 'src/app/shared/components/base';
 
 @Component({
     selector: 'app-list',

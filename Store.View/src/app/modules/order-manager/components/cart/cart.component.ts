@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { MatDialogRef, MatTableDataSource } from '@angular/material';
 
-import { OrderService, CartService } from '../../../../shared/services';
-
-import { CartModel, CartModelItem } from '../../../../shared/models';
+import { OrderService, CartService } from 'src/app/shared/services';
+import { CartModel, CartModelItem } from 'src/app/shared/models';
 
 @Component({
     selector: 'app-dialog-update',

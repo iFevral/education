@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
-import { UserModel, UserFilterModel, UserModelItem } from '../../../../shared/models';
-import { UserService } from '../../../../shared/services';
+import { UserModel, UserFilterModel, UserModelItem } from 'src/app/shared/models';
+import { UserService } from 'src/app/shared/services';
 
-import { UserDialogComponent } from '../dialog/dialog.component';
+import { UserDialogComponent } from 'src/app/modules/user-manager/components/dialog/dialog.component';
 
-import { Constants } from '../../../../shared/constants/constants';
-import { CRUDOperations, UserLockStatus } from '../../../../shared/enums';
-import { ListComponent } from '../../../../shared/components/base';
+import { Constants } from 'src/app/shared/constants/constants';
+import { CRUDOperations, UserLockStatus } from 'src/app/shared/enums';
+import { ListComponent } from 'src/app/shared/components/base';
 
 @Component({
     selector: 'app-list',

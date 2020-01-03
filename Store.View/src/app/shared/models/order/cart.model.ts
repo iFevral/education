@@ -1,5 +1,5 @@
-import { CartModelItem } from './cart.model.item';
-import { BaseListModel } from '../base/base-list.model';
+import { CartModelItem } from 'src/app/shared/models/order/cart.model.item';
+import { BaseListModel } from 'src/app/shared/models/base/base-list.model';
 
 export class CartModel extends BaseListModel<CartModelItem> {
 }

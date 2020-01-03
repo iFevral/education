@@ -8,7 +8,7 @@ import {
     ResetPasswordComponent,
     ProfileComponent,
     EmailConfirmationComponent
-} from '.';
+} from 'src/app/modules/account/index';
 
 const accountRoutes: Routes = [
     { path: 'SignIn', component: SignInComponent, data: { animation: 'SignIn' } },

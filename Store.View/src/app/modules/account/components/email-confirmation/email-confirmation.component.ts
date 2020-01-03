@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { AccountService } from '../../../../shared/services';
-import { BaseModel } from '../../../../shared/models';
 import { ActivatedRoute } from '@angular/router';
+
+import { AccountService } from 'src/app/shared/services';
+
+import { BaseModel } from 'src/app/shared/models';
 
 @Component({
     selector: 'app-email-confirmation',

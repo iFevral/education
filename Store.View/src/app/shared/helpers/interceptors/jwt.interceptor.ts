@@ -4,9 +4,9 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpResponse } fr
 import { catchError, tap } from 'rxjs/operators';
 import { Observable, throwError, from, BehaviorSubject } from 'rxjs';
 
-import { TokenModel } from '../../models';
-import { AccountService } from '../../services';
-import { Constants } from '../../constants/constants';
+import { TokenModel } from 'src/app/shared/models';
+import { AccountService } from 'src/app/shared/services';
+import { Constants } from 'src/app/shared/constants/constants';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {

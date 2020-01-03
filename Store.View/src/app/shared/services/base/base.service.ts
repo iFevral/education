@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BaseModel, BaseFilterModel } from '../../models';
+import { BaseModel, BaseFilterModel } from 'src/app/shared/models';
 import { MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs';
 

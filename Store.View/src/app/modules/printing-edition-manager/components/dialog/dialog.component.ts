@@ -1,10 +1,11 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { PrintingEditionType, PrintingEditionCurrency, CRUDOperations } from '../../../../shared/enums';
-import { Constants } from '../../../../shared/constants/constants';
-import { AuthorService } from '../../../../shared/services';
-import { AuthorFilterModel, AuthorModelItem, AuthorModel, DialogData, PrintingEditionModelItem } from '../../../../shared/models';
-import { DialogCrudComponent } from '../../../../shared/components/base';
+
+import { PrintingEditionType, PrintingEditionCurrency, CRUDOperations } from 'src/app/shared/enums';
+import { Constants } from 'src/app/shared/constants/constants';
+import { AuthorService } from 'src/app/shared/services';
+import { AuthorFilterModel, AuthorModelItem, AuthorModel, DialogData, PrintingEditionModelItem } from 'src/app/shared/models';
+import { DialogCrudComponent } from 'src/app/shared/components/base';
 
 @Component({
     selector: 'app-dialog-update',

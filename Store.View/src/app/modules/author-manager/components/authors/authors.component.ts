@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { AuthorService } from '../../../../shared/services';
-import { AuthorFilterModel, AuthorModel, AuthorModelItem } from '../../../../shared/models';
-import { CRUDOperations } from '../../../../shared/enums';
 import { MatDialog } from '@angular/material';
-import { AuthorDialogComponent } from '../dialog/dialog.component';
-import { ListComponent } from '../../../../shared/components/base';
+
 import { Constants } from 'src/app/shared/constants/constants';
+import { AuthorService } from 'src/app/shared/services';
+import { CRUDOperations } from 'src/app/shared/enums';
+import { AuthorFilterModel, AuthorModel, AuthorModelItem } from 'src/app/shared/models';
+
+import { AuthorDialogComponent } from 'src/app/modules/author-manager/components/dialog/dialog.component';
+import { ListComponent } from 'src/app/shared/components/base';
 
 @Component({
     selector: 'app-list',

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AccountService } from '../../../../shared/services';
+
 import { Constants } from 'src/app/shared/constants/constants';
+import { AccountService } from 'src/app/shared/services';
 
 @Component({
     selector: 'app-sign-in',

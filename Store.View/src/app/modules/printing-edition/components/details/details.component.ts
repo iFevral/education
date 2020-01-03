@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { PrintingEditionService, AccountService, CartService } from '../../../../shared/services';
 import { ActivatedRoute } from '@angular/router';
-import { PrintingEditionModelItem, CartModelItem, UserModelItem } from '../../../../shared/models';
-import { Constants } from '../../../../shared/constants/constants';
-import { RoleName } from '../../../../shared/enums';
+import { PrintingEditionService, AccountService, CartService } from 'src/app/shared/services';
+import { PrintingEditionModelItem, CartModelItem, UserModelItem } from 'src/app/shared/models';
+import { Constants } from 'src/app/shared/constants/constants';
+import { RoleName } from 'src/app/shared/enums';
 
 @Component({
     selector: 'app-details',

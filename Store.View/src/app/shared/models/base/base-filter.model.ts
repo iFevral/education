@@ -1,4 +1,4 @@
-import { SortProperty } from '../../enums';
+import { SortProperty } from 'src/app/shared/enums';
 
 export class BaseFilterModel {
     public sortProperty?: SortProperty;

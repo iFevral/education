@@ -1,4 +1,4 @@
-import { BaseModel } from '../base/base.model';
+import { BaseModel } from 'src/app/shared/models/base/base.model';
 
 export class CartModelItem extends BaseModel {
     public productId?: number;

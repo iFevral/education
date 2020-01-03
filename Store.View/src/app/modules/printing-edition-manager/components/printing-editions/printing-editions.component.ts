@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { PrintingEditionModel, PrintingEditionModelItem, PrintingEditionFilterModel } from '../../../../shared/models';
-import { PrintingEditionService } from '../../../../shared/services';
-import { CRUDOperations, PrintingEditionCurrency, PrintingEditionType } from '../../../../shared/enums';
-import { PrintingEditionDialogComponent } from '../dialog/dialog.component';
-import { Constants } from '../../../../shared/constants/constants';
-import { ListComponent } from '../../../../shared/components/base';
+
+import { PrintingEditionModel, PrintingEditionModelItem, PrintingEditionFilterModel } from 'src/app/shared/models';
+import { PrintingEditionService } from 'src/app/shared/services';
+import { CRUDOperations, PrintingEditionCurrency, PrintingEditionType } from 'src/app/shared/enums';
+import { Constants } from 'src/app/shared/constants/constants';
+
+import { ListComponent } from 'src/app/shared/components/base';
+import { PrintingEditionDialogComponent } from 'src/app/modules/printing-edition-manager/components/dialog/dialog.component';
 
 @Component({
     selector: 'app-list',

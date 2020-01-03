@@ -1,2 +1,2 @@
-export * from './components/authors/authors.component';
-export * from './components/dialog/dialog.component';
+export * from 'src/app/modules/author-manager/components/authors/authors.component';
+export * from 'src/app/modules/author-manager/components/dialog/dialog.component';

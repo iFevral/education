@@ -1,1 +1,1 @@
-export * from './interceptors/jwt.interceptor';
+export * from 'src/app/shared/helpers/interceptors/jwt.interceptor';

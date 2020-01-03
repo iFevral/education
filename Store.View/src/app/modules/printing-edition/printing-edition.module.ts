@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrintingEditionService, AccountService, CartService } from '../../shared/services';
-import { PrintingEditionRoutingModule } from './printing-edition-routing.module';
-
 import { FormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { MaterialElementsModule } from '../../shared/modules';
+import { MaterialElementsModule } from 'src/app/shared/modules';
+
+import { PrintingEditionService, AccountService, CartService } from 'src/app/shared/services';
+import { PrintingEditionRoutingModule } from 'src/app/modules/printing-edition/printing-edition-routing.module';
 
 import {
     PrintingEditionListComponent,
@@ -19,8 +18,7 @@ import {
         CommonModule,
         MaterialElementsModule,
         PrintingEditionRoutingModule,
-        FormsModule,
-        FontAwesomeModule
+        FormsModule
     ],
     providers: [PrintingEditionService, CartService, AccountService]
 })

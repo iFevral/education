@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { OrderModel, OrderFilterModel, OrderModelItem, PaymentModel, BaseModel } from '../../../../shared/models';
-import { OrderService } from '../../../../shared/services';
-import { OrderStatus } from '../../../../shared/enums';
-import { Constants } from '../../../../shared/constants/constants';
-import { ListComponent } from '../../../../shared/components/base';
 import { ActivatedRoute } from '@angular/router';
+
+import { Constants } from 'src/app/shared/constants/constants';
+import { OrderStatus } from 'src/app/shared/enums';
+import { OrderModel, OrderFilterModel, OrderModelItem, PaymentModel, BaseModel } from 'src/app/shared/models';
+
+import { OrderService } from 'src/app/shared/services';
+import { ListComponent } from 'src/app/shared/components/base';
 
 @Component({
     selector: 'app-list-by-user',

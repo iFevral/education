@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
-import { UserModel, BaseModel } from '../models';
-import { Constants } from '../constants/constants';
-import { BaseService } from './base/base.service';
 import { MatSnackBar } from '@angular/material';
+
+import { UserModel, BaseModel } from 'src/app/shared/models';
+import { Constants } from 'src/app/shared/constants/constants';
+import { BaseService } from 'src/app/shared/services/base/base.service';
 
 @Injectable({
     providedIn: 'root'
