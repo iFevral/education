@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Store.BusinessLogic.Common.Constants;
+﻿using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Models.Base;
 
 namespace Store.BusinessLogic.Models.Users

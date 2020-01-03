@@ -10,7 +10,6 @@ using Store.BusinessLogic.Helpers.Interface;
 using Store.Presentation.Helpers.Interface;
 using Store.DataAccess.Entities.Enums;
 using System;
-using Store.BusinessLogic.Models.Base;
 
 namespace Store.Presentation.Controllers
 {

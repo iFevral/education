@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Store.BusinessLogic.Models.PrintingEditions;
-using Store.DataAccess.Entities;
-using Store.DataAccess.Entities.Enums;
+﻿using Store.BusinessLogic.Models.PrintingEditions;
 
 namespace Store.BusinessLogic.Common.Mappers.PrintingEdition
 {

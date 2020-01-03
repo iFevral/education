@@ -1,2 +1,2 @@
-export * from './components/list/list.component';
+export * from './components/users/users.component';
 export * from './components/dialog/dialog.component';

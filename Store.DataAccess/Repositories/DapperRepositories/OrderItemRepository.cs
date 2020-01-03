@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.Extensions.Configuration;
+using Store.DataAccess.Entities;
+using Store.DataAccess.Repositories.Base;
+using Store.DataAccess.Repositories.Interfaces;
 
 namespace Store.DataAccess.Repositories.DapperRepositories
 {
-    class OrderItemRepository
+    public class OrderItemRepository : DapperBaseRepository<OrderItem>, IOrderItemRepository
     {
+        public OrderItemRepository(IConfiguration configuration) : base(configuration)
+        {
+        }
     }
 }

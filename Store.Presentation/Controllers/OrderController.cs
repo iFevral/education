@@ -57,15 +57,5 @@ namespace Store.Presentation.Controllers
 
             return Ok(orderModel);
         }
-
-        [Route("~/[controller]s/{id}")]
-        [Authorize(Roles = Constants.RoleNames.Admin)]
-        [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var orderModel = await _orderService.DeleteAsync(id);
-
-            return Ok(orderModel);
-        }
     }
 }

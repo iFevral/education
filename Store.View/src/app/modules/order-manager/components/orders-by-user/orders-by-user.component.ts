@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { OrderModel, OrderFilterModel, OrderModelItem, PaymentModel } from '../../../../shared/models';
+import { OrderModel, OrderFilterModel, OrderModelItem, PaymentModel, BaseModel } from '../../../../shared/models';
 import { OrderService } from '../../../../shared/services';
 import { OrderStatus } from '../../../../shared/enums';
 import { Constants } from '../../../../shared/constants/constants';
@@ -8,8 +8,8 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-list-by-user',
-    templateUrl: './list-by-user.component.html',
-    styleUrls: ['./list-by-user.component.scss']
+    templateUrl: './orders-by-user.component.html',
+    styleUrls: ['./orders-by-user.component.scss']
 })
 export class OrderListByUserComponent extends ListComponent<OrderModelItem, OrderModel, OrderFilterModel, OrderService> {
     private allTypes: Array<string>;
@@ -22,15 +22,8 @@ export class OrderListByUserComponent extends ListComponent<OrderModelItem, Orde
     ) {
         super(new OrderFilterModel(), orderService);
 
-        this.displayedColumns = [
-            'id',
-            'date',
-            'productType',
-            'title',
-            'quantity',
-            'amount',
-            'status'
-        ];
+        this.displayedColumns = Constants.displayedColumns.ordersByUser;
+
         this.allTypes = Constants.enumsAttributes.printingEditionTypes;
         this.allStatuses = Constants.enumsAttributes.orderStatuses;
         this.statuses = [
@@ -46,18 +39,19 @@ export class OrderListByUserComponent extends ListComponent<OrderModelItem, Orde
             : userId;
     }
 
-    public pay(order: OrderModelItem) {
+    public pay(order: OrderModelItem): void {
 
         const handler = (window as any).StripeCheckout.configure({
-            key: 'pk_test_1XvcRG66xztreFUG2M8LKXTx00BVSuXbLs',
-            locale: 'auto',
+            key: Constants.stripeConfig.key,
+            locale: Constants.stripeConfig.locale,
             token: (paymentLog: any) => {
 
                 const paymentModel: PaymentModel = new PaymentModel();
                 paymentModel.orderId = order.id;
                 paymentModel.transactionId = paymentLog.id;
-                this.orderService.addPaymentTransaction(paymentModel).subscribe(data => {
-                    if (data.errors.length === 0) {
+
+                this.orderService.addPaymentTransaction(paymentModel).subscribe((resultModel: BaseModel) => {
+                    if (resultModel.errors.length === 0) {
                         this.applyFilters();
                     }
                 });
@@ -65,9 +59,9 @@ export class OrderListByUserComponent extends ListComponent<OrderModelItem, Orde
         });
 
         handler.open({
-            name: 'Add payment',
+            name: Constants.stripeConfig.title,
             description: `Payment for order №${order.id}`,
-            amount: order.orderPrice * 100
+            amount: order.orderPrice * Constants.stripeConfig.amount
         });
 
     }

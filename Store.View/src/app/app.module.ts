@@ -8,16 +8,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialElementsModule } from './shared/modules';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { AuthorManagerModule } from './modules/author-manager/author-manager.module';
-import { OrderManagerModule } from './modules/order/order-manager.module';
-import { PrintingEditionModule } from './modules/printing-edition/printing-edition.module';
-import { PrintingEditionManagerModule } from './modules/printing-edition-manager/printing-edition-manager.module';
-import { UserManagerModule } from './modules/user-manager/user-manager.module';
+import { OrderManagerModule } from './modules/order-manager/order-manager.module';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent, FooterComponent } from './shared/components/';
 import { AccountService } from './shared/services';
-import { CartComponent } from './modules/order';
+import { CartComponent } from './modules/order-manager';
 
 @NgModule({
     declarations: [
@@ -32,11 +28,7 @@ import { CartComponent } from './modules/order';
         FontAwesomeModule,
         BrowserAnimationsModule,
         MaterialElementsModule,
-        AuthorManagerModule,
-        OrderManagerModule,
-        PrintingEditionModule,
-        PrintingEditionManagerModule,
-        UserManagerModule
+        OrderManagerModule
     ],
     entryComponents: [
         CartComponent

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Store.BusinessLogic.Models.Users;
+﻿using Store.BusinessLogic.Models.Users;
 
 namespace Store.BusinessLogic.Common.Mappers.User
 {

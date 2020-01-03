@@ -5,11 +5,12 @@ import { CRUDOperations } from '../../../../shared/enums';
 import { MatDialog } from '@angular/material';
 import { AuthorDialogComponent } from '../dialog/dialog.component';
 import { ListComponent } from '../../../../shared/components/base';
+import { Constants } from 'src/app/shared/constants/constants';
 
 @Component({
     selector: 'app-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.scss']
+    templateUrl: './authors.component.html',
+    styleUrls: ['./authors.component.scss']
 })
 export class AuthorListComponent extends ListComponent<AuthorModelItem, AuthorModel, AuthorFilterModel, AuthorService> {
 
@@ -18,11 +19,7 @@ export class AuthorListComponent extends ListComponent<AuthorModelItem, AuthorMo
         private dialog: MatDialog
     ) {
         super(new AuthorFilterModel(), authorService);
-        this.displayedColumns = [
-            'name',
-            'printingEdition',
-            'control'
-        ];
+        this.displayedColumns = Constants.displayedColumns.authors;
     }
 
     public create(): void {

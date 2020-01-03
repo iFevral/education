@@ -12,8 +12,8 @@ import { ListComponent } from '../../../../shared/components/base';
 
 @Component({
     selector: 'app-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.scss']
+    templateUrl: './users.component.html',
+    styleUrls: ['./users.component.scss']
 })
 export class UserListComponent extends ListComponent<UserModelItem, UserModel, UserFilterModel, UserService> {
     private allStatuses: Array<string>;
@@ -24,12 +24,7 @@ export class UserListComponent extends ListComponent<UserModelItem, UserModel, U
     ) {
         super(new UserFilterModel(), userService);
 
-        this.displayedColumns = [
-            'userName',
-            'email',
-            'status',
-            'control'
-        ];
+        this.displayedColumns = Constants.displayedColumns.users;
 
         this.allStatuses = Constants.enumsAttributes.userLockStatuses;
         this.statuses = [

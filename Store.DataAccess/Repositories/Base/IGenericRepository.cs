@@ -21,7 +21,7 @@ namespace Store.DataAccess.Repositories.Base
         /// <summary>
         /// Create instance async
         /// </summary>
-        public Task<bool> CreateAsync(T item);
+        public Task<long> CreateAsync(T item);
 
         /// <summary>
         /// Create instances async

@@ -9,8 +9,8 @@ import { ListComponent } from '../../../../shared/components/base';
 
 @Component({
     selector: 'app-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.scss']
+    templateUrl: './printing-editions.component.html',
+    styleUrls: ['./printing-editions.component.scss']
 })
 export class PrintingEditionManagerListComponent extends ListComponent<PrintingEditionModelItem, PrintingEditionModel, PrintingEditionFilterModel, PrintingEditionService> {
 
@@ -22,14 +22,9 @@ export class PrintingEditionManagerListComponent extends ListComponent<PrintingE
         private dialog: MatDialog
     ) {
         super(new PrintingEditionFilterModel(), printingEditionService);
-        this.displayedColumns = [
-            'title',
-            'description',
-            'type',
-            'authors',
-            'price',
-            'control'
-        ];
+
+        this.displayedColumns = Constants.displayedColumns.printingEditions;
+
         this.allTypes = Constants.enumsAttributes.printingEditionTypes;
         this.types = [
             PrintingEditionType.Books,
@@ -39,6 +34,8 @@ export class PrintingEditionManagerListComponent extends ListComponent<PrintingE
 
         this.filterModel.types = this.types;
         this.filterModel.currency = PrintingEditionCurrency.USD;
+
+        console.log(PrintingEditionDialogComponent);
     }
 
     public create(): void {

@@ -61,9 +61,10 @@ namespace Store.BusinessLogic
         {
             var author = new Author();
             author = authorModel.MapToEntity(author);
-            var result = await _authorRepository.CreateAsync(author);
+            
+            var authorId = await _authorRepository.CreateAsync(author);
 
-            if(!result)
+            if(authorId == 0)
             {
                 authorModel.Errors.Add(Constants.Errors.CreateAuthorError);
             }
@@ -82,6 +83,7 @@ namespace Store.BusinessLogic
 
             author = authorModel.MapToEntity(author);
             var result = await _authorRepository.UpdateAsync(author);
+            
             if (!result)
             {
                 authorModel.Errors.Add(Constants.Errors.UpdateAuthorError);

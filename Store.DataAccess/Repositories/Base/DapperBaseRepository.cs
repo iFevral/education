@@ -17,12 +17,12 @@ namespace Store.DataAccess.Repositories.Base
             _connectionString = configuration.GetConnectionString("DbConnection");
         }
 
-        public virtual async Task<bool> CreateAsync(T item)
+        public virtual async Task<long> CreateAsync(T item)
         {
             using (var databaseConnection = new SqlConnection(_connectionString))
             {
                 int id = await databaseConnection.InsertAsync<T>(item);
-                return id > 0;
+                return id;
             }
         }
 

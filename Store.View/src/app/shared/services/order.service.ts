@@ -22,7 +22,7 @@ export class OrderService extends BaseService<OrderModel> {
         return this.http.patch<PaymentModel>(Constants.apiUrls.orderControllerUrl, paymentModel);
     }
 
-    public createOrder(cartModel: CartModel) {
+    public createOrder(cartModel: CartModel): void {
         const order = new OrderModelItem();
         order.orderItems = new Array<OrderItemModel>();
 

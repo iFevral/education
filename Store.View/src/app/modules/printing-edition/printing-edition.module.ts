@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 import { PrintingEditionService, AccountService, CartService } from '../../shared/services';
 import { PrintingEditionRoutingModule } from './printing-edition-routing.module';
 
@@ -16,7 +16,7 @@ import {
 @NgModule({
     declarations: [PrintingEditionListComponent, ProductCardComponent, DetailsComponent],
     imports: [
-        BrowserModule,
+        CommonModule,
         MaterialElementsModule,
         PrintingEditionRoutingModule,
         FormsModule,

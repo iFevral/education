@@ -6,8 +6,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialElementsModule } from '../../shared/modules';
 import { AccountRoutingModule } from './account-routing.module';
 
-import { AccountService } from '../../shared/services';
-
 import {
     SignInComponent,
     SignUpComponent,

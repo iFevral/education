@@ -22,7 +22,7 @@ export class CartService {
         return this.cart.asObservable();
     }
 
-    public add(newCartItem: CartModelItem) {
+    public add(newCartItem: CartModelItem): void {
         const newСart: CartModel = this.cart.value;
         let isNewItemUpdated = false;
 
@@ -41,7 +41,7 @@ export class CartService {
         localStorage.setItem('cart', JSON.stringify(newСart));
     }
 
-    public update(cartItem: CartModelItem) {
+    public update(cartItem: CartModelItem): void {
         const newСart: CartModel = this.cart.value;
 
         newСart.items.forEach((element: CartModelItem) => {
@@ -54,7 +54,7 @@ export class CartService {
         localStorage.setItem('cart', JSON.stringify(newСart));
     }
 
-    public remove(index: number) {
+    public remove(index: number): void {
         const newСart: CartModel = this.cart.value;
         newСart.items.splice(index, 1);
 
@@ -62,7 +62,7 @@ export class CartService {
         localStorage.setItem('cart', JSON.stringify(newСart));
     }
 
-    public clear() {
+    public clear(): void {
         const newCart = new CartModel();
         newCart.items = new Array<CartModelItem>();
         this.cart.next(newCart);

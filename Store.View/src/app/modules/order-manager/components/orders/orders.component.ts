@@ -7,8 +7,8 @@ import { ListComponent } from '../../../../shared/components/base';
 
 @Component({
     selector: 'app-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.scss']
+    templateUrl: './orders.component.html',
+    styleUrls: ['./orders.component.scss']
 })
 export class OrderListComponent extends ListComponent<OrderModelItem, OrderModel, OrderFilterModel, OrderService> {
     private allTypes: Array<string>;
@@ -19,18 +19,11 @@ export class OrderListComponent extends ListComponent<OrderModelItem, OrderModel
         orderService: OrderService
     ) {
         super(new OrderFilterModel(), orderService);
-        this.displayedColumns = [
-            'id',
-            'date',
-            'userName',
-            'email',
-            'productType',
-            'title',
-            'quantity',
-            'orderPrice',
-            'status'
-        ];
+        
+        this.displayedColumns = Constants.displayedColumns.orders;
+
         this.allStatuses = Constants.enumsAttributes.orderStatuses;
+        
         this.allTypes = Constants.enumsAttributes.printingEditionTypes;
         this.statuses = [
             OrderStatus.Paid,

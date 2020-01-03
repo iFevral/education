@@ -36,7 +36,7 @@ export class AccountService {
         this.rememberMeSubject = new BehaviorSubject<boolean>(isRememberMeActivated);
     }
 
-    public setTokens(tokenModel) {
+    public setTokens(tokenModel): void {
         localStorage.setItem('tokens', JSON.stringify(tokenModel));
         this.tokenSubject.next(tokenModel);
     }
@@ -45,7 +45,7 @@ export class AccountService {
         return this.tokenSubject.asObservable();
     }
 
-    public setProfile() {
+    public setProfile(): void {
         this.http.post<UserModelItem>(Constants.apiUrls.accountControllerUrl, null)
             .subscribe(
                 result => {
@@ -79,7 +79,7 @@ export class AccountService {
         });
     }
 
-    public signIn(email: string, password: string, rememberMeFlag: boolean) {
+    public signIn(email: string, password: string, rememberMeFlag: boolean): void {
 
         this.http.post<TokenModel>(Constants.apiUrls.authenticationUrl + rememberMeFlag, { email, password })
             .subscribe((data: TokenModel) => {
@@ -88,21 +88,19 @@ export class AccountService {
                     this.setTokens(data);
                     this.setRememberMeFlag(rememberMeFlag);
                     this.redirectTo('/');
-                } else {
-                    this.showDialogMessage(data.errors.toString());
                 }
+                this.showDialogMessage(data.errors.toString());
             });
     }
 
-    public signUp(credentials: UserModelItem) {
+    public signUp(credentials: UserModelItem): void {
         this.http.post<RegistrationResultModel>(Constants.apiUrls.authorizationUrl, credentials)
             .subscribe((data: RegistrationResultModel) => {
                 if (data && data.message) {
                     this.showDialogMessage(data.message);
                     this.redirectTo('/Account/SignIn');
-                } else {
-                    this.showDialogMessage(data.errors.toString());
                 }
+                this.showDialogMessage(data.errors.toString());
             });
     }
 
@@ -116,22 +114,30 @@ export class AccountService {
         this.redirectTo('/Account/SignIn');
     }
 
-    public resetPassword(email: string) {
-        const response = this.http.post<RegistrationResultModel>(Constants.apiUrls.passwordResetingUrl, { email });
-        return response;
+    public resetPassword(email: string): void {
+        this.http.post<RegistrationResultModel>(Constants.apiUrls.passwordResetingUrl, { email })
+            .subscribe(result => {
+                let message: string = result.errors.toString();
+
+                if (result.errors.length > 0) {
+                    message = `We have sent instructions to ${email}`;
+                    this.redirectTo('/');
+                }
+
+                this.showDialogMessage(message);
+            });
     }
 
-    public confirmEmail(email: string, token: string) {
+    public confirmEmail(email: string, token: string): Observable<BaseModel> {
         const response = this.http.post<BaseModel>(Constants.apiUrls.emailConfirmingUrl, { email, token });
         return response;
     }
 
-    public redirectTo(path: string) {
+    public redirectTo(path: string): void {
         this.router.navigate([path]);
     }
 
-
-    private showDialogMessage(message: string) {
+    private showDialogMessage(message: string): void {
         if (message && message !== '') {
             this.messageContainer.open(message, 'X', {
                 duration: 5000,

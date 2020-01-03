@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Store.DataAccess.Entities;
 
 namespace Store.DataAccess.Models
 {

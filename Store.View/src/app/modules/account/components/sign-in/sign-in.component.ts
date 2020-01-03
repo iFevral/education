@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AccountService } from '../../../../shared/services';
+import { Constants } from 'src/app/shared/constants/constants';
 
 @Component({
     selector: 'app-sign-in',
@@ -15,20 +16,22 @@ export class SignInComponent {
         this.signInForm = new FormGroup({
             email: new FormControl('', [
                 Validators.required,
-                Validators.email
+                Validators.email,
+                Validators.minLength(Constants.formValidatorParams.emailMinLength),
+                Validators.maxLength(Constants.formValidatorParams.emailMaxLength),
             ]),
             password: new FormControl('', [
-                Validators.required
+                Validators.required,
+                Validators.minLength(Constants.formValidatorParams.passwordMinLength),
+                Validators.maxLength(Constants.formValidatorParams.passwordMaxLength),
             ]),
             rememberMe: new FormControl('', [])
         });
+
+        this.signInForm.value.rememberMe = false;
     }
 
-    public signIn() {
-        this.signInForm.value.rememberMe = this.signInForm.value.rememberMe
-            ? this.signInForm.value.rememberMe
-            : false;
-
+    public signIn(): void {
         this.accountService.signIn(this.signInForm.value.email, this.signInForm.value.password, this.signInForm.value.rememberMe);
     }
 }

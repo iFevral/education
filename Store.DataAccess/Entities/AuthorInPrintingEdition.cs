@@ -11,6 +11,8 @@ namespace Store.DataAccess.Entities
         [Key]
         public long PrintingEditionId { get; set; }
 
+        [Dapper.Contrib.Extensions.ExplicitKey]
+        public override long Id { get; set; } = 0;
 
         [Dapper.Contrib.Extensions.Computed]
         public virtual Author Author { get; set; }

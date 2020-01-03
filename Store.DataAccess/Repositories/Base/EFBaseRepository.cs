@@ -51,11 +51,11 @@ namespace Store.DataAccess.Repositories.Base
             return item;
         }
 
-        public virtual async Task<bool> CreateAsync(T item)
+        public virtual async Task<long> CreateAsync(T item)
         {
             _dbSet.Add(item);
             var result = await _dbContext.SaveChangesAsync();
-            return result > 0;
+            return item.Id;
         }
 
         public virtual async Task<bool> CreateListAsync(IEnumerable<T> items)

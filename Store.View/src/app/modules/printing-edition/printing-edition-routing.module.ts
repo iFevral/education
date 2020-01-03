@@ -6,19 +6,15 @@ import {
     DetailsComponent
 } from '.';
 
-const printingEditionRoutes: Routes = [{
-    path: '',
-    children: [
-        { path: '', component: PrintingEditionListComponent, data: { animation: 'Home' } },
-        { path: 'Details/:id', component: DetailsComponent, data: { animation: 'PrintingEditionDetails' } },
-    ]
-}];
+const printingEditionRoutes: Routes = [
+    { path: '', component: PrintingEditionListComponent, data: { animation: 'Home' } },
+    { path: 'Details/:id', component: DetailsComponent, data: { animation: 'PrintingEditionDetails' } },
+];
 
-export const printingEditionRouting = RouterModule.forChild(printingEditionRoutes);
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(printingEditionRoutes)
+        RouterModule.forChild(printingEditionRoutes)
     ],
     exports: [
         RouterModule

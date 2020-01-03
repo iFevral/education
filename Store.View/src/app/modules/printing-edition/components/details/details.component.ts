@@ -25,15 +25,18 @@ export class DetailsComponent implements OnInit {
         this.printingEditionModel = new PrintingEditionModelItem();
         this.types = Constants.enumsAttributes.printingEditionTypes;
 
-        this.accountService.getProfile().subscribe((resultModel: UserModelItem) => {
-            this.isClient = RoleName[resultModel.role] === RoleName.Client;
-        });
+        this.cartItem = new CartModelItem();
+        this.cartItem.quantity = 1;
+
     }
 
     public ngOnInit() {
+
+        this.accountService.getProfile().subscribe((resultModel: UserModelItem) => {
+            this.isClient = RoleName[resultModel.role] === RoleName.Client;
+        });
+
         const id = this.route.snapshot.paramMap.get('id');
-        this.cartItem = new CartModelItem();
-        this.cartItem.quantity = 1;
 
         this.printingEditionService.getById(parseInt(id, 10))
             .subscribe((resultModel: PrintingEditionModelItem) => {
@@ -44,7 +47,7 @@ export class DetailsComponent implements OnInit {
             });
     }
 
-    public addProductToCart() {
+    public addProductToCart(): void {
         if (this.cartItem.quantity > 0) {
             this.cartService.add(this.cartItem);
         }

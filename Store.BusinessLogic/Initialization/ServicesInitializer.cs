@@ -12,7 +12,8 @@ namespace Store.BusinessLogic.Initialization
     {
         public static void Initialize(IServiceCollection services, IConfiguration configuration)
         {
-            EFRepositoryInitializer.Initialize(services, configuration);
+            EFRepositoriesInitializer.Initialize(services, configuration);
+            DapperRepositoriesInitializer.Initialize(services, configuration);
 
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IAuthorService, AuthorService>();

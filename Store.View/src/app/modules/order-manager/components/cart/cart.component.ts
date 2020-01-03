@@ -33,7 +33,7 @@ export class CartComponent {
         this.setCart();
     }
 
-    public setCart() {
+    public setCart(): void {
         this.cartService.getProductsInCart().subscribe((resultModel: CartModel) => {
             this.dataSource = new MatTableDataSource(resultModel.items);
             this.cart = resultModel;
@@ -44,16 +44,16 @@ export class CartComponent {
         });
     }
 
-    public updateItem(cartItem: CartModelItem) {
+    public updateItem(cartItem: CartModelItem): void {
         this.cartService.update(cartItem);
         this.setCart();
     }
 
-    public removeItem(index: number) {
+    public removeItem(index: number): void {
         this.cartService.remove(index);
     }
 
-    public applyPurchasing() {
+    public applyPurchasing(): void {
         this.orderService.createOrder(this.cart);
         this.cartService.clear();
         this.close();

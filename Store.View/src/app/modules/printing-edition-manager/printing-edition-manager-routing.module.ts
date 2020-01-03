@@ -3,18 +3,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { PrintingEditionManagerListComponent } from '.';
 
 
-const printingEditionRoutes: Routes = [{
-    path: 'PrintingEditions',
-    children: [
-        { path: '', component: PrintingEditionManagerListComponent, data: { animation: 'PringtingEditions' } }
-    ]
-}];
+const printingEditionRoutes: Routes = [
+    { path: '', component: PrintingEditionManagerListComponent, data: { animation: 'PringtingEditions' } }
+];
 
-export const printingEditionRouting = RouterModule.forChild(printingEditionRoutes);
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(printingEditionRoutes)
+        RouterModule.forChild(printingEditionRoutes)
     ],
     exports: [
         RouterModule

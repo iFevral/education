@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
@@ -23,20 +23,12 @@ export class ResetPasswordComponent {
         });
     }
 
-    public redirect() {
+    public redirect(): void {
         const email = this.resetPasswordForm.value.email;
-        this.accountService.resetPassword(email)
-            .subscribe(result => {
-                if (result.errors.length > 0) {
-                    this.showDialogMessage(result.errors.toString());
-                } else {
-                    this.showDialogMessage('We have sent instructions to ' + email);
-                    this.router.navigate(['/']);
-                }
-            });
+        this.accountService.resetPassword(email);
     }
 
-    public showDialogMessage(message: string) {
+    public showDialogMessage(message: string): void {
         if (message === '') {
             return;
         }

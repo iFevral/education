@@ -1,2 +1,2 @@
-export * from './components/list/list.component';
+export * from './components/printing-editions/printing-editions.component';
 export * from './components/dialog/dialog.component';

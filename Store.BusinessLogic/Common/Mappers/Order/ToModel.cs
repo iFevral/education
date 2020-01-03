@@ -1,8 +1,6 @@
 ﻿using Store.BusinessLogic.Models.Orders;
 using Store.BusinessLogic.Models.PrintingEditions;
 using Store.BusinessLogic.Models.Users;
-using Store.DataAccess.Models;
-using System.Linq;
 
 namespace Store.BusinessLogic.Common.Mappers.Order
 {

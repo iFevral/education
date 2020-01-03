@@ -68,9 +68,13 @@ export class ListComponent
         this.filterModel.startIndex = this.paginator.pageIndex * this.paginator.pageSize;
 
         this.dataService.getAll<FilterModel>(this.filterModel).subscribe((data: Model) => {
-            this.dataSource = new MatTableDataSource(data.items);
-            this.dataModel = data;
-            this.paginator.length = data.counter;
+            this.setData(data);
         });
+    }
+
+    private setData(data: Model) {
+        this.dataSource = new MatTableDataSource(data.items);
+        this.dataModel = data;
+        this.paginator.length = data.counter;
     }
 }

@@ -4,6 +4,7 @@ import { AccountService } from '../../../../shared/services';
 import { UserModelItem } from '../../../../shared/models';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
+import { Constants } from 'src/app/shared/constants/constants';
 
 @Component({
     selector: 'app-sign-up',
@@ -19,24 +20,24 @@ export class SignUpComponent {
     constructor(private accountService: AccountService, private router: Router, private messageContainer: MatSnackBar) {
         this.signUpForm = new FormGroup({
             firstName: new FormControl('', [
-                Validators.minLength(3),
-                Validators.maxLength(40),
+                Validators.minLength(Constants.formValidatorParams.nameMinLength),
+                Validators.maxLength(Constants.formValidatorParams.nameMaxLength),
                 Validators.required,
             ]),
             lastName: new FormControl('', [
-                Validators.minLength(3),
-                Validators.maxLength(40),
+                Validators.minLength(Constants.formValidatorParams.nameMinLength),
+                Validators.maxLength(Constants.formValidatorParams.nameMaxLength),
                 Validators.required
             ]),
             email: new FormControl('', [
-                Validators.minLength(5),
-                Validators.maxLength(40),
+                Validators.minLength(Constants.formValidatorParams.emailMinLength),
+                Validators.maxLength(Constants.formValidatorParams.emailMaxLength),
                 Validators.required,
                 Validators.email
             ]),
             password: new FormControl('', [
-                Validators.minLength(6),
-                Validators.maxLength(40),
+                Validators.minLength(Constants.formValidatorParams.passwordMinLength),
+                Validators.maxLength(Constants.formValidatorParams.passwordMaxLength),
                 Validators.required
             ]),
             confirmPassword: new FormControl('', [
@@ -45,7 +46,7 @@ export class SignUpComponent {
         });
     }
 
-    public signUp() {
+    public signUp(): void {
         if (this.signUpForm.value.password === this.signUpForm.value.confirmPassword) {
 
             this.userModel.firstName = this.signUpForm.value.firstName;
@@ -55,16 +56,5 @@ export class SignUpComponent {
 
             this.accountService.signUp(this.userModel);
         }
-    }
-
-    public showDialogMessage(message: string) {
-        if (message === '') {
-            return;
-        }
-
-        this.messageContainer.open(message, 'X', {
-            duration: 5000,
-            verticalPosition: 'top'
-        });
     }
 }

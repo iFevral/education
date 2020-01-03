@@ -7,18 +7,20 @@ namespace Store.BusinessLogic.Common.Mappers.OrderItem
     {
         public static IEnumerable<DataAccess.Entities.OrderItem> MapToOrderItemsList(this IList<OrderItemModelItem> items, long orderId)
         {
-            var orderItemsList = new List<DataAccess.Entities.OrderItem>();
+            var list = new List<DataAccess.Entities.OrderItem>();
 
             foreach (var item in items)
             {
                 var orderItem = new DataAccess.Entities.OrderItem();
+                
                 orderItem.OrderId = orderId;
                 orderItem.Amount = item.Amount;
                 orderItem.PrintingEditionId = item.PrintingEdition.Id;
-                orderItemsList.Add(orderItem);
+                
+                list.Add(orderItem);
             }
 
-            return orderItemsList;
+            return list;
         }
     }
 }

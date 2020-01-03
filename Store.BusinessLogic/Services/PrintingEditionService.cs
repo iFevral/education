@@ -74,16 +74,16 @@ namespace Store.BusinessLogic.Services
         {
             var printingEdition = new PrintingEdition();
             printingEdition = printingEditionModel.MapToEntity(printingEdition);
-           
-            var result = await _printingEditionRepository.CreateAsync(printingEdition);
-            if (!result)
+            var printingEditionId = await _printingEditionRepository.CreateAsync(printingEdition);
+
+            if (printingEditionId == 0)
             {
                 printingEditionModel.Errors.Add(Constants.Errors.CreatePrintingEditionError);
+                return printingEditionModel;
             }
 
-            var authorInPrintingEditions = printingEditionModel.Authors.MapToAuthorInPrintingEditionList(printingEdition.Id).ToList();
-
-            result = await _authorInPrintingEditionRepository.CreateListAsync(authorInPrintingEditions);
+            var authorInPrintingEditions = printingEditionModel.Authors.MapToAuthorInPrintingEditionList(printingEditionId).ToList();
+            var result = await _authorInPrintingEditionRepository.CreateListAsync(authorInPrintingEditions);
 
             if (!result && authorInPrintingEditions.Count > 0)
             {
@@ -96,6 +96,7 @@ namespace Store.BusinessLogic.Services
         public async Task<BaseModel> UpdateAsync(PrintingEditionModelItem printingEditionModel)
         {
             var printingEdition = await _printingEditionRepository.FindByIdAsync(printingEditionModel.Id);
+
             if(printingEdition == null)
             {
                 printingEditionModel.Errors.Add(Constants.Errors.NotFoundPrintingEditionError);
@@ -103,8 +104,8 @@ namespace Store.BusinessLogic.Services
             }
 
             printingEdition = printingEditionModel.MapToEntity(printingEdition);
-            
             var result = await _authorInPrintingEditionRepository.RemoveByPrintingEditionAsync(printingEdition.Id);
+            
             if (!result)
             {
                 printingEditionModel.Errors.Add(Constants.Errors.DeleteAuthorError);
@@ -119,7 +120,6 @@ namespace Store.BusinessLogic.Services
             }
 
             var authorInPrintingEditions = printingEditionModel.Authors.MapToAuthorInPrintingEditionList(printingEdition.Id).ToList();
-
             result = await _authorInPrintingEditionRepository.CreateListAsync(authorInPrintingEditions);
 
             if (!result && authorInPrintingEditions.Count > 0)

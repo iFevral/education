@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PrintingEditionModelItem } from '../../../../shared/models';
 import { Constants } from '../../../../shared/constants/constants';
 
@@ -7,13 +7,13 @@ import { Constants } from '../../../../shared/constants/constants';
     templateUrl: './product-card.component.html',
     styleUrls: ['./product-card.component.scss']
 })
-export class ProductCardComponent implements OnInit{
+export class ProductCardComponent {
     private allCurrencies: Array<string>;
     private allCurrenciesSymbols: Array<string>;
 
     @Input() printingEdition: PrintingEditionModelItem;
 
-    public ngOnInit(): void {
+    public constructor() {
         this.allCurrencies = Constants.enumsAttributes.printingEditionCurrencies;
         this.allCurrenciesSymbols = Constants.enumsAttributes.printingEditionCurrenciesSymbols;
     }

@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using System.Collections.Generic;
 using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Orders;
@@ -62,20 +61,19 @@ namespace Store.BusinessLogic.Services
                 modelItem.Errors.Add(Constants.Errors.CreateOrderError);
                 return modelItem;
             }
+
             var order = new Order();
-
             order = modelItem.MapToEntity(order);
+            var orderId = await _orderRepository.CreateAsync(order);
 
-            var result = await _orderRepository.CreateAsync(order);
-
-            if (!result)
+            if (orderId == 0)
             {
                 modelItem.Errors.Add(Constants.Errors.CreateOrderError);
+                return modelItem;
             }
 
-            var orderItems = modelItem.OrderItems.MapToOrderItemsList(order.Id);
-
-            result = await _orderItemRepository.CreateListAsync(orderItems);
+            var orderItems = modelItem.OrderItems.MapToOrderItemsList(orderId);
+            var result = await _orderItemRepository.CreateListAsync(orderItems);
 
             if (!result && orderItems.Count() > 0)
             {
@@ -84,28 +82,6 @@ namespace Store.BusinessLogic.Services
 
             return modelItem;
         }
-
-        public async Task<BaseModel> DeleteAsync(int id)
-        {
-            var order = await _orderRepository.FindByIdAsync(id);
-            var orderModel = new OrderModelItem();
-            if(order == null)
-            {
-                orderModel.Errors.Add(Constants.Errors.NotFoundOrderError);
-                return orderModel;
-            }
-
-            order.isRemoved = true;
-            var result = await _orderRepository.UpdateAsync(order);
-            if (!result)
-            {
-                orderModel.Errors.Add(Constants.Errors.DeleteOrderError);
-                return orderModel;
-            }
-
-            return orderModel;
-        }
-
 
         public async Task<BaseModel> UpdateAsync(PaymentModelItem modelItem)
         {
@@ -120,17 +96,18 @@ namespace Store.BusinessLogic.Services
             var payment = new Payment();
             payment.TransactionId = modelItem.TransactionId;
 
-            var result = await _paymentsRepository.CreateAsync(payment);
+            var paymentId = await _paymentsRepository.CreateAsync(payment);
 
-            if (!result)
+            if (paymentId == 0)
             {
                 orderModel.Errors.Add(Constants.Errors.CreatePaymentError);
                 return orderModel;
             }
         
-            order.PaymentId = payment.Id;
+            order.PaymentId = paymentId;
             order.Status = Enums.Order.OrderStatus.Paid;
-            result = await _orderRepository.UpdateAsync(order);
+            
+            var result = await _orderRepository.UpdateAsync(order);
             if (!result)
             {
                 orderModel.Errors.Add(Constants.Errors.UpdateOrderError);

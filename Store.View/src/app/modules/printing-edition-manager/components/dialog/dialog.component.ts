@@ -59,7 +59,7 @@ export class PrintingEditionDialogComponent extends DialogCrudComponent<Printing
         ];
     }
 
-    changeAuthors() {
+    public changeAuthors(): void {
         this.data.model.authors = new Array<AuthorModelItem>();
 
         this.authors.forEach(element => {
@@ -69,7 +69,7 @@ export class PrintingEditionDialogComponent extends DialogCrudComponent<Printing
         });
     }
 
-    public setTitleImage(event) {
+    public setTitleImage(event): void {
         if (event.target.files.length > 0) {
             const newImage = event.target.files[0];
             const fileReader = new FileReader();

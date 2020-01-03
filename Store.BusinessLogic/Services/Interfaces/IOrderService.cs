@@ -21,11 +21,6 @@ namespace Store.BusinessLogic.Services.Interfaces
         public Task<BaseModel> CreateAsync(OrderModelItem modelItem);
 
         /// <summary>
-        /// Delete order
-        /// </summary>
-        public Task<BaseModel> DeleteAsync(int id);
-
-        /// <summary>
         /// Create payment add add to order
         /// </summary>
         public Task<BaseModel> UpdateAsync(PaymentModelItem modelItem);

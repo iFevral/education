@@ -9,8 +9,8 @@ import { ListComponent } from '../../../../shared/components/base';
 
 @Component({
     selector: 'app-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.scss']
+    templateUrl: './printing-editions.component.html',
+    styleUrls: ['./printing-editions.component.scss']
 })
 export class PrintingEditionListComponent extends ListComponent<PrintingEditionModelItem, PrintingEditionModel, PrintingEditionFilterModel, PrintingEditionService> {
 
@@ -57,7 +57,7 @@ export class PrintingEditionListComponent extends ListComponent<PrintingEditionM
         this.filterModel.sortProperty = this.sortProperties[0];
     }
 
-    public onCheckboxChecked(event, element) {
+    public onCheckboxChecked(event, element): void {
         if (event.checked) {
             this.filterModel.types.push(element);
         } else {
@@ -68,7 +68,7 @@ export class PrintingEditionListComponent extends ListComponent<PrintingEditionM
         }
     }
 
-    public toggleDataOrder() {
+    public toggleDataOrder(): void {
         this.filterModel.IsAscending = !this.filterModel.IsAscending;
     }
 }

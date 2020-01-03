@@ -18,7 +18,7 @@ export class UserService extends BaseService<UserModel> {
         super(http, Constants.apiUrls.userControllerUrl, messageContainer);
     }
 
-    public setLockout(email: string, isLocked: boolean) {
+    public setLockout(email: string, isLocked: boolean): void {
         this.http.post<BaseModel>(Constants.apiUrls.userBlockingUrl, { email, isLocked })
             .subscribe((resultModel: BaseModel) => {
                 if (resultModel.errors) {

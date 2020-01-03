@@ -1,6 +1,5 @@
 ﻿using Store.BusinessLogic.Models.Authors;
 using Store.BusinessLogic.Models.PrintingEditions;
-using Store.DataAccess.Entities;
 
 namespace Store.BusinessLogic.Common.Mappers.Author
 {

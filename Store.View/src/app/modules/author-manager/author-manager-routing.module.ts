@@ -2,18 +2,13 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthorListComponent, } from '.';
 
-const authorRoutes: Routes = [{
-    path: 'Authors',
-    children: [
-        { path: '', component: AuthorListComponent, data: { animation: 'Authors' } }
-    ]
-}];
-
-export const authorRouting = RouterModule.forChild(authorRoutes);
+const authorRoutes: Routes = [
+    { path: '', component: AuthorListComponent, data: { animation: 'Authors' } }
+];
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(authorRoutes)
+        RouterModule.forChild(authorRoutes)
     ],
     exports: [
         RouterModule

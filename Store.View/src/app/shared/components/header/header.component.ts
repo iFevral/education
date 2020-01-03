@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../../services/account.service';
 import { RoleName } from '../../enums';
 import { TokenModel, UserModelItem } from '../../models';
-import { CartComponent } from '../../../modules/order';
+import { CartComponent } from '../../../modules/order-manager';
 import { MatDialog } from '@angular/material';
 import { CartService } from '../../services';
 
