@@ -14,7 +14,7 @@ export class ProductCardComponent {
     @Input() printingEdition: PrintingEditionModelItem;
 
     public constructor() {
-        this.allCurrencies = Constants.enumsAttributes.printingEditionCurrencies;
-        this.allCurrenciesSymbols = Constants.enumsAttributes.printingEditionCurrenciesSymbols;
+        this.allCurrencies = Constants.enumsKeys.printingEditionCurrencies;
+        this.allCurrenciesSymbols = Constants.enumsKeys.printingEditionCurrenciesSymbols;
     }
 }

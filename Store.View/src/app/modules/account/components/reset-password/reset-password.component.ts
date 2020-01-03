@@ -16,7 +16,7 @@ export class ResetPasswordComponent {
 
     constructor(private accountService: AccountService, private router: Router, private messageContainer: MatSnackBar) {
         this.resetPasswordForm = new FormGroup({
-            'email': new FormControl('', [
+            email: new FormControl('', [
                 Validators.required,
                 Validators.email
             ])

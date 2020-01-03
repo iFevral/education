@@ -14,9 +14,9 @@ namespace Store.DataAccess.Repositories.EFRepository
         {
         }
 
-        public async Task<ListModel<PrintingEdition>> GetAllPrintingEditions(PrintingEditionFilterModel filterModel)
+        public async Task<DataModel<PrintingEdition>> GetAllPrintingEditions(PrintingEditionFilterModel filterModel)
         {
-            var list = new ListModel<PrintingEdition>();
+            var list = new DataModel<PrintingEdition>();
 
             list.Items = GetAll(filterModel, out int counter);
             list.Counter = counter;

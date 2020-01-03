@@ -7,7 +7,7 @@ namespace Store.DataAccess.Entities
     {
         [Key]
         public virtual long Id { get; set; }
-        public DateTime? CreationDate { get; set; } = DateTime.Now;
+        public DateTime? CreationDate { get; set; }
         public bool isRemoved { get; set; } = false;
     }
 }

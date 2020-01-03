@@ -8,7 +8,7 @@ import {
     PrintingEditionCurrencySymbol
 } from 'src/app/shared/enums';
 
-export class EnumsAttributes {
+export class EnumsKeys {
     public sortProperties: Array<string>;
     public orderStatuses: Array<string>;
     public printingEditionTypes: Array<string>;

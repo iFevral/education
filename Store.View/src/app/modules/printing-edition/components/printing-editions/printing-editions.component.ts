@@ -27,30 +27,19 @@ export class PrintingEditionListComponent extends ListComponent<PrintingEditionM
         printingEditionService: PrintingEditionService
     ) {
         super(new PrintingEditionFilterModel(), printingEditionService);
-        this.allTypes = Constants.enumsAttributes.printingEditionTypes;
-        this.allCurrencies = Constants.enumsAttributes.printingEditionCurrencies;
-        this.allCurrenciesSymbols = Constants.enumsAttributes.printingEditionCurrenciesSymbols;
-        this.types = [
-            PrintingEditionType.Books,
-            PrintingEditionType.Magazines,
-            PrintingEditionType.Newspapers
-        ];
+        this.allTypes = Constants.enumsKeys.printingEditionTypes;
+        this.allCurrencies = Constants.enumsKeys.printingEditionCurrencies;
+        this.allCurrenciesSymbols = Constants.enumsKeys.printingEditionCurrenciesSymbols;
+        this.types = Constants.enumsValues.printingEditionTypes;
 
-        this.currencies = [
-            PrintingEditionCurrency.USD,
-            PrintingEditionCurrency.EUR,
-            PrintingEditionCurrency.GBP,
-            PrintingEditionCurrency.CHF,
-            PrintingEditionCurrency.JPY,
-            PrintingEditionCurrency.UAH
-        ];
+        this.currencies = Constants.enumsValues.printingEditionCurrencies;
 
         this.sortProperties = [
             SortProperty.Date,
             SortProperty.Price
         ];
 
-        this.allSortProperties = Constants.enumsAttributes.sortProperties;
+        this.allSortProperties = Constants.enumsKeys.sortProperties;
 
         this.filterModel.types = this.types;
         this.filterModel.currency = this.currencies[0];

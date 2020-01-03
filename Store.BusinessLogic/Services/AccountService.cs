@@ -9,16 +9,19 @@ using Store.DataAccess.Entities.Enums;
 using Store.DataAccess.Repositories.Interfaces;
 using System.Linq;
 using System;
+using Store.BusinessLogic.Helpers.Interface;
 
 namespace Store.BusinessLogic.Services
 {
     public class AccountService : IAccountService
     {
         private readonly IUserRepository _userRepository;
-
-        public AccountService(IUserRepository userRepository)
+        private readonly IPasswordGeneratorHelper _passwordGenerator;
+        public AccountService(IUserRepository userRepository,
+                              IPasswordGeneratorHelper passwordGenerator)
         {
             _userRepository = userRepository;
+            _passwordGenerator = passwordGenerator;
         }
 
         public async Task<UserModelItem> GetUserByIdAsync(long id)
@@ -168,10 +171,8 @@ namespace Store.BusinessLogic.Services
                 return resetPasswordModel;
             }
 
-            Random random = new Random();
-            var newPassword = new string(Enumerable.Repeat(Constants.PasswordGeneratorSettings.chars,
-                                                                       Constants.PasswordGeneratorSettings.size)
-                                                               .Select(s => s[random.Next(s.Length)]).ToArray());
+
+            var newPassword = _passwordGenerator.GeneratePassword();
 
             var resetToken = await _userRepository.GeneratePasswordResetTokenAsync(email);
             

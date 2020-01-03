@@ -36,7 +36,7 @@ export class CartService {
         if (!isNewItemUpdated) {
             newСart.items.push(newCartItem);
         }
-
+        console.log(newСart)
         this.cart.next(newСart);
         localStorage.setItem('cart', JSON.stringify(newСart));
     }

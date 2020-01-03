@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { CRUDOperations, UserLockStatus } from 'src/app/shared/enums';
+import { UserLockStatus } from 'src/app/shared/enums';
 import { Constants } from 'src/app/shared/constants/constants';
 import { DialogData, UserModelItem } from 'src/app/shared/models';
 import { DialogCrudComponent } from 'src/app/shared/components/base';
@@ -22,11 +22,8 @@ export class UserDialogComponent extends DialogCrudComponent<UserModelItem> {
     ) {
         super(dialogRef, data);
 
-        this.allStatuses = Constants.enumsAttributes.userLockStatuses;
-        this.statuses = [
-            UserLockStatus.Active,
-            UserLockStatus.Blocked
-        ];
+        this.allStatuses = Constants.enumsKeys.userLockStatuses;
+        this.statuses = Constants.enumsValues.userLockStatuses;
 
         this.titles = [``,
             `Create user`,

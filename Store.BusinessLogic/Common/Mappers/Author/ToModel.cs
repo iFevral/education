@@ -12,11 +12,15 @@ namespace Store.BusinessLogic.Common.Mappers.Author
             model.Id = entity.Id;
             model.Name = entity.Name;
 
-            foreach (var authorInBook in entity.AuthorInPrintingEdition)
+            foreach (var item in entity.AuthorInPrintingEdition)
             {
+                if (item == null)
+                {
+                    continue;
+                }
                 var printingEdition = new PrintingEditionModelItem();
-                printingEdition.Id = authorInBook.PrintingEditionId;
-                printingEdition.Title = authorInBook.PrintingEdition.Title;
+                printingEdition.Id = item.PrintingEditionId;
+                printingEdition.Title = item.PrintingEdition.Title;
                 model.PrintingEditions.Add(printingEdition);
             }
 

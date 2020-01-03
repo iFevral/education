@@ -8,6 +8,6 @@ namespace Store.DataAccess.Repositories.Interfaces
 {
     public interface IOrderRepository : IGenericRepository<Order>
     {
-        public Task<ListModel<OrderModel>> GetAllOrders(OrderFilterModel filterModel);
+        public Task<DataModel<OrderModel>> GetAllOrders(OrderFilterModel filterModel);
     }
 }

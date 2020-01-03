@@ -17,7 +17,7 @@ namespace Store.DataAccess.Entities
         public string Image { get; set; }
 
         [Dapper.Contrib.Extensions.Computed]
-        public virtual ICollection<AuthorInPrintingEdition> AuthorInPrintingEditions { get; set; }
+        public virtual ICollection<AuthorInPrintingEdition> AuthorInPrintingEditions { get; set; } = new List<AuthorInPrintingEdition>();
         [Dapper.Contrib.Extensions.Computed]
         public virtual ICollection<OrderItem> OrderItems { get; set; }
     }

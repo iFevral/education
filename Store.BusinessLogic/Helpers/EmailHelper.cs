@@ -24,7 +24,7 @@ namespace Store.BusinessLogic.Helpers
             _smtpPassword = smtpConfig.GetValue<string>("SmtpPassword");
         }
 
-        public async Task Send(string recipients, 
+        public async Task SendAsync(string recipients, 
                                 string subject,
                                 string body)
         {

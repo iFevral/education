@@ -17,10 +17,10 @@ namespace Store.DataAccess.Repositories.DapperRepositories
 
         public async Task<bool> RemoveByPrintingEditionAsync(long printingEditionId)
         {
-            var sql = new StringBuilder($@"DELETE FROM AuthorInPrintingEdition WHERE PrintingEditionId = {printingEditionId}");
+            var sql = new StringBuilder($@"DELETE FROM AuthorInPrintingEdition WHERE PrintingEditionId = @PrintingEditionId");
             using (var databaseConnection = new SqlConnection(_connectionString))
             {
-                await databaseConnection.QueryAsync(sql.ToString());
+                await databaseConnection.QueryAsync(sql.ToString(), new { PrintingEditionId = printingEditionId });
                 return true;
             }
         }

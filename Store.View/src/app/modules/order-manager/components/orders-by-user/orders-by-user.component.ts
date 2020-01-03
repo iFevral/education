@@ -26,12 +26,9 @@ export class OrderListByUserComponent extends ListComponent<OrderModelItem, Orde
 
         this.displayedColumns = Constants.displayedColumns.ordersByUser;
 
-        this.allTypes = Constants.enumsAttributes.printingEditionTypes;
-        this.allStatuses = Constants.enumsAttributes.orderStatuses;
-        this.statuses = [
-            OrderStatus.Paid,
-            OrderStatus.Unpaid
-        ];
+        this.allTypes = Constants.enumsKeys.printingEditionTypes;
+        this.allStatuses = Constants.enumsKeys.orderStatuses;
+        this.statuses = Constants.enumsValues.orderStatuses;
 
         const userId = parseInt(this.route.snapshot.paramMap.get('id'), 10);
         this.filterModel.IsAscending = false;

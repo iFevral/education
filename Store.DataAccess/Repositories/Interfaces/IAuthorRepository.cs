@@ -8,6 +8,6 @@ namespace Store.DataAccess.Repositories.Interfaces
 {
     public interface IAuthorRepository : IGenericRepository<Author>
     {
-        public Task<ListModel<Author>> GetAllAuthors(FilterModel<Author> filterModel);
+        public Task<DataModel<Author>> GetAllAuthors(FilterModel<Author> filterModel);
     }
 }

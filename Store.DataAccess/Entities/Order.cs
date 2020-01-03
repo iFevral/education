@@ -16,6 +16,6 @@ namespace Store.DataAccess.Entities
         [Dapper.Contrib.Extensions.Computed]
         public virtual User User { get; set; }
         [Dapper.Contrib.Extensions.Computed]
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
+        public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

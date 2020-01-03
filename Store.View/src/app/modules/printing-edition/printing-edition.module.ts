@@ -20,6 +20,6 @@ import {
         PrintingEditionRoutingModule,
         FormsModule
     ],
-    providers: [PrintingEditionService, CartService, AccountService]
+    providers: [PrintingEditionService]
 })
 export class PrintingEditionModule { }

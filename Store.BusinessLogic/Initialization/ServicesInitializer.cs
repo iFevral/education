@@ -20,7 +20,10 @@ namespace Store.BusinessLogic.Initialization
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPrintingEditionService, PrintingEditionService>();
             services.AddScoped<IUserService, UserService>();
+            
             services.AddScoped<IEmailHelper, EmailHelper>();
+            services.AddScoped<IPasswordGeneratorHelper, PasswordGeneratorHelper>();
+
         }
     }
 }

@@ -8,6 +8,6 @@ namespace Store.DataAccess.Repositories.Interfaces
 {
     public interface IPrintingEditionRepository : IGenericRepository<PrintingEdition>
     {
-        public Task<ListModel<PrintingEdition>> GetAllPrintingEditions(PrintingEditionFilterModel filterModel);
+        public Task<DataModel<PrintingEdition>> GetAllPrintingEditions(PrintingEditionFilterModel filterModel);
     }
 }

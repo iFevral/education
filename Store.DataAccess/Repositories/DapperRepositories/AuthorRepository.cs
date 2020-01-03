@@ -18,17 +18,17 @@ namespace Store.DataAccess.Repositories.DapperRepositories
         public AuthorRepository(IConfiguration configuration) : base(configuration)
         { }
 
-        public async Task<ListModel<Author>> GetAllAuthors(FilterModel<Author> filterModel)
+        public async Task<DataModel<Author>> GetAllAuthors(FilterModel<Author> filterModel)
         {
             var sql = new StringBuilder($@" SELECT *
                                             FROM (SELECT *
 	                                              FROM Authors
-                                                  WHERE (isRemoved = 0) 
-	                                              ORDER BY { filterModel.SortProperty.ToString() } { (filterModel.IsAscending ? "ASC" : "DESC") }
-		                                            OFFSET { filterModel.StartIndex } ROWS");
+                                                  WHERE (isRemoved = @IsRemoved) 
+	                                              ORDER BY {filterModel.SortProperty.ToString()} {(filterModel.IsAscending ? "ASC" : "DESC")}
+		                                            OFFSET @Offset ROWS");
             if (filterModel.Quantity > 0)
             {
-                sql.Append(new StringBuilder($@"	FETCH NEXT { filterModel.Quantity } ROWS ONLY"));
+                sql.Append(new StringBuilder($@"	FETCH NEXT @Quantity ROWS ONLY"));
             }
 
             sql.Append(new StringBuilder($@") AS a
@@ -37,49 +37,54 @@ namespace Store.DataAccess.Repositories.DapperRepositories
 
             var sqlCounter = new StringBuilder($@"SELECT COUNT(*)
                                                   FROM Authors
-                                                  WHERE (IsRemoved = 0);");
+                                                  WHERE (IsRemoved = @IsRemoved);");
 
             sql.Append(sqlCounter);
 
             using (var databaseConnection = new SqlConnection(_connectionString))
             {
-                var queryResult = await databaseConnection.QueryMultipleAsync(sql.ToString());
+                var queryResult = await databaseConnection.QueryMultipleAsync(sql.ToString(),
+                    new 
+                    {
+                        IsRemoved = 0,
+                        Offset = filterModel.StartIndex,
+                        Quantity = filterModel.Quantity
+                    });
 
-                var list = new ListModel<Author>();
-                list.Items = new List<Author>();
+                var datamodel = new DataModel<Author>();
+                datamodel.Items = new List<Author>();
 
                 var authors = queryResult.Read<Author, AuthorInPrintingEdition, PrintingEdition, Author>(
                     (author, authorInPrintingEdition, printingEdition) =>
                     {
-                        if(list.Items.Count() == 0 || list.Items.Last().Id != author.Id)
-                        {
-                            list.Items.AsList().Add(author);
-                        }
-                        
-
-                        if(list.Items.Last().AuthorInPrintingEdition == null)
-                        {
-                            list.Items.Last().AuthorInPrintingEdition = new List<AuthorInPrintingEdition>();
-                        }
-
                         if(authorInPrintingEdition == null)
                         {
                             return author;
                         }
 
+                        author.AuthorInPrintingEdition = new List<AuthorInPrintingEdition>();
+                        
                         authorInPrintingEdition.PrintingEdition = printingEdition;
                         authorInPrintingEdition.PrintingEditionId = printingEdition.Id;
 
-                        list.Items.Last().AuthorInPrintingEdition.Add(authorInPrintingEdition);
+                        author.AuthorInPrintingEdition.Add(authorInPrintingEdition);
 
                         return author;
                     },
                     splitOn: "AuthorId, Id"
                );
 
-                list.Counter = await queryResult.ReadFirstAsync<int>();
+                datamodel.Items = authors.GroupBy(author => new { author.Id, author.Name })
+                    .Select(group => new Author
+                    {
+                        Id = group.Key.Id,
+                        Name = group.Key.Name,
+                        AuthorInPrintingEdition = group.Select(author => author.AuthorInPrintingEdition.FirstOrDefault()).ToList()
+                    });
 
-                return list;
+                datamodel.Counter = await queryResult.ReadFirstAsync<int>();
+
+                return datamodel;
             }
         }
     }

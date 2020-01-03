@@ -21,6 +21,10 @@ namespace Store.BusinessLogic.Common.Mappers.PrintingEdition
 
             foreach(var item in entity.AuthorInPrintingEditions)
             {
+                if(item == null)
+                {
+                    continue;
+                }
                 var author = new AuthorModelItem();
                 author.Id = item.AuthorId;
                 author.Name = item.Author.Name;

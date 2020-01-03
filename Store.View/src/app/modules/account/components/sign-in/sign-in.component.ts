@@ -28,11 +28,13 @@ export class SignInComponent {
             ]),
             rememberMe: new FormControl('', [])
         });
-
-        this.signInForm.value.rememberMe = false;
     }
 
     public signIn(): void {
+        if (!this.signInForm.value.rememberMe) {
+            this.signInForm.value.rememberMe = false;
+        }
+
         this.accountService.signIn(this.signInForm.value.email, this.signInForm.value.password, this.signInForm.value.rememberMe);
     }
 }

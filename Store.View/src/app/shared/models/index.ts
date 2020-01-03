@@ -1,5 +1,6 @@
 export * from 'src/app/shared/models/base/base.model';
 export * from 'src/app/shared/models/base/base-list.model';
+export * from 'src/app/shared/models/base/base-item.model';
 export * from 'src/app/shared/models/base/base-filter.model';
 export * from 'src/app/shared/models/author/author.filter.model';
 export * from 'src/app/shared/models/author/author.model';

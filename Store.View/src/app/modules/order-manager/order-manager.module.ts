@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { OrderRoutingModule } from 'src/app/modules/order-manager/order-manager-routing.module';
 import { MaterialElementsModule } from 'src/app/shared/modules';
 
-import { OrderService, CartService } from 'src/app/shared/services';
+import { OrderService } from 'src/app/shared/services';
 
 import { CartComponent } from 'src/app/modules/order-manager/components/cart/cart.component';
 import { OrderListComponent, OrderListByUserComponent } from 'src/app/modules/order-manager/index';
@@ -21,6 +21,6 @@ import { OrderListComponent, OrderListByUserComponent } from 'src/app/modules/or
     exports: [
         CartComponent
     ],
-    providers: [OrderService, CartService]
+    providers: [OrderService]
 })
 export class OrderManagerModule { }

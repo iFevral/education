@@ -25,6 +25,10 @@ namespace Store.BusinessLogic.Common.Mappers.Order
 
             foreach (var item in entity.OrderItems)
             {
+                if (item == null)
+                {
+                    continue;
+                }
                 var orderItem = new OrderItemModelItem();
                 orderItem.Id = item.Id;
                 orderItem.Amount = item.Amount;

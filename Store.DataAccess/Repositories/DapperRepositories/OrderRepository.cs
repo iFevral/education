@@ -18,7 +18,7 @@ namespace Store.DataAccess.Repositories.DapperRepositories
         public OrderRepository(IConfiguration configuration) : base(configuration)
         { }
 
-        public async Task<ListModel<OrderModel>> GetAllOrders(OrderFilterModel filterModel)
+        public async Task<DataModel<OrderModel>> GetAllOrders(OrderFilterModel filterModel)
         {
             var sql = new StringBuilder($@"SELECT o.*, u.FirstName, u.LastName, u.Email, oi.Amount, pe.Id, pe.Title, pe.Type
                                             FROM (SELECT *
@@ -27,18 +27,18 @@ namespace Store.DataAccess.Repositories.DapperRepositories
 				                                             FROM OrderItems
 				                                             LEFT JOIN PrintingEditions ON OrderItems.PrintingEditionId = PrintingEditions.Id
 				                                             GROUP BY OrderId) AS op ON Orders.Id = op.OrderId
-	                                              WHERE (Status IN ({ string.Join(",", filterModel.Statuses) })) AND
-                                                        (isRemoved = 0) ");
+	                                              WHERE (Status IN @Statuses) AND
+                                                        (isRemoved = @IsRemoved) ");
             if (filterModel.UserId != null)
             {
-                sql.Append(new StringBuilder($@"        AND (UserId = { filterModel.UserId })"));
+                sql.Append(new StringBuilder($@"        AND (UserId = @UserId)"));
             }
-            sql.Append(new StringBuilder($@"      ORDER BY { filterModel.SortProperty } { (filterModel.IsAscending ? "ASC" : "DESC") }
-		                                                OFFSET { filterModel.StartIndex } ROWS"));
+            sql.Append(new StringBuilder($@"      ORDER BY {filterModel.SortProperty.ToString()} { (filterModel.IsAscending ? "ASC" : "DESC") }
+		                                                OFFSET @Offset ROWS"));
             if (filterModel.Quantity > 0)
             {
-                sql.Append(new StringBuilder($@"	    FETCH NEXT { filterModel.Quantity } ROWS ONLY"));
-            } 
+                sql.Append(new StringBuilder($@"	    FETCH NEXT @Quantity ROWS ONLY"));
+            }
 
             sql.Append(new StringBuilder($@") AS o
                                             LEFT JOIN Users AS u ON o.UserId = u.Id
@@ -47,8 +47,8 @@ namespace Store.DataAccess.Repositories.DapperRepositories
 
             var sqlCounter = new StringBuilder($@"SELECT COUNT(*)
                                                   FROM Orders
-                                                 WHERE (Status IN ({ string.Join(",", filterModel.Statuses) })) AND
-                                                       (IsRemoved = 0) ");
+                                                  WHERE (Status IN @Statuses) AND
+                                                       (IsRemoved = @IsRemoved) ");
             if (filterModel.UserId != null)
             {
                 sqlCounter.Append(new StringBuilder($@"AND (UserId = { filterModel.UserId })"));
@@ -58,45 +58,66 @@ namespace Store.DataAccess.Repositories.DapperRepositories
 
             using (var databaseConnection = new SqlConnection(_connectionString))
             {
-                var queryResult = await databaseConnection.QueryMultipleAsync(sql.ToString());
+                var queryResult = await databaseConnection.QueryMultipleAsync(sql.ToString(),
+                    new
+                    {
+                        Statuses = filterModel.Statuses,
+                        IsRemoved = 0,
+                        UserId = filterModel.UserId,
+                        Offset = filterModel.StartIndex,
+                        Quantity = filterModel.Quantity
+                    });
 
-                var list = new ListModel<OrderModel>();
-                list.Items = new List<OrderModel>();
+                var dataModel = new DataModel<OrderModel>();
 
-                queryResult.Read<OrderModel, decimal?, User, OrderItem, PrintingEdition, OrderModel>(
+                var orders = queryResult.Read<OrderModel, decimal?, User, OrderItem, PrintingEdition, OrderModel>(
                     (order, orderPrice, user, orderItem, printingEdition) =>
                     {
                         order.OrderPrice = orderPrice == null ? 0 : orderPrice;
+                        user.ConcurrencyStamp = null;
                         order.User = user;
-
-                        if (list.Items.Count() == 0 || list.Items.Last().Id != order.Id)
-                        {
-                            list.Items.AsList().Add(order);
-                        }
-
-
-                        if (list.Items.Last().OrderItems == null)
-                        {
-                            list.Items.Last().OrderItems = new List<OrderItem>();
-                        }
-
-                        if (orderItem == null)
+                        
+                        if(orderItem == null)
                         {
                             return order;
                         }
 
                         orderItem.PrintingEdition = printingEdition;
 
-                        list.Items.Last().OrderItems.Add(orderItem);
+                        order.OrderItems = new List<OrderItem>();
+                        order.OrderItems.Add(orderItem);
 
                         return order;
                     },
                     splitOn: "OrderPrice, FirstName, Amount, Id"
                 );
 
-                list.Counter = await queryResult.ReadFirstAsync<int>();
+                dataModel.Items = orders.GroupBy(order =>
+                    new
+                    {
+                        order.Id,
+                        order.Description,
+                        order.OrderPrice,
+                        order.PaymentId,
+                        order.Status,
+                        order.User,
+                        order.UserId
+                    }
+                )
+                    .Select(group => new OrderModel
+                    {
+                        Id = group.Key.Id,
+                        Description = group.Key.Description,
+                        OrderPrice = group.Key.OrderPrice,
+                        Status = group.Key.Status,
+                        UserId = group.Key.UserId,
+                        User = group.Key.User,
+                        OrderItems = group.Select(order => order.OrderItems.FirstOrDefault()).ToList()
+                    });
 
-                return list;
+                dataModel.Counter = await queryResult.ReadFirstAsync<int>();
+
+                return dataModel;
             }
         }
     }

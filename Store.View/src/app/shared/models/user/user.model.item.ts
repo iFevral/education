@@ -1,7 +1,6 @@
-import { BaseModel } from 'src/app/shared/models/base/base.model';
+import { BaseItemModel } from 'src/app/shared/models/base/base-item.model';
 
-export class UserModelItem extends BaseModel {
-    public id?: number;
+export class UserModelItem extends BaseItemModel {
     public firstName?: string;
     public lastName?: string;
     public email?: string;

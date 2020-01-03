@@ -73,9 +73,9 @@ namespace Store.DataAccess.Repositories.EFRepository
         public async Task<bool> UnlockAsync(string email)
         {
             var user = await FindByEmailAsync(email);
-            var result = await _userManager.SetLockoutEnabledAsync(user, false);
-            var result2 = await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MinValue);
-            return result.Succeeded || result2.Succeeded;
+            var lockoutResult = await _userManager.SetLockoutEnabledAsync(user, false);
+            var lockoutEndDateResult = await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MinValue);
+            return lockoutResult.Succeeded || lockoutEndDateResult.Succeeded;
         }
 
         public async Task<string> GenerateEmailConfirmationTokenAsync(string email)

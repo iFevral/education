@@ -36,7 +36,7 @@ export class AccountService {
         this.rememberMeSubject = new BehaviorSubject<boolean>(isRememberMeActivated);
     }
 
-    public setTokens(tokenModel): void {
+    public setTokens(tokenModel: TokenModel): void {
         localStorage.setItem('tokens', JSON.stringify(tokenModel));
         this.tokenSubject.next(tokenModel);
     }
@@ -48,11 +48,11 @@ export class AccountService {
     public setProfile(): void {
         this.http.post<UserModelItem>(Constants.apiUrls.accountControllerUrl, null)
             .subscribe(
-                result => {
+                (result: UserModelItem) => {
                     localStorage.setItem('profile', JSON.stringify(result));
                     this.profileSubject.next(result);
                 },
-                error => {
+                (error) => {
                     localStorage.removeItem('profile');
                 }
             );
@@ -62,7 +62,7 @@ export class AccountService {
         return this.profileSubject.asObservable();
     }
 
-    public setRememberMeFlag(rememberMeFlag: boolean) {
+    public setRememberMeFlag(rememberMeFlag: boolean): void {
         localStorage.setItem('rememberMeFlag', JSON.stringify(rememberMeFlag));
         this.rememberMeSubject.next(rememberMeFlag);
     }
@@ -104,7 +104,7 @@ export class AccountService {
             });
     }
 
-    public signOut() {
+    public signOut(): void {
         const model: TokenModel = new TokenModel();
         const profile: UserModelItem = new UserModelItem();
         localStorage.clear();

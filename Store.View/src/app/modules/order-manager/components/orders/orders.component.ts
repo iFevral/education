@@ -21,16 +21,15 @@ export class OrderListComponent extends ListComponent<OrderModelItem, OrderModel
         orderService: OrderService
     ) {
         super(new OrderFilterModel(), orderService);
-        
+
         this.displayedColumns = Constants.displayedColumns.orders;
 
-        this.allStatuses = Constants.enumsAttributes.orderStatuses;
-        
-        this.allTypes = Constants.enumsAttributes.printingEditionTypes;
-        this.statuses = [
-            OrderStatus.Paid,
-            OrderStatus.Unpaid
-        ];
+        this.allStatuses = Constants.enumsKeys.orderStatuses;
+
+        this.allTypes = Constants.enumsKeys.printingEditionTypes;
+
+        this.statuses = Constants.enumsValues.orderStatuses;
+
         this.filterModel.IsAscending = false;
         this.filterModel.statuses = this.statuses;
     }

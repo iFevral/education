@@ -5,6 +5,14 @@ export class DisplayedColumns {
         'control'
     ];
 
+    public cart = [
+        'title',
+        'price',
+        'quantity',
+        'sum',
+        'control'
+    ];
+    
     public orders = [
         'id',
         'date',

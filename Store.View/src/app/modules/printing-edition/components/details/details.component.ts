@@ -23,7 +23,7 @@ export class DetailsComponent implements OnInit {
         private accountService: AccountService
     ) {
         this.printingEditionModel = new PrintingEditionModelItem();
-        this.types = Constants.enumsAttributes.printingEditionTypes;
+        this.types = Constants.enumsKeys.printingEditionTypes;
 
         this.cartItem = new CartModelItem();
         this.cartItem.quantity = 1;
@@ -48,6 +48,7 @@ export class DetailsComponent implements OnInit {
     }
 
     public addProductToCart(): void {
+        console.log("ta");
         if (this.cartItem.quantity > 0) {
             this.cartService.add(this.cartItem);
         }

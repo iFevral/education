@@ -3,6 +3,7 @@ import { MatDialogRef, MatTableDataSource } from '@angular/material';
 
 import { OrderService, CartService } from 'src/app/shared/services';
 import { CartModel, CartModelItem } from 'src/app/shared/models';
+import { Constants } from 'src/app/shared/constants/constants';
 
 @Component({
     selector: 'app-dialog-update',
@@ -22,13 +23,7 @@ export class CartComponent {
         private orderService: OrderService,
         private cartService: CartService
     ) {
-        this.displayedColumns = [
-            'title',
-            'price',
-            'quantity',
-            'sum',
-            'control'
-        ];
+        this.displayedColumns = Constants.displayedColumns.cart;
         this.setCart();
     }
 

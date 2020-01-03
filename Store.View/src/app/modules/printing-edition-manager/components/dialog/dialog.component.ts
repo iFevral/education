@@ -41,14 +41,11 @@ export class PrintingEditionDialogComponent extends DialogCrudComponent<Printing
                 this.authors.push(element.id);
             });
         }
-        this.allTypes = Constants.enumsAttributes.printingEditionTypes;
-        this.types = [
-            PrintingEditionType.Books,
-            PrintingEditionType.Magazines,
-            PrintingEditionType.Newspapers
-        ];
+        this.allTypes = Constants.enumsKeys.printingEditionTypes;
+        this.types = Constants.enumsValues.printingEditionTypes;
 
-        this.allCurrencies = Constants.enumsAttributes.printingEditionCurrencies;
+        this.allCurrencies = Constants.enumsKeys.printingEditionCurrencies;
+
         this.currencies = [
             PrintingEditionCurrency.USD
         ];

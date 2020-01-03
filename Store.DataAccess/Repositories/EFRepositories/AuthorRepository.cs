@@ -14,9 +14,9 @@ namespace Store.DataAccess.Repositories.EFRepository
         {
         }
 
-        public async Task<ListModel<Author>> GetAllAuthors(FilterModel<Author> filterModel)
+        public async Task<DataModel<Author>> GetAllAuthors(FilterModel<Author> filterModel)
         {
-            var list = new ListModel<Author>();
+            var list = new DataModel<Author>();
             
             list.Items = GetAll(filterModel, out int counter);
             list.Counter = counter;

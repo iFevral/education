@@ -18,7 +18,7 @@ export class DialogCrudComponent<ModelItem extends BaseModel> implements OnInit 
         public dialogRef: MatDialogRef<DialogCrudComponent<ModelItem>>,
         @Inject(MAT_DIALOG_DATA) protected data: DialogData<ModelItem>
     ) {
-        this.titles = Constants.enumsAttributes.crudOperations;
+        this.titles = Constants.enumsKeys.crudOperations;
 
     }
 

@@ -91,7 +91,7 @@ namespace Store.Presentation.Controllers
             string subject = Constants.EmailHeaders.EmailConfirmation;
             string body = $"Confirmation link: <a href='{_configuration["ViewUrl"]}/Account/ConfirmEmail?email={emailConfirmationModel.Email}&token={emailConfirmationModel.Token}'>Verify Email</a>";
 
-            await _emailHelper.Send(signUpModel.Email, subject, body);
+            await _emailHelper.SendAsync(signUpModel.Email, subject, body);
             emailConfirmationModel.Token = null;
             emailConfirmationModel.Message = $"Check your email {emailConfirmationModel.Email} for confirmation";
 
@@ -128,7 +128,7 @@ namespace Store.Presentation.Controllers
             string subject = Constants.EmailHeaders.ResetingPasswordConfirmation;
             string body = $"New password: {resetPasswordModel.Password}. You can change it in account settings";
 
-            await _emailHelper.Send(resetPasswordModel.Email, subject, body);
+            await _emailHelper.SendAsync(resetPasswordModel.Email, subject, body);
 
             return Ok(resetPasswordModel);
         }

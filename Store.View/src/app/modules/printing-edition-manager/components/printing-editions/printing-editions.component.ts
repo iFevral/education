@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material';
 
 import { PrintingEditionModel, PrintingEditionModelItem, PrintingEditionFilterModel } from 'src/app/shared/models';
 import { PrintingEditionService } from 'src/app/shared/services';
-import { CRUDOperations, PrintingEditionCurrency, PrintingEditionType } from 'src/app/shared/enums';
+import { PrintingEditionCurrency, PrintingEditionType } from 'src/app/shared/enums';
 import { Constants } from 'src/app/shared/constants/constants';
 
 import { ListComponent } from 'src/app/shared/components/base';
@@ -21,86 +21,24 @@ export class PrintingEditionManagerListComponent extends ListComponent<PrintingE
 
     constructor(
         printingEditionService: PrintingEditionService,
-        private dialog: MatDialog
+        dialog: MatDialog
     ) {
-        super(new PrintingEditionFilterModel(), printingEditionService);
+        super(new PrintingEditionFilterModel(), printingEditionService, dialog);
 
+        this.dialogType = PrintingEditionDialogComponent;
+        this.dialogWidth = '800px';
         this.displayedColumns = Constants.displayedColumns.printingEditions;
 
-        this.allTypes = Constants.enumsAttributes.printingEditionTypes;
-        this.types = [
-            PrintingEditionType.Books,
-            PrintingEditionType.Magazines,
-            PrintingEditionType.Newspapers
-        ];
+        this.allTypes = Constants.enumsKeys.printingEditionTypes;
+        this.types = Constants.enumsValues.printingEditionTypes;
 
         this.filterModel.types = this.types;
         this.filterModel.currency = PrintingEditionCurrency.USD;
 
-        console.log(PrintingEditionDialogComponent);
     }
 
-    public create(): void {
+    public createPrintingEdition(): void {
         const newPrintingEditionModel = new PrintingEditionModelItem();
-        const dialogRef = this.dialog.open(PrintingEditionDialogComponent, {
-            width: '800px',
-            data: {
-                type: CRUDOperations.Create,
-                model: newPrintingEditionModel
-            }
-        });
-
-        dialogRef.afterClosed()
-            .subscribe((resultModel: PrintingEditionModelItem) => {
-                if (resultModel) {
-                    this.dataService.create(resultModel)
-                        .subscribe(messageModel => {
-                            this.dataService.showDialogMessage(messageModel.errors.toString());
-                            this.applyFilters();
-                        });
-                }
-            });
-    }
-
-    public update(inputModel: PrintingEditionModelItem): void {
-        const dialogRef = this.dialog.open(PrintingEditionDialogComponent, {
-            width: '800px',
-            data: {
-                type: CRUDOperations.Update,
-                model: inputModel
-            }
-        });
-
-        dialogRef.afterClosed()
-            .subscribe((resultModel: PrintingEditionModelItem) => {
-                if (resultModel) {
-                    this.dataService.update(resultModel)
-                        .subscribe(messageModel => {
-                            this.dataService.showDialogMessage(messageModel.errors.toString());
-                            this.applyFilters();
-                        });
-                }
-            });
-    }
-
-    public delete(inputModel: PrintingEditionModelItem): void {
-        const dialogRef = this.dialog.open(PrintingEditionDialogComponent, {
-            width: '400px',
-            data: {
-                type: CRUDOperations.Delete,
-                model: inputModel
-            }
-        });
-
-        dialogRef.afterClosed()
-            .subscribe((resultModel: PrintingEditionModelItem) => {
-                if (resultModel) {
-                    this.dataService.delete(resultModel.id)
-                        .subscribe(messageModel => {
-                            this.dataService.showDialogMessage(messageModel.errors.toString());
-                            this.applyFilters();
-                        });
-                }
-            });
+        this.create(newPrintingEditionModel);
     }
 }
