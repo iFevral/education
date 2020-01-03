@@ -1,0 +1,72 @@
+<section class="container printing-edition-section">
+    <div class="sidebar-container">
+        <mat-card class="sidebar-item">
+            <h4>Search</h4>
+            <mat-form-field class="search-input-field">
+                <input autocomplete="off" matInput placeholder="Title or Author Name" [(ngModel)]="this.filterModel.searchQuery"
+                    (input)="applyFilters()">
+            </mat-form-field>
+        </mat-card>
+        <mat-card class="sidebar-item">
+            <div class="sidenav-filter-categories">
+                <h4>Categories</h4>
+                <div class="checkbox-wrap" *ngFor="let type of allTypes;let i = index">
+                    <mat-checkbox [checked]="true" color="primary" [checked]="type.isChecked"
+                        (change)="onCheckboxChecked($event, i+1);applyFilters()">
+                        {{type}}
+                    </mat-checkbox>
+                </div>
+            </div>
+        </mat-card>
+        <mat-card class="sidebar-item">
+            <div class="sidenav-filter-price">
+                <h4>Price</h4>
+                <mat-form-field class="price-form">
+                    <input matInput autocomplete="off" type="number" placeholder="Min value"
+                        [(ngModel)]="this.filterModel.minPrice" (input)="applyFilters()">
+                    <mat-icon matPrefix>{{allCurrenciesSymbols[this.filterModel.currency - 1]}}</mat-icon>
+                </mat-form-field>
+                <span></span>
+                <mat-form-field class="price-form">
+                    <input matInput autocomplete="off" type="number" placeholder="Max value"
+                        [(ngModel)]="this.filterModel.maxPrice" (input)="applyFilters()">
+                    <mat-icon matPrefix>{{allCurrenciesSymbols[this.filterModel.currency - 1]}}</mat-icon>
+                </mat-form-field>
+            </div>
+        </mat-card>
+    </div>
+    <div class="main-container">
+        <div class="container">
+            <div class="main-container-filters">
+                <div class="filter-card">
+                    <mat-form-field id="currency">
+                        <mat-select placeholder="Currency" [(ngModel)]="this.filterModel.currency"
+                            (selectionChange)="applyFilters()">
+                            <mat-option *ngFor="let currency of currencies" [value]="currency">
+                                {{allCurrencies[currency - 1]}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="filter-card">
+                    <mat-form-field id="sorting">
+                        <mat-select placeholder="Sort by" [(ngModel)]="this.filterModel.sortProperty"
+                            (selectionChange)="applyFilters()">
+                            <mat-option *ngFor="let prop of sortProperties" [value]="prop">
+                                {{allSortProperties[prop-1]}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-icon [ngClass]="{inverted: filterModel.IsAscending == true}"
+                        (click)="toggleDataOrder(); applyFilters()">sort</mat-icon>
+                </div>
+            </div>
+            <div class="cards-container">
+                <app-product-card class="app-card" *ngFor="let printingEdition of dataModel?.items"
+                    [printingEdition]="printingEdition"></app-product-card>
+            </div>
+            <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+                (page)="setAmountOfItems(); applyFilters($event)">
+            </mat-paginator>
+        </div>
+    </div>
+</section>

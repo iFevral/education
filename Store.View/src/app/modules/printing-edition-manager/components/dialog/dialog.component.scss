@@ -1,0 +1,30 @@
+h1,
+p {
+    text-align: center;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    width: 95%;
+}
+
+.mat-dialog-actions {
+    .mat-button {
+        &:first-child {
+            margin-left: 47%;
+            margin-right: 3%;
+        }
+        transform: translateX(-100%);
+    }
+}
+
+.img-container {
+    height: 50px;
+    
+    img {
+        width: 30%;
+        height: 100%;
+        object-fit: contain;
+    }
+}

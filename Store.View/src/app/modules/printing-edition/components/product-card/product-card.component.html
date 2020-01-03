@@ -1,0 +1,12 @@
+<mat-card class="product-card">
+    <div class="card-image" [routerLink]="['/Details/',printingEdition.id]">
+        <img [src]="printingEdition.image" [alt]="printingEdition.title">
+    </div>
+    <mat-card-content class="card-content">
+        <p id="title" class="card-prop" [routerLink]="['/Details/',printingEdition.id]">{{printingEdition.title}}</p>
+        <p id="authors" class="card-prop"><span class="author-name" *ngFor="let author of printingEdition.authors">{{author.name}}</span>
+        </p>
+        <p id="price" class="card-prop">{{printingEdition.price.toFixed(2)}}
+            {{allCurrenciesSymbols[printingEdition.currency - 1]}}</p>
+    </mat-card-content>
+</mat-card>

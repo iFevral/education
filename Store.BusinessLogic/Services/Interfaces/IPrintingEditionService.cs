@@ -1,14 +1,16 @@
-﻿using Store.BusinessLogic.Models.PrintingEditions;
+﻿using Store.BusinessLogic.Models.Base;
+using Store.BusinessLogic.Models.Filters;
+using Store.BusinessLogic.Models.PrintingEditions;
 using System.Threading.Tasks;
 
 namespace Store.BusinessLogic.Services.Interfaces
 {
     public interface IPrintingEditionService
     {
-        public PrintingEditionModel GetAll(PrintingEditionFilter peFilter, int startIndex, int quantity);
-        public Task<PrintingEditionModel> FindById(int id);
-        public Task<PrintingEditionModel> Create(PrintingEditionModelItem printingEditionItem);
-        public Task<PrintingEditionModel> Update(int id, PrintingEditionModelItem printingEditionItem);
-        public Task<PrintingEditionModel> Delete(int id);
+        public Task<PrintingEditionModel> GetAllAsync(PrintingEditionFilterModel peFilter);
+        public Task<PrintingEditionModelItem> FindByIdAsync(int id);
+        public Task<BaseModel> CreateAsync(PrintingEditionModelItem printingEditionItem);
+        public Task<BaseModel> UpdateAsync(PrintingEditionModelItem printingEditionItem);
+        public Task<BaseModel> DeleteAsync(int id);
     }
 }

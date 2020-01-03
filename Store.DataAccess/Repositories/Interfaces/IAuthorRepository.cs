@@ -1,13 +1,13 @@
 ﻿using Store.DataAccess.Entities;
+using Store.DataAccess.Models;
+using Store.DataAccess.Models.Filters;
 using Store.DataAccess.Repositories.Base;
+using System.Threading.Tasks;
 
 namespace Store.DataAccess.Repositories.Interfaces
 {
-    public interface IAuthorRepository : IGenericRepository<Authors>
+    public interface IAuthorRepository : IGenericRepository<Author>
     {
-        /// <summary>
-        /// Remove printing editions from AuthorInBooks
-        /// </summary>
-        public void RemovePrintingEditions(int authorId);
+        public Task<DataModel<Author>> GetAllAuthors(FilterModel<Author> filterModel);
     }
 }

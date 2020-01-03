@@ -1,14 +1,16 @@
 ﻿using Store.BusinessLogic.Models.Authors;
+using Store.BusinessLogic.Models.Base;
+using Store.BusinessLogic.Models.Filters;
 using System.Threading.Tasks;
 
 namespace Store.BusinessLogic.Services.Interfaces
 {
     public interface IAuthorService
     {
-        public AuthorModel GetAll(string authorNameFilter, int startIndex, int quantity);
-        public Task<AuthorModel> FindById(int id);
-        public Task<AuthorModel> Create(AuthorModelItem authorModelItem);
-        public Task<AuthorModel> Update(int id, AuthorModelItem authorModelItem);
-        public Task<AuthorModel> Delete(int id);
+        public Task<AuthorModel> GetAllAsync(AuthorFilterModel authorFilter);
+        public Task<AuthorModelItem> FindByIdAsync(int id);
+        public Task<BaseModel> CreateAsync(AuthorModelItem authorModelItem);
+        public Task<BaseModel> UpdateAsync(AuthorModelItem authorModelItem);
+        public Task<BaseModel> DeleteAsync(int id);
     }
 }

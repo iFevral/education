@@ -1,0 +1,80 @@
+@import "src/assets/styles/color-scheme.scss";
+
+.product-section {
+    padding-top: 100px;
+    padding-bottom: 50px;
+
+    .product-container {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap-reverse;
+        font-weight: 300;
+        font-size: 0.875rem;
+        line-height: 1.5;
+
+        .product-image {
+            flex: 1 1 20%;
+            padding: 20px 25px;
+            img {
+                object-fit: contain;
+                width: 100%;
+            }
+        }
+
+        .product-info {
+            p {
+                margin-bottom: 10px;
+            }
+            .author-name:not(:last-of-type)::after {
+                content: ", ";
+            }
+            
+            .cart {
+                .mat-form-field {
+                    width: 70px;
+                }
+            }
+        }
+    }
+}
+
+.font-medium {
+    font-weight: 500 !important;
+}
+
+.font-color {
+    color: $primary;
+}
+
+.mat-icon {
+    vertical-align: middle;
+    font-size: 1.25rem;
+}
+
+.link {
+    cursor: pointer;
+    transition: 0.2s;
+    &:hover {
+        color: $primary;
+    }
+}
+
+@media only screen and (min-width: 769px) {
+    .product-image {
+        flex: 1 1 20%;
+    }
+
+    .product-info {
+        flex: 1 1 50%;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .product-image {
+        flex: 1 1 100%;
+    }
+
+    .product-info {
+        flex: 1 1 100%;
+    }
+}

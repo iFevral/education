@@ -1,131 +1,117 @@
-﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using Store.DataAccess.Entities;
-using Store.DataAccess.AppContext;
-using Store.DataAccess.Repositories.Interfaces;
-using Store.DataAccess.Repositories.EFRepository;
+﻿using System.Threading.Tasks;
+using Store.BusinessLogic.Common.Constants;
+using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Authors;
+using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.BusinessLogic.Models.PrintingEditions;
-using System.Threading.Tasks;
+using Store.BusinessLogic.Common.Mappers.Author;
+using Store.DataAccess.Entities;
+using Store.DataAccess.Repositories.Interfaces;
+using Store.BusinessLogic.Common.Mappers.Filter;
 
 namespace Store.BusinessLogic
 {
     public class AuthorService : IAuthorService
     {
-        private IMapper _mapper;
-        private IAuthorRepository _authorRepository;
+        private readonly IAuthorRepository _authorRepository;
 
-        public AuthorService(ApplicationContext db,
-                                IMapper mapper)
+        public AuthorService(IAuthorRepository authorRepository)
         {
-            _authorRepository = new AuthorRepository(db);
-            _mapper = mapper;
+            _authorRepository = authorRepository;
         }
 
-        public AuthorModel GetAll(string authorNameFilter, int startIndex = -1, int quantity = -1)
+        public async Task<AuthorModel> GetAllAsync(AuthorFilterModel authorFilterModel)
         {
             var authorModel = new AuthorModel();
-            IList<Authors> authors;
+            var filterModel = authorFilterModel.MapToEFFilterModel();
+
+            var listOfAuthors = await _authorRepository.GetAllAuthors(filterModel);
+
+            if (listOfAuthors.Items == null)
+            {
+                authorModel.Errors.Add(Constants.Errors.NotFoundAuthorsError);
+                return authorModel;
+            }
+
+            authorModel.Counter = listOfAuthors.Counter;
+            foreach (var author in listOfAuthors.Items)
+            {
+                var authorModelItem = new AuthorModelItem();
+                authorModel.Items.Add(author.MapToModel());
+            }
+
+            return authorModel;
+        }
+
+        public async Task<AuthorModelItem> FindByIdAsync(int id)
+        {
+            var authorModel = new AuthorModelItem();
+            var author = await _authorRepository.FindByIdAsync(id);
+            if (author == null)
+            {
+                authorModel.Errors.Add(Constants.Errors.NotFoundAuthorError);
+                return authorModel;
+            }
+
+            authorModel = author.MapToModel();
+            return authorModel;
+        } 
+
+        public async Task<BaseModel> CreateAsync(AuthorModelItem authorModel)
+        {
+            var author = new Author();
+            author = authorModel.MapToEntity(author);
             
-            Func<Authors, bool> predicate = (a => (authorNameFilter == null || a.Name.Contains(authorNameFilter)));
-            if (startIndex != -1 && quantity != -1)
-                authors = _authorRepository.Get(predicate, startIndex, quantity);
-            else
-                authors = _authorRepository.GetAll(predicate);
+            var authorId = await _authorRepository.CreateAsync(author);
 
-            if (authors.Count == 0)
+            if(authorId == 0)
             {
-                authorModel.Errors.Add($"Author not found");
-                return authorModel;
-            }
-
-            foreach (var author in authors)
-            {
-                var a = _mapper.Map<AuthorModelItem>(author);
-                foreach (var printingEdition in author.AuthorInBooks)
-                {
-                    var pe = _mapper.Map<PrintingEditionModelItem>(printingEdition.PrintingEdition);
-                    a.PrintingEditions.Add(pe);
-                }
-
-                authorModel.Authors.Add(a);
+                authorModel.Errors.Add(Constants.Errors.CreateAuthorError);
             }
 
             return authorModel;
         }
 
-        public async Task<AuthorModel> FindById(int id)
+        public async Task<BaseModel> UpdateAsync(AuthorModelItem authorModel)
         {
-            var authorModel = new AuthorModel();
-            var author = await _authorRepository.FindByIdAsync(id);
+            var author = await _authorRepository.FindByIdAsync(authorModel.Id);
             if (author == null)
             {
-                authorModel.Errors.Add("Author not found");
+                authorModel.Errors.Add(Constants.Errors.NotFoundAuthorError);
                 return authorModel;
             }
 
-            var a = _mapper.Map<AuthorModelItem>(author);
-            foreach (var printingEdition in author.AuthorInBooks)
+            author = authorModel.MapToEntity(author);
+            var result = await _authorRepository.UpdateAsync(author);
+            
+            if (!result)
             {
-                var pe = _mapper.Map<PrintingEditionModelItem>(printingEdition.PrintingEdition);
-                a.PrintingEditions.Add(pe);
+                authorModel.Errors.Add(Constants.Errors.UpdateAuthorError);
             }
 
-            authorModel.Authors.Add(a);
-
             return authorModel;
         }
 
-        public async Task<AuthorModel> Create(AuthorModelItem authorItem)
+        public async Task<BaseModel> DeleteAsync(int id)
         {
-            var authorModel = new AuthorModel();
-            var author = _mapper.Map<Authors>(authorItem);
+            var authorModel = new AuthorModelItem();
 
-            author.AuthorInBooks = new List<AuthorInBooks>();
-            foreach (var printingEdition in authorItem.PrintingEditions)
-                author.AuthorInBooks.Add(new AuthorInBooks { PrintingEditionId = printingEdition.Id });
-
-            await _authorRepository.CreateAsync(author);
-            return authorModel;
-        }
-
-        public async Task<AuthorModel> Update(int id, AuthorModelItem authorItem)
-        {
-            var authorModel = new AuthorModel();
             var author = await _authorRepository.FindByIdAsync(id);
+
             if (author == null)
             {
-                authorModel.Errors.Add("Author not found");
+                authorModel.Errors.Add(Constants.Errors.NotFoundAuthorError);
                 return authorModel;
             }
 
-            _mapper.Map<AuthorModelItem, Authors>(authorItem, author);
-            _authorRepository.RemovePrintingEditions(author.Id);
+            author.isRemoved = true;
 
-            foreach (var printingEditionItem in authorItem.PrintingEditions)
+            var result = await _authorRepository.UpdateAsync(author);
+
+            if (!result)
             {
-                if (author.AuthorInBooks == null)
-                    author.AuthorInBooks = new List<AuthorInBooks>();
-
-                author.AuthorInBooks.Add(new AuthorInBooks { PrintingEditionId = printingEditionItem.Id });
+                authorModel.Errors.Add(Constants.Errors.DeleteAuthorError);
             }
-            await _authorRepository.UpdateAsync(author);
-            return authorModel;
-        }
-
-        public async Task<AuthorModel> Delete(int id)
-        {
-            var authorModel = new AuthorModel();
-            var author = await _authorRepository.FindByIdAsync(id);
-            if (author == null)
-            {
-                authorModel.Errors.Add("Author not found");
-                return authorModel;
-            }
-
-            await _authorRepository.RemoveAsync(author);
 
             return authorModel;
         }

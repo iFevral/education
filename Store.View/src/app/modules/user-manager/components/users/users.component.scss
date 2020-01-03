@@ -1,0 +1,82 @@
+.user-section {
+    padding: 50px 100px 0 50px;
+    h1 {
+        display: inline-block;
+    }
+
+    .btn-add {
+        position: relative;
+        right: 0;
+        display: inline-block;
+    }
+
+    .table-container {
+        width: 100%;
+        max-height: 60vh;
+        overflow: auto;
+
+        .mat-table-sticky:first-child {
+            border-right: 2px solid #e0e0e0;
+        }
+
+        .mat-table-sticky:last-child {
+            border-left: 2px solid #e0e0e0;
+        }
+
+        table {
+            width: 100%;
+
+            th {
+                padding-right: 24px;
+                padding-left: 24px;
+                .mat-form-field {
+                    top: 4px;
+                    color: rgba(0, 0, 0, 0.54);
+                    font-weight: 500;
+                    width: 80px;
+                }
+            }
+
+            tr {
+                td {
+                    padding-right: 24px;
+                    padding-left: 24px;
+                }
+                #userName {
+                    width: 30%;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+
+                #email {
+                    width: 30%;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+
+                #status {
+                    width: 20%;
+                }
+
+                #control {
+                    width: 20%;
+                }
+            }
+
+            .mat-row {
+                &:hover {
+                    background: #eee;
+                }
+            }
+        }
+    }
+
+    .mat-paginator {
+        position: relative;
+        z-index: 2;
+    }
+}

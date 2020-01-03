@@ -1,0 +1,49 @@
+@import "src/assets/styles/color-scheme";
+@import "~@angular/material/theming";
+
+
+$primary-scheme: mat-palette($mat-myapp-primary);
+$accent-scheme: mat-palette($mat-myapp-accent);
+
+$theme: mat-light-theme($primary-scheme, $accent-scheme);
+
+@include angular-material-theme($theme);
+
+html,
+body {
+    height: 100%;
+    background: $body-color;
+    padding: 0;
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif !important;
+    position: relative;
+}
+
+*:focus {
+    outline: 0 !important;
+}
+
+
+header {
+    z-index: 2;
+}
+
+section {
+    z-index: 1;
+}
+
+.mat-snack-bar-container {
+    background: $white;
+    font-weight: 500;
+    color: $primary;
+}
+
+.mat-simple-snackbar-action {
+    color: $primary;
+}
+
+.mat-button {
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+}

@@ -13,8 +13,4 @@
     <PackageReference Include="MailKit" Version="2.4.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Enums\" />
-  </ItemGroup>
-
 </Project>

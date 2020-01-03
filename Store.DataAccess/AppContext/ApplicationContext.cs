@@ -2,92 +2,71 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.Entities;
+using Store.DataAccess.Entities.Enums;
 
 namespace Store.DataAccess.AppContext
 {
-    public partial class ApplicationContext : IdentityDbContext<Users,
-                                                                Roles,
-                                                                string,
-                                                                IdentityUserClaim<string>,
-                                                                UserInRoles,
-                                                                IdentityUserLogin<string>,
-                                                                IdentityRoleClaim<string>,
-                                                                IdentityUserToken<string>>
+    public class ApplicationContext : IdentityDbContext<User, IdentityRole<long>, long>
+
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
         }
 
-        public virtual DbSet<AuthorInBooks> AuthorInBooks { get; set; }
-        public virtual DbSet<Authors> Authors { get; set; }
-        public virtual DbSet<OrderItems> OrderItems { get; set; }
-        public virtual DbSet<Orders> Orders { get; set; }
-        public virtual DbSet<Payments> Payments { get; set; }
-        public virtual DbSet<PrintingEditions> PrintingEditions { get; set; }
-        public override DbSet<Roles> Roles { get; set; }
-        public virtual DbSet<UserInRoles> UserInRoles { get; set; }
-        public override DbSet<Users> Users { get; set; }
-        public virtual DbSet<Sessions> Sessions { get; set; }
+        public virtual DbSet<AuthorInPrintingEdition> AuthorInPrintingEditions { get; set; }
+        public virtual DbSet<Author> Authors { get; set; }
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
+        public virtual DbSet<PrintingEdition> PrintingEditions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AuthorInBooks>(entity =>
+            modelBuilder.Entity<AuthorInPrintingEdition>(entity =>
             {
                 entity.HasKey(e => new { e.AuthorId, e.PrintingEditionId });
 
                 entity.HasIndex(e => e.AuthorId);
                 entity.HasOne(x => x.Author)
-                      .WithMany(x => x.AuthorInBooks)
+                      .WithMany(x => x.AuthorInPrintingEdition)
                       .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasIndex(e => e.PrintingEditionId);
                 entity.HasOne(x => x.PrintingEdition)
-                      .WithMany(x => x.AuthorInBooks)
+                      .WithMany(x => x.AuthorInPrintingEditions)
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<OrderItems>(entity =>
-            {
-                entity.HasIndex(e => e.OrderId);
-
-                entity.HasIndex(e => e.PrintingEditionId);
-            });
-
-            modelBuilder.Entity<Orders>(entity =>
+            modelBuilder.Entity<Order>(entity =>
             {
                 entity.HasIndex(e => e.PaymentId);
                 entity.HasOne(x => x.User)
                       .WithMany(x => x.Orders)
                       .OnDelete(DeleteBehavior.Cascade);
+
+                entity.Property(e => e.Status)
+                    .HasConversion(x => (int)x, x => (Enums.Order.OrderStatus)x);
             });
 
-            modelBuilder.Entity<Sessions>(entity =>
+            modelBuilder.Entity<PrintingEdition>(entity =>
             {
-                entity.HasOne(x => x.User)
-                      .WithMany(x => x.Sessions)
-                      .OnDelete(DeleteBehavior.Cascade);
+                entity.Property(e => e.Currency)
+                    .HasConversion(x => (int)x, x => (Enums.PrintingEditions.Currency)x);
+
+                entity.Property(e => e.Type)
+                    .HasConversion(x => (int)x, x => (Enums.PrintingEditions.PrintingEditionType)x);
             });
 
-            modelBuilder.Entity<Roles>(entity =>
-            {
-                entity.HasIndex(e => e.NormalizedName)
-                    .HasName("RoleNameIndex")
-                    .IsUnique()
-                    .HasFilter("([NormalizedName] IS NOT NULL)");
-            });
+            modelBuilder.Entity<OrderItem>(entity =>
+        {
+            entity.HasIndex(e => e.OrderId);
 
-            modelBuilder.Entity<UserInRoles>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.RoleId });
+            entity.HasIndex(e => e.PrintingEditionId);
+        });
 
-                entity.HasIndex(e => e.RoleId);
-                entity.HasOne(x => x.User)
-                      .WithMany(x => x.UserInRoles)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            modelBuilder.Entity<Users>(entity =>
+            modelBuilder.Entity<User>(entity =>
             {
                 entity.HasIndex(e => e.NormalizedEmail)
                     .HasName("EmailIndex");
@@ -96,13 +75,22 @@ namespace Store.DataAccess.AppContext
                     .HasName("UserNameIndex")
                     .IsUnique()
                     .HasFilter("([NormalizedUserName] IS NOT NULL)");
-                
             });
 
-            modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();
-            modelBuilder.Entity<IdentityUserClaim<string>>().HasNoKey();
-            modelBuilder.Entity<IdentityRoleClaim<string>>().HasNoKey();
-            modelBuilder.Entity<IdentityUserToken<string>>().HasNoKey();
+            modelBuilder.Entity<IdentityRole<long>>(entity =>
+            {
+                entity.HasKey(e => e.Id );
+            });
+
+            modelBuilder.Entity<IdentityUserRole<long>>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.RoleId });
+            });
+
+            modelBuilder.Entity<IdentityUserLogin<long>>().HasNoKey();
+            modelBuilder.Entity<IdentityUserClaim<long>>().HasNoKey();
+            modelBuilder.Entity<IdentityRoleClaim<long>>().HasNoKey();
+            modelBuilder.Entity<IdentityUserToken<long>>().HasNoKey();
         }
     }
 }

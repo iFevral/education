@@ -1,100 +1,61 @@
 ﻿using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Store.BusinessLogic.Common.Constants;
+using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Models.Orders;
-using Store.BusinessLogic.Services;
+using Store.BusinessLogic.Models.Payments;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.DataAccess.AppContext;
+using Store.DataAccess.Entities.Enums;
+using Store.Presentation.Helpers.Interface;
 
 namespace Store.Presentation.Controllers
 {
-    [Route("api/[controller]")]
-    [Authorize]
+    [Route("[controller]s")]
+    [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private IOrderService _orderService;
+        private readonly IOrderService _orderService;
+        private readonly IJwtHelper _jwtHelper;
 
-        public OrderController(ApplicationContext db,
-                                IMapper mapper)
+        public OrderController(IOrderService orderService,
+                               IJwtHelper jwtHelper)
         {
-            _orderService = new OrderService(db, mapper);
+            _orderService = orderService;
+            _jwtHelper = jwtHelper;
         }
 
-        [Route("~/[controller]")]
-        [HttpGet]
-        public async Task<IActionResult> GetAll(string username, int startIndex, int quantity)
-        { 
-            OrderFilter orderFilter = new OrderFilter
+        [Authorize(Roles = Constants.RoleNames.Admin + "," + Constants.RoleNames.Client)]
+        [HttpPost]
+        public async Task<IActionResult> GetAll([FromHeader]string authorization, [FromBody]OrderFilterModel orderFilter)
+        {            
+            string userRole = _jwtHelper.GetUserRoleFromToken(authorization);
+            if (userRole.Equals(Enums.Role.RoleName.Client.ToString()))
             {
-                Username = username
-            };
+                orderFilter.UserId = _jwtHelper.GetUserIdFromToken(authorization);
+            }
 
-            var orderModel = await _orderService.GetAll(orderFilter, startIndex, quantity);
-            if (orderModel.Errors.Count > 0)
-                return NotFound(orderModel.Errors);
-
-            return Ok(orderModel.Orders);
+            var orderModel = await _orderService.GetAllAsync(orderFilter);
+            return Ok(orderModel);
         }
 
-        [Route("~/[controller]/Find/{id}")]
-        [HttpGet]
-        public async Task<IActionResult> FindBy(int id, string username)
-        {
-            var orderModel = _orderService.FindById(id, username);
-            if (orderModel.Errors.Count > 0)
-                return NotFound(orderModel.Errors);
-
-            return Ok(orderModel.Orders);
-        }
-
-        [Route("~/[controller]/{id}")]
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public async Task<IActionResult> FindById(int id)
-        {
-            var orderModel = await _orderService.FindById(id);
-            if (orderModel.Errors.Count > 0)
-                return NotFound(orderModel.Errors);
-
-            return Ok(orderModel.Orders);
-        }
-
-        [Route("~/[controller]/Create")]
-        [Authorize(Roles = "Admin")]
         [HttpPut]
-        public async Task<IActionResult> CreateOrder([FromBody]OrderInputData orderItem)
+        public async Task<IActionResult> Create([FromHeader]string authorization, [FromBody]OrderModelItem orderModelItem)
         {
-            var orderModel = await _orderService.Create(orderItem);
-            if (orderModel.Errors.Count > 0)
-                return NotFound(orderModel.Errors);
+            orderModelItem.User.Id = _jwtHelper.GetUserIdFromToken(authorization);
+            var orderModel = await _orderService.CreateAsync(orderModelItem);
 
-            return Ok(orderModel.Orders);
+            return Ok(orderModel);
         }
 
-        [Route("~/[controller]/Update/{id}")]
-        [Authorize(Roles = "Admin")]
-        [HttpPut]
-        public async Task<IActionResult> UpdateOrder(int id, [FromBody]OrderInputData orderItem)
+
+        [HttpPatch]
+        public async Task<IActionResult> Update([FromBody]PaymentModelItem paymentModelItem)
         {
-            var orderModel = await _orderService.Update(id, orderItem);
-            if (orderModel.Errors.Count > 0)
-                return NotFound(orderModel.Errors);
+            var orderModel = await _orderService.UpdateAsync(paymentModelItem);
 
-            return Ok(orderModel.Orders);
-        }
-
-        [Route("~/[controller]/Delete/{id}")]
-        [Authorize(Roles = "Admin")]
-        [HttpDelete]
-        public async Task<IActionResult> DeleteOrder(int id)
-        {
-            var orderModel = await _orderService.Delete(id);
-            if (orderModel.Errors.Count > 0)
-                return NotFound(orderModel.Errors);
-
-            return Ok(orderModel.Orders);
+            return Ok(orderModel);
         }
     }
 }

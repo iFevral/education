@@ -1,0 +1,60 @@
+@import "src/assets/styles/color-scheme.scss";
+
+header {
+    background-color: $white;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0px 16px;
+    z-index: 2;
+}
+
+.nav-button {
+    margin-right: 5px;
+    padding: 14px;
+    border-radius: 0;
+}
+
+.wrap {
+    width: 100%;
+    position: relative;
+
+    img {
+        width: 50px;
+    }
+}
+
+.nav-btns-auth {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.btn-sign-up,
+.btn-sign-out {
+    margin-right: 0;
+}
+
+.mat-button--active {
+    background-color: $primary;
+    color: $white;
+
+    &:hover {
+        background-color: $primary-active;
+    }
+}
+
+.navigation-menu-dropdown {
+    .avatar {
+        width: 40px;
+        min-width: 40px;
+        height: 40px;
+        line-height: 40px;
+        margin: 0 8px 0 0;
+        border-radius: 50%;
+        font-size: 17px;
+        font-weight: 600;
+        text-align: center;
+        object-fit: cover;
+    }
+}

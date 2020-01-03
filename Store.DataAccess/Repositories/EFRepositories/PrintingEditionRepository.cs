@@ -1,52 +1,27 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Store.DataAccess.Entities;
+﻿using Store.DataAccess.Entities;
 using Store.DataAccess.AppContext;
 using Store.DataAccess.Repositories.Base;
 using Store.DataAccess.Repositories.Interfaces;
+using Store.DataAccess.Models.Filters;
+using System.Threading.Tasks;
+using Store.DataAccess.Models;
 
 namespace Store.DataAccess.Repositories.EFRepository
 {
-    public class PrintingEditionRepository : EFBaseRepository<PrintingEditions>, IPrintingEditionRepository
+    public class PrintingEditionRepository : EFBaseRepository<PrintingEdition>, IPrintingEditionRepository
     {
-        public PrintingEditionRepository(ApplicationContext db) : base(db)
+        public PrintingEditionRepository(ApplicationContext dbContext) : base(dbContext)
         {
-            _db = db;
         }
 
-        public override IList<PrintingEditions> GetAll(Func<PrintingEditions,bool> predicate)
+        public async Task<DataModel<PrintingEdition>> GetAllPrintingEditions(PrintingEditionFilterModel filterModel)
         {
-            return _db.PrintingEditions.Where(predicate).ToList();
-        }
+            var list = new DataModel<PrintingEdition>();
 
-        public override async Task<IList<PrintingEditions>> GetAllAsync()
-        {
-            return await _db.PrintingEditions.ToListAsync();
-        }
+            list.Items = GetAll(filterModel, out int counter);
+            list.Counter = counter;
 
-        public override IList<PrintingEditions> Get(Func<PrintingEditions, bool> predicate, int startIndex, int quantity)
-        {
-            return _db.PrintingEditions.Where(predicate)
-                                       .Skip(startIndex)
-                                       .Take(quantity)
-                                       .ToList();
+            return list;
         }
-
-        public override async Task<IList<PrintingEditions>> GetAsync(int startIndex, int quantity)
-        {
-            return await _db.PrintingEditions.Skip(startIndex)
-                                             .Take(quantity)
-                                             .ToListAsync();
-        }
-
-        public void RemoveAuthors(int printingEditionId)
-        {
-            _db.RemoveRange(_db.AuthorInBooks.Where(aib => aib.PrintingEditionId == printingEditionId));
-            _db.SaveChanges();
-        }
-
     }
 }

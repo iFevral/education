@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Users;
 
 namespace Store.BusinessLogic.Services.Interfaces
@@ -9,61 +10,34 @@ namespace Store.BusinessLogic.Services.Interfaces
         /// Get user by id
         /// </summary>
         /// <returns>User model item</returns>
-        public Task<UserModel> GetUserById(string id);
-
-        /// <summary>
-        /// Get user by username
-        /// </summary>
-        /// <returns>User model item</returns>
-        public Task<UserModel> GetUserByName(string username);
+        public Task<UserModelItem> GetUserByIdAsync(long id);
 
         /// <summary>
         /// Check user login and password and get user data
         /// </summary>
         /// <returns>User model item</returns>
-        public Task<UserModel> SignIn(SignInData loginData);
+        public Task<UserModelItem> SignInAsync(SignInModel signInModel);
 
         /// <summary>
         /// Create new user and generate token for registration
         /// </summary>
         /// <returns>Email token for registration</returns>
-        public Task<UserModel> SignUp(SignUpData userData);
+        public Task<EmailConfirmationModel> SignUpAsync(SignUpModel signUpModel);
 
-        /// <summary>
-        /// Delete refresh token
-        /// </summary>
-        public Task SignOut(string username, string ipfingerprint);
         /// <summary>
         /// Confirm email
         /// </summary>
-        public Task<UserModel> ConfirmEmail(string username, string token);
-
-        /// <summary>
-        /// Check if user is blocked
-        /// </summary>
-        /// <returns>True if user is blocked</returns>
-        public Task<bool> IsAccountLocked(string username);
-
-        /// <summary>
-        /// Check user from repository and create token for password reset
-        /// </summary>
-        /// <returns>Token for password reset</returns>
-        public Task<UserModel> ResetPassword(string username);
+        public Task<BaseModel> ConfirmEmailAsync(EmailConfirmationModel emailConfirmationModel);
 
         /// <summary>
         /// Set new password 
         /// </summary>
-        public Task ConfirmNewPassword(string email, string token, string newPassword);
+        public Task<ResetPasswordModel> ResetPasswordAsync(string email);
 
         /// <summary>
-        /// Check if token correct and remove from database
+        /// Edit profile
         /// </summary>
-        /// <returns>True if token correct</returns>
-        public Task<bool> CheckAndRemoveRefreshToken(string username, string ipfingerprint, string token);
-
-        /// <summary>
-        /// Save refresh token in database
-        /// </summary>
-        public Task SaveRefreshToken(string username, string ipfingerprint, string newToken);
+        /// <returns></returns>
+        public Task<BaseModel> UpdateProfile(SignUpModel signUpModel);
     }
 }

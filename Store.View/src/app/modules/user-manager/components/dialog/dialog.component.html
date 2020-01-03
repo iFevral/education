@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>{{title}}</h1>
+<div mat-dialog-content *ngIf="isFormVisible">
+    <mat-form-field>
+        <input placeholder="First name" matInput [(ngModel)]="data.model.firstName">
+    </mat-form-field>
+    <mat-form-field>
+        <input placeholder="Last name" matInput [(ngModel)]="data.model.lastName">
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button color="primary" [mat-dialog-close]="data.model" cdkFocusInitial
+        [disabled]="data.model.password !== passwordConfirmation">Ok</button>
+    <button mat-button (click)="onCancelClick()">Cancel</button>
+</div>

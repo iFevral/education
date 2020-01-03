@@ -1,208 +1,211 @@
-﻿using AutoMapper;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Threading.Tasks;
+using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Users;
-using Store.DataAccess.AppContext;
-using Store.DataAccess.Entities;
-using Store.DataAccess.Repositories.Interfaces;
-using Store.DataAccess.Repositories.EFRepository;
+using Store.BusinessLogic.Common.Constants;
 using Store.BusinessLogic.Services.Interfaces;
+using Store.BusinessLogic.Common.Mappers.User;
+using Store.BusinessLogic.Common.Mappers.User.SignUp;
+using Store.DataAccess.Entities.Enums;
+using Store.DataAccess.Repositories.Interfaces;
+using System.Linq;
+using System;
+using Store.BusinessLogic.Helpers.Interface;
 
 namespace Store.BusinessLogic.Services
 {
     public class AccountService : IAccountService
     {
-        private IMapper _mapper;
-        private UserManager<Users> _userManager;
-        private SignInManager<Users> _signInManager;
-        private IUserRepository _userRepository;
-        public AccountService(ApplicationContext db,
-                              UserManager<Users> userManager,
-                              SignInManager<Users> signInManager,
-                              IMapper mapper)
+        private readonly IUserRepository _userRepository;
+        private readonly IPasswordGeneratorHelper _passwordGenerator;
+        public AccountService(IUserRepository userRepository,
+                              IPasswordGeneratorHelper passwordGenerator)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _mapper = mapper;
-            _userRepository = new UserRepository(db);
+            _userRepository = userRepository;
+            _passwordGenerator = passwordGenerator;
         }
 
-
-        public async Task<UserModel> GetUserById(string id)
+        public async Task<UserModelItem> GetUserByIdAsync(long id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            var userModel = new UserModel();
-            
-            if (user == null)
-            {
-                userModel.Errors.Add("User is not found");
-                return userModel;
-            }
-            var userItem = _mapper.Map<UserModelItem>(user);
-            userItem.Roles = await _userManager.GetRolesAsync(user);
+            var user = await _userRepository.FindByIdAsync(id);
 
-            if (userItem.Roles == null)
-            {
-                userModel.Errors.Add("User is not in any role");
-                return userModel;
-            }
-
-            userModel.Users.Add(userItem);
-            return userModel;
-        }
-
-        public async Task<UserModel> GetUserByName(string username)
-        {
-            var user = await _userManager.FindByNameAsync(username);
-            var userModel = new UserModel();
+            var userModel = new UserModelItem();
 
             if (user == null)
             {
-                userModel.Errors.Add("User is not found");
+                userModel.Errors.Add(Constants.Errors.UserNotExistsError);
                 return userModel;
             }
-            var userItem = _mapper.Map<UserModelItem>(user);
-            userItem.Roles = await _userManager.GetRolesAsync(user);
 
-            if (userItem.Roles == null)
+            if (user.LockoutEnabled)
             {
-                userModel.Errors.Add("User is not in any role");
+                userModel.Errors.Add(Constants.Errors.UserLockError);
                 return userModel;
             }
 
-            userModel.Users.Add(userItem);
-            return userModel;
-        }
+            userModel = user.MapToModel();
+            userModel.Role = await _userRepository.GetUserRolesAsync(user.Id);
 
-        public async Task<UserModel> SignIn(SignInData loginData)
-        {
-            var userModel = new UserModel();
-            //If user created it will get user info or will return empty UserModelItem
-            var result = await _signInManager.PasswordSignInAsync(loginData.Username, loginData.Password, false, false);
-            if(!result.Succeeded)
+            if (userModel.Role == null)
             {
-                userModel.Errors.Add("Username or password is incorrect. Please check data.");
-                return userModel;
+                userModel.Errors.Add(Constants.Errors.UserNotInAnyRoleError);
             }
-
-            userModel = await GetUserByName(loginData.Username);
-            return userModel;
-        }
-
-        public async Task<UserModel> SignUp(SignUpData signUpData)
-        {
-            var userModel = new UserModel();
-            
-            //Check if user exists
-            if(await _userManager.FindByNameAsync(signUpData.Username) != null)
-            {
-                userModel.Errors.Add("Email is already registered");
-                return userModel;
-            }
-
-            //Create user 
-            var result = await _userManager.CreateAsync(_mapper.Map<Users>(signUpData), signUpData.Password);
-            if(!result.Succeeded)
-            {
-                userModel.Errors.Add("Creating user error");
-                return userModel;
-            }
-
-            //Find user
-            var user = await _userManager.FindByNameAsync(signUpData.Username);
-
-            //Add user to role
-            result = await _userManager.AddToRoleAsync(user, "Client");
-            if(!result.Succeeded)
-            {
-                userModel.Errors.Add($"Role 'Client' doesn`t exists");
-                return userModel;
-            }
-            //Unblock
-            result = await _userManager.SetLockoutEnabledAsync(user, false);
-            if (!result.Succeeded)
-            {
-                userModel.Errors.Add($"Unlock has failed");
-                return userModel;
-            }
-
-            //Generate token for registration from repository
-            userModel.EmailData.Token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            userModel.EmailData.Email = signUpData.Email;
 
             return userModel;
         }
 
-        public async Task SignOut(string username, string ipfingerprint)
+        public async Task<UserModelItem> SignInAsync(SignInModel signInModel)
         {
-            var user = await _userManager.FindByNameAsync(username);
-            await _userRepository.RemoveRefreshToken(user, ipfingerprint);
-        }
+            var user = await _userRepository.FindByEmailAsync(signInModel.Email);
 
-        public async Task<UserModel> ConfirmEmail(string username, string token)
-        {
-            var userModel = new UserModel();
-            var user = await _userManager.FindByNameAsync(username);
-            if (user == null)
-            {
-                userModel.Errors.Add($"User not found");
-                return userModel;
-            }
+            var userModel = new UserModelItem();
 
-            //Check received token for email confirmation
-            var result = await _userManager.ConfirmEmailAsync(user, token);
-            if (!result.Succeeded)
-                userModel.Errors.Add($"Email confirmation error");
-           
-            return userModel;
-        }
-
-        public async Task<bool> IsAccountLocked(string username)
-        {
-            return await _userManager.GetLockoutEnabledAsync(await _userManager.FindByNameAsync(username));
-        }
-
-        public async Task<UserModel> ResetPassword(string email)
-        {
-            //Map from Users to UserModelItem
-            var user = await _userManager.FindByEmailAsync(email);
-            var userModel = new UserModel();
-            
             if(user == null)
             {
-                userModel.Errors.Add("User is not found");
+                userModel.Errors.Add(Constants.Errors.UserNotExistsError);
                 return userModel;
             }
 
-            userModel.ResetPasswordData.Token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            userModel.ResetPasswordData.Email = email;
+            if (!user.EmailConfirmed)
+            {
+                userModel.Errors.Add(Constants.Errors.EmailConfirmationError);
+                return userModel;
+            }
+
+
+            if (user.LockoutEnabled && user.isRemoved)
+            {
+                userModel.Errors.Add(Constants.Errors.UserLockError);
+                return userModel;
+            }
+
+            userModel = user.MapToModel();
+
+            userModel.Role = await _userRepository.GetUserRolesAsync(user.Id);
+            
+            var result = await _userRepository.CheckSignInAsync(signInModel.Email, signInModel.Password);
+            if(!result)
+            {
+                userModel.Errors.Add(Constants.Errors.WrongCredentialsError);
+            }
 
             return userModel;
         }
 
-        public async Task ConfirmNewPassword(string email, string token, string newPassword)
+        public async Task<EmailConfirmationModel> SignUpAsync(SignUpModel signUpModel)
         {
-            //Map from Users to UserModelItem
-            var user = await _userManager.FindByEmailAsync(email);
+            var resultModel = new EmailConfirmationModel();
+
+            var user = await _userRepository.FindByEmailAsync(signUpModel.Email);
+
+            if (user != null)
+            {
+                resultModel.Errors.Add(Constants.Errors.EmailExistsError);
+                return resultModel;
+            }
+
+
+            var result = await _userRepository.CreateAsync(signUpModel.MapToEntity(), signUpModel.Password);
+            if(!result)
+            {
+                resultModel.Errors.Add(Constants.Errors.CreateUserError);
+                return resultModel;
+            }
+
+            user = await _userRepository.FindByEmailAsync(signUpModel.Email);
+            if (user == null)
+            {
+                resultModel.Errors.Add(Constants.Errors.CreateUserError);
+                return resultModel;
+            }
+
+            result = await _userRepository.AddToRoleAsync(user.Id, Enums.Role.RoleName.Client.ToString()); 
+            if(!result)
+            {
+                resultModel.Errors.Add(Constants.Errors.CreateUserError);
+                return resultModel;
+            }
+
+            resultModel.Email = signUpModel.Email;
+            resultModel.Token = await _userRepository.GenerateEmailConfirmationTokenAsync(user.Email);
+
+            return resultModel;
+        }
+
+        public async Task<BaseModel> ConfirmEmailAsync(EmailConfirmationModel model)
+        {
+            var emailConfirmationModel = new EmailConfirmationModel();
+
+            var user = await _userRepository.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                emailConfirmationModel.Errors.Add(Constants.Errors.UsersNotExistError);
+                return emailConfirmationModel;
+            }
+
+            var result = await _userRepository.ConfirmEmailAsync(model.Email, model.Token);
+            if (!result)
+            {
+                emailConfirmationModel.Errors.Add(Constants.Errors.EmailConfirmationError);
+            }
+
+            result = await _userRepository.UnlockAsync(user.Email);
+            if (!result)
+            {
+                emailConfirmationModel.Errors.Add(Constants.Errors.UserLockError);
+                return emailConfirmationModel;
+            }
+
+            return emailConfirmationModel;
+        }
+
+        public async Task<ResetPasswordModel> ResetPasswordAsync(string email)
+        {
+            var user = await _userRepository.FindByEmailAsync(email);
+
+            var resetPasswordModel = new ResetPasswordModel();
+            resetPasswordModel.Email = email;
+
+            if (user == null)
+            {
+                resetPasswordModel.Errors.Add(Constants.Errors.UserNotExistsError);
+                return resetPasswordModel;
+            }
+
+
+            var newPassword = _passwordGenerator.GeneratePassword();
+
+            var resetToken = await _userRepository.GeneratePasswordResetTokenAsync(email);
             
-            //Check received token for new password confirmation
-            await _userManager.ResetPasswordAsync(user, token, newPassword);
+            resetPasswordModel.Password = newPassword;
+            
+            var result = await _userRepository.ResetPasswordAsync(email, resetToken, newPassword);
+            if (!result)
+            {
+                resetPasswordModel.Errors.Add(Constants.Errors.UserNotExistsError);
+            }
+
+            return resetPasswordModel;
         }
 
-        public async Task<bool> CheckAndRemoveRefreshToken(string username, string ipfingerprint, string token)
+        public async Task<BaseModel> UpdateProfile(SignUpModel signUpModel)
         {
-            var user = await _userManager.FindByNameAsync(username);
-            var correctToken = _userRepository.GetRefreshToken(user, ipfingerprint);
-            return token.Equals(correctToken);
-        }
+            var user = await _userRepository.FindByIdAsync(signUpModel.Id);
+            var userModel = new UserModelItem();
+            if (user == null)
+            {
+                userModel.Errors.Add(Constants.Errors.UserNotExistsError);
+                return userModel;
+            }
 
-        public async Task SaveRefreshToken(string username, string ipfingerprint, string newToken)
-        {
-            var user = await _userManager.FindByNameAsync(username);
-            if (_userRepository.GetRefreshToken(user, ipfingerprint) != null)
-                await _userRepository.RemoveRefreshToken(user, ipfingerprint);
+            user = signUpModel.MapToEntity(user);
 
-            await _userRepository.SaveRefreshToken(user, ipfingerprint, newToken);
+            var result = await _userRepository.UpdateAsync(user, signUpModel.Password, signUpModel.NewPassword);
+            if (!result)
+            {
+                userModel.Errors.Add(Constants.Errors.EditUserError);
+            }
+
+            return userModel;
         }
     }
 }

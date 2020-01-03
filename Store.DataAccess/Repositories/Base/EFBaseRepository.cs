@@ -1,73 +1,82 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Store.DataAccess.AppContext;
+using Store.DataAccess.Entities;
+using Store.DataAccess.Models.Filters;
+using Store.DataAccess.Extensions.Sorting;
 
 namespace Store.DataAccess.Repositories.Base
 {
     public abstract class EFBaseRepository<T> : IGenericRepository<T>
-        where T : class
+        where T : BaseEntity
     {
-        protected ApplicationContext _db;
-        private DbSet<T> _dbSet;
+        protected readonly ApplicationContext _dbContext;
+        protected DbSet<T> _dbSet;
 
-        public EFBaseRepository(ApplicationContext db)
+        public EFBaseRepository(ApplicationContext dbContext)
         {
-            _db = db;
-            _dbSet = db.Set<T>();
+            _dbContext = dbContext;
+            _dbSet = dbContext.Set<T>();
         }
 
-        public virtual IList<T> GetAll(Func<T, bool> predicate)
+        public virtual IEnumerable<T> GetAll(FilterModel<T> filterModel, out int counter)
         {
-            return _dbSet.Where(predicate).ToList();
+            var items = _dbSet.Where(filterModel.Predicate)
+                               .AsEnumerable()
+                               .SortBy(filterModel.SortProperty.ToString(), filterModel.IsAscending);
+
+            counter = items.Count();
+
+            if (filterModel.Quantity > 0)
+            {
+                items =  items.Skip(filterModel.StartIndex).Take(filterModel.Quantity);
+            }
+
+            return items.ToList();
         }
 
-        public virtual async Task<IList<T>> GetAllAsync()
+        public virtual async Task<T> FindAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _dbSet.ToListAsync();
+            var item = await _dbSet.Where(predicate).FirstOrDefaultAsync();
+            return item;
         }
 
-        public virtual IList<T> Get(Func<T, bool> predicate, int startIndex, int quantity)
+        public virtual async Task<T> FindByIdAsync(long id)
         {
-            return _dbSet.Where(predicate)
-                         .Skip(startIndex)
-                         .Take(quantity).ToList();
+            var item = await _dbSet.FindAsync(id);
+            return item;
         }
 
-        public virtual async Task<IList<T>> GetAsync(int startIndex, int quantity)
+        public virtual async Task<long> CreateAsync(T item)
         {
-            return await _dbSet.Skip(startIndex)
-                               .Take(quantity).ToListAsync();
+            _dbSet.Add(item);
+            var result = await _dbContext.SaveChangesAsync();
+            return item.Id;
         }
 
-        public virtual T FindBy(Func<T, bool> predicate)
+        public virtual async Task<bool> CreateListAsync(IEnumerable<T> items)
         {
-            return _dbSet.Where(predicate).FirstOrDefault();
+            _dbSet.AddRange(items);
+            var result = await _dbContext.SaveChangesAsync();
+            return result > 0;
         }
 
-        public virtual async Task<T> FindByIdAsync(int id)
+        public virtual async Task<bool> UpdateAsync(T item)
         {
-            return await _dbSet.FindAsync(id);
+            _dbContext.Entry(item).State = EntityState.Modified;
+            var result = await _dbContext.SaveChangesAsync();
+            return result > 0;
         }
 
-        public virtual async Task CreateAsync(T item)
-        {
-            await _dbSet.AddAsync(item);
-            await _db.SaveChangesAsync();
-        }
-
-        public virtual async Task UpdateAsync(T item)
-        {
-            _db.Entry(item).State = EntityState.Modified;
-            await _db.SaveChangesAsync();
-        }
-
-        public virtual async Task RemoveAsync(T item)
+        public virtual async Task<bool> RemoveAsync(T item)
         {
             _dbSet.Remove(item);
-            await _db.SaveChangesAsync();
+            var result = await _dbContext.SaveChangesAsync();
+            return result > 0;
         }
     }
 }

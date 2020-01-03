@@ -1,164 +1,118 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using System.Threading.Tasks;
+using Store.BusinessLogic.Common.Constants;
+using Store.BusinessLogic.Models.Base;
 using Store.BusinessLogic.Models.Orders;
+using Store.BusinessLogic.Models.Filters;
 using Store.BusinessLogic.Models.Payments;
 using Store.BusinessLogic.Services.Interfaces;
-using Store.DataAccess.AppContext;
+using Store.BusinessLogic.Common.Mappers.Order;
+using Store.BusinessLogic.Common.Mappers.Filter;
 using Store.DataAccess.Entities;
-using Store.DataAccess.Repositories.EFRepositories;
-using Store.DataAccess.Repositories.EFRepository;
 using Store.DataAccess.Repositories.Interfaces;
+using Store.DataAccess.Entities.Enums;
+using System.Linq;
+using Store.BusinessLogic.Common.Mappers.OrderItem;
 
 namespace Store.BusinessLogic.Services
 {
     public class OrderService : IOrderService
     {
-        private IOrderRepository _orderRepository;
-        private IOrderItemRepository _orderItemRepository;
-        private IPaymentRepository _paymentsRepository;
-        private IMapper _mapper;
-        public OrderService(ApplicationContext db,
-                            IMapper mapper)
+        private readonly IOrderRepository _orderRepository;
+        private readonly IPaymentRepository _paymentsRepository;
+        private readonly IOrderItemRepository _orderItemRepository;
+
+        public OrderService(IPaymentRepository paymentsRepository,
+                            IOrderRepository orderRepository,
+                            IOrderItemRepository orderItemRepository)
         {
-            _mapper = mapper;
-            _orderRepository = new OrderRepository(db);
-            _orderItemRepository = new OrderItemRepository(db);
-            _paymentsRepository = new PaymentRepository(db);
+            _paymentsRepository = paymentsRepository;
+            _orderRepository = orderRepository;
+            _orderItemRepository = orderItemRepository;
         }
 
-        public async Task<OrderModel> AddPaymentTransaction(int orderId, PaymentModelItem modelItem)
+        public async Task<OrderModel> GetAllAsync(OrderFilterModel orderFilterModel)
         {
-            var order = await _orderRepository.FindByIdAsync(orderId);
             var orderModel = new OrderModel();
+            var filterModel = orderFilterModel.MapToEFFilterModel();
+
+            var listOfOrders = await _orderRepository.GetAllOrders(filterModel);
+
+            if (listOfOrders.Items == null)
+            {
+                orderModel.Errors.Add(Constants.Errors.NotFoundOrdersError);
+                return orderModel;
+            }
+
+            orderModel.Counter = listOfOrders.Counter;
+
+            foreach (var item in listOfOrders.Items)
+            {
+                var orderItem = new OrderModelItem();
+                orderModel.Items.Add(item.MapToModel());
+            }
+
+            return orderModel;
+        }
+
+        public async Task<BaseModel> CreateAsync(OrderModelItem modelItem)
+        {
+            if(modelItem.OrderItems == null || !modelItem.OrderItems.Any())
+            {
+                modelItem.Errors.Add(Constants.Errors.CreateOrderError);
+                return modelItem;
+            }
+
+            var order = new Order();
+            order = modelItem.MapToEntity(order);
+            var orderId = await _orderRepository.CreateAsync(order);
+
+            if (orderId == 0)
+            {
+                modelItem.Errors.Add(Constants.Errors.CreateOrderError);
+                return modelItem;
+            }
+
+            var orderItems = modelItem.OrderItems.MapToOrderItemsList(orderId);
+            var result = await _orderItemRepository.CreateListAsync(orderItems);
+
+            if (!result && orderItems.Count() > 0)
+            {
+                modelItem.Errors.Add(Constants.Errors.CreateOrderError);
+            }
+
+            return modelItem;
+        }
+
+        public async Task<BaseModel> UpdateAsync(PaymentModelItem modelItem)
+        {
+            var order = await _orderRepository.FindByIdAsync(modelItem.OrderId);
+            var orderModel = new OrderModelItem();
             if (order == null)
             {
-                orderModel.Errors.Add("Order not found");
+                orderModel.Errors.Add(Constants.Errors.NotFoundOrderError);
                 return orderModel;
             }
 
-            await _paymentsRepository.CreateAsync(new Payments { TransactionId = modelItem.TransactionId });
-            order.PaymentId = _paymentsRepository.FindBy(p => p.TransactionId.Equals(modelItem.TransactionId)).Id;
-            await _orderRepository.UpdateAsync(order);
-            return orderModel;
-        }
+            var payment = new Payment();
+            payment.TransactionId = modelItem.TransactionId;
 
-        public async Task<OrderModel> Create(OrderInputData modelItem)
-        {
-            var orderModel = new OrderModel();
-            var order = _mapper.Map<Orders>(modelItem);
+            var paymentId = await _paymentsRepository.CreateAsync(payment);
 
-            order.OrderItems = new List<OrderItems>();
-            foreach (var item in modelItem.Items)
-                order.OrderItems.Add(_mapper.Map<OrderItems>(item));
-
-            await _orderRepository.CreateAsync(order);
-            return orderModel;
-        }
-
-        public async Task<OrderModel> Delete(int id)
-        {
-            var orderModel = new OrderModel();
-            var order = await _orderRepository.FindByIdAsync(id);
-            if(order == null)
+            if (paymentId == 0)
             {
-                orderModel.Errors.Add("Order not found");
+                orderModel.Errors.Add(Constants.Errors.CreatePaymentError);
                 return orderModel;
             }
-
-            await _orderRepository.RemoveAsync(order);
-            return orderModel;
-        }
-
-        public async Task<OrderModel> FindById(int id)
-        {
-            var orderModel = new OrderModel();
-            var order = await _orderRepository.FindByIdAsync(id);
-            if (order == null)
-            {
-                orderModel.Errors.Add("Order not found");
-                return orderModel;
-            }
-
-            orderModel.Orders.Add(_mapper.Map<OrderModelItem>(order));
-            return orderModel;
-        }
-
-        public OrderModel FindById(int id, string username)
-        {
-            var orderModel = new OrderModel();
-            var order = _orderRepository.FindBy(o => o.User.UserName.Equals(username) && o.Id == id);
-            if (order == null)
-            {
-                orderModel.Errors.Add("Order not found");
-                return orderModel;
-            }
-
-            orderModel.Orders.Add(_mapper.Map<OrderModelItem>(order));
-            return orderModel;
-        }
-
-        public async Task<OrderModel> GetAll(OrderFilter orderFilter, int startIndex = 0, int quantity = 0)
-        {
-            IList<Orders> orders;
-            Func<Orders, bool> predicate = (o => (orderFilter.Username == null || o.User.UserName == orderFilter.Username));
-            var orderModel = new OrderModel();
+        
+            order.PaymentId = paymentId;
+            order.Status = Enums.Order.OrderStatus.Paid;
             
-            orders = quantity > 0 
-                ? _orderRepository.Get(predicate, startIndex, quantity)
-                : _orderRepository.GetAll(predicate);
-
-            if (orders == null)
+            var result = await _orderRepository.UpdateAsync(order);
+            if (!result)
             {
-                orderModel.Errors.Add("Orders not found");
-                return orderModel;
+                orderModel.Errors.Add(Constants.Errors.UpdateOrderError);
             }
 
-            foreach(var item in orders)
-            {
-                var order = _mapper.Map<OrderModelItem>(item);
-                foreach(var orderitem in item.OrderItems)
-                    order.OrderItems.Add(_mapper.Map<OrderItemModelItem>(orderitem));
-                
-                orderModel.Orders.Add(_mapper.Map<OrderModelItem>(order));
-            }
-            return orderModel;
-        }
-
-        public async Task<OrderModel> RemovePaymentTransaction(int orderId)
-        {
-            var order = await _orderRepository.FindByIdAsync(orderId);
-            var orderModel = new OrderModel();
-            if (order == null)
-            {
-                orderModel.Errors.Add("Order not found");
-                return orderModel;
-            }
-
-            order.PaymentId = null;
-            await _orderRepository.UpdateAsync(order);
-            return orderModel;
-        }
-
-        public async Task<OrderModel> Update(int id, OrderInputData modelItem)
-        {
-            var order = await _orderRepository.FindByIdAsync(id);
-            var orderModel = new OrderModel();
-            if (order == null)
-            {
-                orderModel.Errors.Add("Order not found");
-                return orderModel;
-            }
-
-            _mapper.Map<OrderInputData, Orders>(modelItem, order);
-
-            await _orderItemRepository.RemoveByOrderId(id);
-            order.OrderItems = new List<OrderItems>();
-            foreach (var item in modelItem.Items)
-                order.OrderItems.Add(_mapper.Map<OrderItems>(item));
-
-            await _orderRepository.UpdateAsync(order);
             return orderModel;
         }
     }

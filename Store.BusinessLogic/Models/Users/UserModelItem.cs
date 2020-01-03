@@ -1,19 +1,16 @@
-﻿using Store.BusinessLogic.Models.Orders;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using Store.BusinessLogic.Common.Constants;
+using Store.BusinessLogic.Models.Base;
 
 namespace Store.BusinessLogic.Models.Users
 {
-    public class UserModelItem : AccessTokenData
+    public class UserModelItem : BaseModel
     {
-        public string Id { get; set; }
-        public string Firstname { get; set; }
-        public string Lastname { get; set; }
-        public string Username { get; set; }
+        public long Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Email { get; set; }
-        public bool EmailConfirmed { get; set; }
-        public IList<string> Roles { get; set; } = new List<string>();
-
-        public IList<OrderModelItem> Orders { get; set; } = new List<OrderModelItem>();
+        public bool IsLocked { get; set; }
+        public string Avatar { get; set; } = Constants.Images.DefaultUserAvatar;
+        public string Role { get; set; }
     }
 }
