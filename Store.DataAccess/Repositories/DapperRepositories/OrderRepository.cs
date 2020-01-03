@@ -18,7 +18,7 @@ namespace Store.DataAccess.Repositories.DapperRepositories
         public OrderRepository(IConfiguration configuration) : base(configuration)
         { }
 
-        public async Task<DataModel<OrderModel>> GetAllOrders(OrderFilterModel filterModel)
+        public async Task<DataModel<Order>> GetAllOrders(OrderFilterModel filterModel)
         {
             var sql = new StringBuilder($@"SELECT o.*, u.FirstName, u.LastName, u.Email, oi.Amount, pe.Id, pe.Title, pe.Type
                                             FROM (SELECT *
@@ -68,9 +68,9 @@ namespace Store.DataAccess.Repositories.DapperRepositories
                         Quantity = filterModel.Quantity
                     });
 
-                var dataModel = new DataModel<OrderModel>();
+                var dataModel = new DataModel<Order>();
 
-                var orders = queryResult.Read<OrderModel, decimal?, User, OrderItem, PrintingEdition, OrderModel>(
+                var orders = queryResult.Read<Order, decimal?, User, OrderItem, PrintingEdition, Order>(               
                     (order, orderPrice, user, orderItem, printingEdition) =>
                     {
                         order.OrderPrice = orderPrice == null ? 0 : orderPrice;
@@ -104,7 +104,7 @@ namespace Store.DataAccess.Repositories.DapperRepositories
                         order.UserId
                     }
                 )
-                    .Select(group => new OrderModel
+                    .Select(group => new Order
                     {
                         Id = group.Key.Id,
                         Description = group.Key.Description,

@@ -6,7 +6,7 @@ namespace Store.BusinessLogic.Common.Mappers.Order
 {
     public static partial class OrderMapperExtension
     {
-        public static OrderModelItem MapToModel(this DataAccess.Models.OrderModel entity)
+        public static OrderModelItem MapToModel(this DataAccess.Entities.Order entity)
         {
             var model = new OrderModelItem();
 

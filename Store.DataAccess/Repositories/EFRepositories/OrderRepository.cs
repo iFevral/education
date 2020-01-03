@@ -16,13 +16,13 @@ namespace Store.DataAccess.Repositories.EFRepository
         {
         }
 
-        public async Task<DataModel<OrderModel>> GetAllOrders(OrderFilterModel filterModel)
+        public async Task<DataModel<Order>> GetAllOrders(OrderFilterModel filterModel)
         {
-            var list = new DataModel<OrderModel>();
+            var list = new DataModel<Order>();
             list.Items = _dbSet.Where(filterModel.Predicate)
                                .AsEnumerable()
                                .GroupBy(order => order)
-                               .Select(group => new OrderModel
+                               .Select(group => new Order
                                {
                                    Id = group.Key.Id,
                                    CreationDate = group.Key.CreationDate,
